@@ -29,17 +29,18 @@ const LOCAL_HOLIDAY_KEYWORDS = [
 // Helper to get IST time formats
 function getISTTime() {
   const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  
+  // Calculate the current time in IST milliseconds (UTC + 5.5 hours)
   const istOffset = 5.5 * 60 * 60 * 1000;
-  const istTime = new Date(utc + istOffset);
+  const istTime = new Date(now.getTime() + istOffset);
 
   // Format today and tomorrow string (YYYY-MM-DD)
   const todayStr = istTime.toISOString().split('T')[0];
   const tomorrowTime = new Date(istTime.getTime() + 24 * 60 * 60 * 1000);
   const tomorrowStr = tomorrowTime.toISOString().split('T')[0];
 
-  // Tomorrow label format: "Tuesday, 04 August 2026"
-  const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata' };
+  // Tomorrow label format using 'UTC' timezone option, because tomorrowTime is already shifted
+  const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' };
   const tomorrowLabel = new Intl.DateTimeFormat('en-IN', options).format(tomorrowTime);
 
   const checkedAt = istTime.toISOString().replace('Z', '+05:30');
@@ -295,6 +296,25 @@ app.get('/api/scrape', async (req, res) => {
   } else {
     return res.status(500).json({ success: false, message: "Scraper run failed to complete." });
   }
+});
+
+// Trigger background scrape when user loads the page
+app.get(['/', '/index.html'], (req, res, next) => {
+  const now = Date.now();
+  if (!isScraping && (now - lastScrapeTime > SCRAPE_COOLDOWN)) {
+    console.log("[Server] User opened page - triggering background scrape.");
+    isScraping = true;
+    runScraper().then(outcome => {
+      isScraping = false;
+      if (outcome) {
+        lastScrapeTime = Date.now();
+      }
+    }).catch(err => {
+      isScraping = false;
+      console.error("[Server] Background scrape error:", err);
+    });
+  }
+  next();
 });
 
 // Serve the generated status file statically

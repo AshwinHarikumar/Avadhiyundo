@@ -66,6 +66,9 @@ class NoCacheHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             response_json = json.dumps({"success": success, "message": msg})
             self.wfile.write(response_json.encode('utf-8'))
             return
+        elif self.path == "/" or self.path == "/index.html":
+            # Trigger background scrape if cooldown has passed
+            threading.Thread(target=trigger_manual_scrape, daemon=True).start()
             
         super().do_GET()
 

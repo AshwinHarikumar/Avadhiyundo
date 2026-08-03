@@ -1,16 +1,8 @@
-/* Kerala Rain Holiday Watch — findings data
- *
- * This file is REWRITTEN by the research agent on each check.
- * Nothing here is inferred by the app: every `confirmed` district must
- * carry at least one source with a timestamp. See README.md for the schema.
- *
- * Loaded as a plain script (not fetched) so the app works from file://
- * without a local server.
- */
+/* Kerala Rain Holiday Watch — findings data */
 window.KERALA_STATUS = {
   "forDate": "2026-08-04",
   "forDateLabel": "Tuesday, 04 August 2026",
-  "checkedAt": "2026-08-03T21:50:35.034386+05:30",
+  "checkedAt": "2026-08-03T23:04:47.785+05:30",
   "headline": "Holidays declared in 9 districts and partial/conditional closures in 3 other districts.",
   "advisories": [
     {
@@ -292,7 +284,7 @@ window.KERALA_STATUS = {
       "status": "confirmed",
       "alert": "orange",
       "confidence": 95,
-      "scope": "In Kannur, a holiday has been declared for educational institutions in Taliparamba, Payyannur and Iritty taluks only",
+      "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
       "appliesTo": "Educational institutions in specific taluks",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
