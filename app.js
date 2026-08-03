@@ -273,17 +273,24 @@
     "</article>";
   }
 
+  var searchQuery = "";
+
   function matchesFilter(kind) {
     if (activeFilter === "all") return true;
     if (activeFilter === "none") return kind === "none" || kind === "debunked";
     return kind === activeFilter;
   }
 
+  function matchesSearch(d) {
+    if (!searchQuery) return true;
+    return d.name.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+  }
+
   function renderBoard() {
     if (!boardRows) return;
 
     var rows = districts
-      .filter(function (d) { return matchesFilter(kindOf(d)); })
+      .filter(function (d) { return matchesFilter(kindOf(d)) && matchesSearch(d); })
       .sort(function (a, b) {
         var r = ORDER[kindOf(a)] - ORDER[kindOf(b)];
         return r || a.name.localeCompare(b.name);
@@ -291,7 +298,7 @@
 
     boardRows.innerHTML = rows.length
       ? rows.map(rowHtml).join("")
-      : '<p class="board-empty">No district is in this state right now.</p>';
+      : '<p class="board-empty">No matching districts found.</p>';
   }
 
   function renderFilters() {
@@ -322,6 +329,14 @@
       /* Keep focus on the tab the reader pressed, not on the container. */
       var next = filtersEl.querySelector('[data-filter="' + activeFilter + '"]');
       if (next) next.focus();
+    });
+  }
+
+  var searchInput = $("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", function (e) {
+      searchQuery = e.target.value;
+      renderBoard();
     });
   }
 

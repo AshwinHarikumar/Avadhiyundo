@@ -420,6 +420,69 @@ ol, ul { list-style: none; }
   color: var(--text-3);
 }
 
+.board-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--text-4);
+  pointer-events: none;
+  transition: color .18s;
+}
+
+.search-box input {
+  height: 36px;
+  width: 200px;
+  padding: 0 16px 0 38px;
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  color: var(--text);
+  font-family: var(--narrow);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  outline: none;
+  transition: border-color .18s, background .18s, color .18s;
+  box-shadow: none;
+  -webkit-appearance: none;
+}
+
+.search-box input::placeholder {
+  color: var(--text-4);
+  opacity: 1;
+}
+
+.search-box input:-ms-input-placeholder {
+  color: var(--text-4);
+}
+
+.search-box input::-ms-input-placeholder {
+  color: var(--text-4);
+}
+
+.search-box input:focus {
+  border-color: var(--lamp);
+  background: var(--ink-3);
+}
+
+.search-box input:focus ~ .search-icon {
+  color: var(--lamp);
+}
+
 /* Filters — ruled tabs, not pills in a tray */
 .filters { display: flex; flex-wrap: wrap; gap: 2px; }
 .filters button {
@@ -729,6 +792,16 @@ ol, ul { list-style: none; }
 .foot-note { font-size: 13px; line-height: 1.65; color: var(--text-3); max-width: 54ch; }
 .foot-note strong { color: var(--text-2); font-weight: 700; display: block; margin-bottom: 3px; }
 .foot-note em { color: var(--text-2); font-style: normal; font-weight: 600; }
+.foot-note a { color: var(--cyan); border-bottom: 1px solid var(--cyan-dim); transition: color .18s, border-color .18s; }
+.foot-note a:hover { color: var(--text); border-bottom-color: var(--cyan); }
+.foot-note.dev-highlight {
+  border-left: 2px solid var(--cyan);
+  padding-left: 14px;
+  color: var(--text-2);
+}
+.foot-note.dev-highlight strong {
+  color: var(--cyan);
+}
 .foot-rule {
   margin-top: 20px;
   font-family: var(--mono);
@@ -830,6 +903,8 @@ ol, ul { list-style: none; }
 
   .board-wrap { padding-top: 30px; padding-bottom: 40px; }
   .board-head { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .board-controls { width: 100%; flex-direction: column; align-items: stretch; gap: 12px; }
+  .search-box, .search-box input { width: 100%; }
   .filters { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
   .filters button { white-space: nowrap; }
 
