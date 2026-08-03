@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>അവധിയുണ്ടോ? — Kerala Rain Holiday Watch</title>
+  <meta name="description" content="Verified rain-holiday declarations for all 14 Kerala districts, with the declaring authority and a dated source for every one." />
+  <meta name="theme-color" content="#0a1416" />
+  <meta name="color-scheme" content="dark light" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@500;700;800&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Narrow:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css?v=9" />
+</head>
+<body>
+
+<a class="skip" href="#board">Skip to the district board</a>
+
+<!-- Raised by app.js only when the target date has already passed -->
+<div class="stale" id="staleGuard" role="alert" hidden></div>
+
+<header class="masthead">
+  <div class="shell mast-inner">
+    <div class="mark">
+      <svg class="mark-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M17.5 17.5a4.5 4.5 0 0 0-.9-8.91 6 6 0 0 0-11.44 1.8A3.5 3.5 0 0 0 6 17.5"/>
+        <path d="M8 20.5l1-2.5M12 21.5l1-2.5M16 20.5l1-2.5"/>
+      </svg>
+      <span class="mark-text">
+        <span class="mark-name" lang="ml">അവധിയുണ്ടോ?</span>
+        <span class="mark-sub">Kerala Rain Holiday Watch</span>
+      </span>
+    </div>
+
+    <div class="mast-tools">
+      <p class="stamp" id="stamp"></p>
+      <button class="tool" id="themeToggle" type="button" aria-pressed="false">
+        <svg class="tool-icon" id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+        </svg>
+        <span id="themeLabel">Day</span>
+      </button>
+      <button class="tool tool-icon-only" id="refreshBtn" type="button" title="Re-check sources">
+        <svg class="tool-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>
+        </svg>
+        <span class="sr-only">Re-check sources</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="lamp" aria-labelledby="ask">
+    <div class="lamp-glow" aria-hidden="true"></div>
+    <div class="shell lamp-inner">
+      <p class="lamp-date">
+        <span class="lamp-rel" id="forDateRel">—</span>
+        <span class="lamp-date-full" id="forDate">—</span>
+      </p>
+
+      <h1 class="lamp-ask" id="ask" lang="ml">അവധിയുണ്ടോ?</h1>
+
+      <p class="lamp-read">
+        <strong class="lamp-count" id="lampCount">—</strong>
+        <span class="lamp-of" id="lampOf">of 14 districts</span>
+      </p>
+
+      <p class="lamp-line" id="headline"></p>
+
+      <div class="lamp-split" id="tally"></div>
+
+      <p class="lamp-caveat" id="caveat"></p>
+    </div>
+  </section>
+
+  <section class="shell board-wrap" id="board" aria-labelledby="boardTitle">
+    <div class="board-head">
+      <h2 class="board-title" id="boardTitle">All 14 districts</h2>
+      <div class="filters" id="filters" role="group" aria-label="Filter districts by verdict"></div>
+    </div>
+
+    <p class="board-legend" aria-hidden="true">
+      <span>District</span>
+      <span>Verdict</span>
+      <span>Scope &amp; source</span>
+    </p>
+
+    <div class="board" id="boardRows" aria-live="polite"></div>
+
+    <p class="board-foot" id="boardFoot"></p>
+  </section>
+
+  <section class="shell context" aria-label="Context and advisories">
+    <div>
+      <h2 class="ctx-title">Advisories</h2>
+      <div class="ctx-body" id="advisories"></div>
+    </div>
+
+    <div>
+      <h2 class="ctx-title">
+        Weather
+        <span class="ctx-note">context only — not a declaration</span>
+      </h2>
+      <div class="ctx-body" id="weather"></div>
+    </div>
+
+    <div id="debunkedWrap" hidden>
+      <h2 class="ctx-title">Debunked claims</h2>
+      <div class="ctx-body" id="debunked"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell">
+    <p class="foot-ask" lang="ml" aria-hidden="true">അവധിയുണ്ടോ?</p>
+
+    <div class="foot-cols">
+      <p class="foot-note">
+        <strong>How this page is built</strong>
+        Every <em>declared</em> district carries the declaring authority and at least one
+        dated source. Nothing on this page is inferred — if no order has been reported,
+        the district reads <em>no declaration</em>, which is information, not an empty result.
+      </p>
+      <p class="foot-note">
+        <strong>Independent, not official</strong>
+        Not affiliated with any government entity. District Collectors declare closures
+        individually and often late at night. Where the two disagree, the Collector's own
+        announcement is the one that counts.
+      </p>
+      <p class="foot-note" id="limits"></p>
+    </div>
+
+    <p class="foot-rule" id="footRule"></p>
+  </div>
+</footer>
+
+<script src="data/status.js"></script>
+<script src="app.js?v=9"></script>
+</body>
+</html>
