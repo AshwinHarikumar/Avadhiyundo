@@ -254,22 +254,24 @@ async function runScraper() {
     const districtsData = [];
 
     for (const dist of DISTRICTS_LIST) {
-      // Find district index in text (regex word boundary matching)
-      const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
-      const match = bodyText.match(distRegex);
-      
       let isHoliday = false;
       let context = "";
 
-      if (match) {
-        const matchIdx = match.index;
-        const start = Math.max(0, matchIdx - 150);
-        const end = Math.min(bodyText.length, matchIdx + dist.length + 150);
-        context = bodyText.substring(start, end).toLowerCase();
-        
-        for (const kw of LOCAL_HOLIDAY_KEYWORDS) {
-          if (context.includes(kw)) {
+      const paragraphs = bodyText.split('\n').map(p => p.trim()).filter(Boolean);
+      for (const p of paragraphs) {
+        const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
+        if (distRegex.test(p)) {
+          const pLower = p.toLowerCase();
+          let hasKw = false;
+          for (const kw of LOCAL_HOLIDAY_KEYWORDS) {
+            if (pLower.includes(kw)) {
+              hasKw = true;
+              break;
+            }
+          }
+          if (hasKw) {
             isHoliday = true;
+            context = pLower;
             break;
           }
         }
@@ -299,7 +301,7 @@ async function runScraper() {
           }
           appliesTo = "Educational institutions in specific taluks";
           
-          if (dist === "Kannur" && context.includes("professional") && context.includes("not")) {
+          if (dist === "Kannur" && context.includes("professional") && (context.includes("not") || context.includes("except"))) {
             excludes = "Professional colleges NOT covered. Residential schools remain open.";
           }
         }

@@ -153,20 +153,21 @@ def parse_holiday_data(body_text, article_url, article_title):
     ]
     
     for dist in DISTRICTS_LIST:
-        # Check if the district name is mentioned in the article text
-        match = re.search(r'\b' + re.escape(dist) + r'\b', body_text, re.IGNORECASE)
-        
-        # Verify if it is actually declared a holiday (must have a holiday keyword in the context window)
         is_holiday = False
         context = ""
-        if match:
-            start = max(0, match.start() - 150)
-            end = min(len(body_text), match.end() + 150)
-            context = body_text[start:end].lower()
-            
-            for kw in LOCAL_HOLIDAY_KEYWORDS:
-                if kw in context:
+        
+        paragraphs = [p.strip() for p in body_text.split('\n') if p.strip()]
+        for p in paragraphs:
+            if re.search(r'\b' + re.escape(dist) + r'\b', p, re.IGNORECASE):
+                p_lower = p.lower()
+                has_kw = False
+                for kw in LOCAL_HOLIDAY_KEYWORDS:
+                    if kw in p_lower:
+                        has_kw = True
+                        break
+                if has_kw:
                     is_holiday = True
+                    context = p_lower
                     break
         
         if is_holiday:
@@ -187,7 +188,7 @@ def parse_holiday_data(body_text, article_url, article_title):
             # 2. Taluk-specific partial closures
             elif "taluk" in context or "taluks" in context:
                 # Try to extract the specific taluks from the context
-                taluks_match = re.search(r'([a-zA-Z\s,]+)\staluk', body_text[start:end], re.IGNORECASE)
+                taluks_match = re.search(r'([a-zA-Z\s,]+)\staluk', context, re.IGNORECASE)
                 if taluks_match:
                     scope = f"{taluks_match.group(1).strip()} taluks only"
                 else:
@@ -195,7 +196,7 @@ def parse_holiday_data(body_text, article_url, article_title):
                 applies_to = "Educational institutions in specific taluks"
                 
                 # Check for Kannur specific professional colleges exclusion
-                if dist == "Kannur" and "professional" in context and "not" in context:
+                if dist == "Kannur" and "professional" in context and ("not" in context or "except" in context):
                     excludes = "Professional colleges NOT covered. Residential schools remain open."
                     
             confirmed_districts.append(dist)
