@@ -22,34 +22,34 @@ window.KERALA_HISTORY = {
         "appliesTo": null
       },
       "Pathanamthitta": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Alappuzha": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Kottayam": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Idukki": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Ernakulam": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Thrissur": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Palakkad": {
         "status": "none",
@@ -62,9 +62,9 @@ window.KERALA_HISTORY = {
         "appliesTo": null
       },
       "Kozhikode": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Wayanad": {
         "status": "confirmed",
@@ -72,14 +72,14 @@ window.KERALA_HISTORY = {
         "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Kannur": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Kasaragod": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       }
     }
   },
@@ -2210,6 +2210,1191 @@ window.KERALA_HISTORY = {
         "status": "none",
         "scope": null,
         "appliesTo": null
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:10:00.969+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:10:00.969+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:10:00.969+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Idukki",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:10:00.969+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:10:00.969+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:23:53.462+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:26:16.594744+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:26:49.885+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:27:47.797605+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:27:47.797605+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:27:47.797605+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:27:47.797605+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:27:47.797605+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:27:47.797605+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:28:40.276+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:28:40.276+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:28:40.276+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:28:40.276+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:28:40.276+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:28:40.276+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:33:00.822+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:33:00.822+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:33:00.822+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:33:00.822+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:33:00.822+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:33:00.822+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:32:43.716425+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:29.310+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:29.310+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kollam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:34:53.371017+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:37:59.075275+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:37:59.075275+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:38:20.409+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:38:20.409+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:37:59.075275+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:37:59.075275+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:37:59.075275+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:37:59.075275+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:39:18.145384+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:39:18.145384+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:39:34.846+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:39:34.846+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:41:18.020522+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:41:18.020522+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:41:18.020522+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:41:18.020522+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:42:15.951+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:42:47.426426+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:42:47.426426+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:42:47.426426+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:42:47.426426+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:43:20.825+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:42:47.426426+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T21:43:44.450+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       }
     }
   ]

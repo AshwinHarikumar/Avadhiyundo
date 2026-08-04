@@ -2,8 +2,8 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-05",
   "forDateLabel": "Wednesday, 05 August 2026",
-  "checkedAt": "2026-08-04T17:45:53.613+05:30",
-  "headline": "Holidays declared in 1 districts.",
+  "checkedAt": "2026-08-04T21:51:29.440+05:30",
+  "headline": "Holidays declared in 10 districts.",
   "advisories": [
     {
       "level": "warn",
@@ -17,7 +17,7 @@ window.KERALA_STATUS = {
     "impact": "High risk of waterlogging and localized flooding. Relief camps active.",
     "source": {
       "name": "Onmanorama",
-      "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html"
+      "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html"
     }
   },
   "districts": [
@@ -51,92 +51,266 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Pathanamthitta",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Pathanamthitta",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Alappuzha",
-      "status": "none",
+      "status": "confirmed",
       "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Alappuzha",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Kottayam",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Kottayam",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "Web Special\n                            \n\n                            \n                            \n                            \n                            \tമഴ അവധി നൽകാൻ കലക്ടർമാരെ ചുമതലപ്പെടുത്തിയത് ആര്?; തീരുമാനം ഒറ്റയ്‌ക്കോ, ട്യൂഷൻ ക്ലാസ് നടത്തിയാലും ശിക്ഷ",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/when-does-a-collector-declare-holiday-in-kerala.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Idukki",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Idukki",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Ernakulam",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Ernakulam",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Thrissur",
-      "status": "none",
-      "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "yellow",
+      "confidence": 80,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Thrissur",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Palakkad",
       "status": "none",
-      "alert": "orange",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -150,7 +324,7 @@ window.KERALA_STATUS = {
     {
       "name": "Malappuram",
       "status": "none",
-      "alert": "orange",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -163,35 +337,85 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Kozhikode",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 80,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Kozhikode",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Wayanad",
       "status": "confirmed",
-      "alert": "red",
-      "confidence": 60,
+      "alert": "orange",
+      "confidence": 92,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Wayanad",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama.",
+      "confidenceNote": "Reported by Onmanorama, Onmanorama, Mathrubhumi, Manorama, Manorama.",
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain fury: Red alert in 8 districts today, death toll climbs to 20",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Onmanorama",
+          "title": "RAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain fury: Red alert in 8 districts today, death toll climbs to 20",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -199,31 +423,89 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Kannur",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Kannur",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Kasaragod",
-      "status": "none",
-      "alert": "red",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "orange",
+      "confidence": 92,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Kasaragod",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Manorama, Manorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Kerala rain: Holiday for educational institutions in 9 districts on Wednesday",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-educational-institutions-holiday-on-august-5-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "കനത്ത മഴ; കോട്ടയം ജില്ലയിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് 5ന് അവധി",
+          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/04/kerala-education-institutions-holiday-rain.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Manorama",
+          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \t10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി; മഴക്കെടുതിയിൽ സംസ്ഥാനത്ത് 25 മരണം, 4 പേരെ കാണാതായി",
+          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/04/kerala-monsoon-heavy-rain-live-updates.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     }
   ],
   "debunked": [],

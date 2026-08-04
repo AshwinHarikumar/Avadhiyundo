@@ -23,9 +23,26 @@ const DISTRICTS_LIST = [
   "Kozhikode", "Wayanad", "Kannur", "Kasaragod"
 ];
 
+const DISTRICT_TRANSLATIONS = {
+  "Thiruvananthapuram": ["തിരുവനന്തപുരം"],
+  "Kollam": ["കൊല്ലം"],
+  "Pathanamthitta": ["പത്തനംതിട്ട"],
+  "Alappuzha": ["ആലപ്പുഴ"],
+  "Kottayam": ["കോട്ടയം"],
+  "Idukki": ["ഇടുക്കി"],
+  "Ernakulam": ["എറണാകുളം"],
+  "Thrissur": ["തൃശ്ശൂർ", "തൃശൂർ"],
+  "Palakkad": ["പാലക്കാട്"],
+  "Malappuram": ["മലപ്പുറം"],
+  "Kozhikode": ["കോഴിക്കോട്"],
+  "Wayanad": ["വയനാട്"],
+  "Kannur": ["കണ്ണൂർ"],
+  "Kasaragod": ["കാസർഗോഡ്", "കാസർകോട്"]
+};
+
 const LOCAL_HOLIDAY_KEYWORDS = [
-  "holiday", "closed", "closure", "declared", "postponed", "cancel", "shut",
-  "അവധി", "പ്രഖ്യാപിച്ചു", "നൽകി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
+  "holiday", "closed", "closure", "postponed", "cancel", "shut",
+  "അവധി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
 ];
 
 // Push notification setup
@@ -209,6 +226,28 @@ function isSentenceRelevantForDate(sentence, targetStr) {
   if (otherDaysMal.some(day => sentenceLower.includes(day))) {
     if (!sentenceLower.includes(targetDayMal) && !sentenceLower.includes("നാളെ")) {
       return false; // Skip
+    }
+  }
+  
+  // If target date is tomorrow, check for today/yesterday references
+  const now = new Date();
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istTime = new Date(now.getTime() + istOffset);
+  const todayStr = istTime.toISOString().split('T')[0];
+  
+  if (targetStr !== todayStr) {
+    const hasPastOrToday = sentenceLower.includes("today") || 
+                           sentenceLower.includes("yesterday") || 
+                           sentenceLower.includes("ഇന്ന്") || 
+                           sentenceLower.includes("ഇന്നലെ");
+    if (hasPastOrToday) {
+      const hasFuture = sentenceLower.includes("tomorrow") || 
+                        sentenceLower.includes("നാളെ") || 
+                        sentenceLower.includes(targetDayEng) || 
+                        sentenceLower.includes(targetDayMal);
+      if (!hasFuture) {
+        return false;
+      }
     }
   }
   
@@ -426,10 +465,27 @@ async function fetchArticlesFromSource(sourceName, newsUrl, domain, headers) {
       if (href && text) {
         const textLower = text.toLowerCase();
         const hrefLower = (href || '').toLowerCase();
-        const isHolidayArticle = textLower.includes('holiday') &&
-          (textLower.includes('district') || textLower.includes('school') || textLower.includes('rain'));
-        const isRainBreakingArticle = (textLower.includes('rain') || textLower.includes('flood') || textLower.includes('alert')) &&
-          (textLower.includes('district') || textLower.includes('alert') || hrefLower.includes('holiday') || hrefLower.includes('school'));
+        
+        let isHolidayArticle = false;
+        let isRainBreakingArticle = false;
+
+        if (sourceName === 'Onmanorama') {
+          isHolidayArticle = textLower.includes('holiday') &&
+            (textLower.includes('district') || textLower.includes('school') || textLower.includes('rain'));
+          isRainBreakingArticle = (textLower.includes('rain') || textLower.includes('flood') || textLower.includes('alert')) &&
+            (textLower.includes('district') || textLower.includes('alert') || hrefLower.includes('holiday') || hrefLower.includes('school'));
+        } else {
+          // Malayalam matching for Mathrubhumi and Manorama
+          const hasHoliday = textLower.includes('അവധി');
+          const hasSchool = textLower.includes('സ്കൂൾ') || textLower.includes('ക്ലാസ്') || textLower.includes('വിദ്യഭ്യാസ') || textLower.includes('വിദ്യാഭ്യാസ');
+          const hasRain = textLower.includes('മഴ') || textLower.includes('വെള്ളപ്പൊക്കം');
+          const hasAlert = textLower.includes('അലേർട്ട്');
+          const hasCollector = textLower.includes('കലക്ടർ') || textLower.includes('കളക്ടർ');
+          
+          isHolidayArticle = hasHoliday && (hasSchool || hasRain || hasCollector);
+          isRainBreakingArticle = (hasRain || hasAlert) && (hasHoliday || hasSchool || hasCollector);
+        }
+        
         if (isHolidayArticle || isRainBreakingArticle) {
           const fullUrl = href.startsWith('http') ? href : domain + href;
           candidates.push({ url: fullUrl, title: text, href: href, source: sourceName });
@@ -476,7 +532,7 @@ async function runScraper() {
   // Multi-source news fetching
   const sources = [
     { name: 'Onmanorama', newsUrl: 'https://www.onmanorama.com/news/kerala.html', domain: 'https://www.onmanorama.com' },
-    { name: 'Mathrubhumi', newsUrl: 'https://www.mathrubhumi.com/news/latest-news.html', domain: 'https://www.mathrubhumi.com' },
+    { name: 'Mathrubhumi', newsUrl: 'https://www.mathrubhumi.com/news/kerala', domain: 'https://www.mathrubhumi.com' },
     { name: 'Manorama', newsUrl: 'https://www.manoramaonline.com/news/latest-news.html', domain: 'https://www.manoramaonline.com' }
   ];
 
@@ -516,8 +572,9 @@ async function runScraper() {
     });
 
     // Accept recent articles (today or yesterday) - content may describe tomorrow's closures
+    // Bypass target path check for Mathrubhumi since its URLs do not contain date paths
     const recentCandidates = candidates.filter(c =>
-      c.href.includes(todayPath) || c.href.includes(targetPath)
+      c.source === 'Mathrubhumi' || c.href.includes(todayPath) || c.href.includes(targetPath)
     );
 
     recentCandidates.sort((a, b) => {
@@ -633,13 +690,58 @@ async function runScraper() {
         }
 
         // Now process holidayParagraphs for each district
+        // Now process holidayParagraphs using context-tracking (district headings)
+        const districtReadingsMap = {};
         for (const dist of DISTRICTS_LIST) {
-          const districtReadings = [];
-          for (const p of holidayParagraphs) {
-            const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
-            if (!distRegex.test(p)) continue;
+          districtReadingsMap[dist] = [];
+        }
+        let activeDistrict = null;
 
-            const pLower = p.toLowerCase();
+        for (const p of holidayParagraphs) {
+          const pClean = p.replace(/^[^\n:]{2,40}:\s*/, '');
+          const pLower = pClean.toLowerCase();
+
+          // Check if this paragraph is a district heading
+          let isHeading = false;
+          for (const dist of DISTRICTS_LIST) {
+            const namesToCheck = [dist.toLowerCase()].concat(
+              (DISTRICT_TRANSLATIONS[dist] || []).map(n => n.toLowerCase())
+            );
+            const cleanPLower = pLower.trim().replace(/[.:-–—*•]/g, '');
+            if (namesToCheck.includes(cleanPLower)) {
+              activeDistrict = dist;
+              isHeading = true;
+              break;
+            }
+          }
+          if (isHeading) continue;
+
+          for (const dist of DISTRICTS_LIST) {
+            // Check if district is mentioned (in English or Malayalam translations)
+            const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
+            let isMentioned = distRegex.test(pClean);
+            if (!isMentioned && DISTRICT_TRANSLATIONS[dist]) {
+              for (const malName of DISTRICT_TRANSLATIONS[dist]) {
+                if (pClean.includes(malName)) {
+                  isMentioned = true;
+                  break;
+                }
+              }
+            }
+
+            // Check if the paragraph is relevant to this district (either mentioned directly or under active heading)
+            let isTarget = isMentioned || (activeDistrict === dist && !DISTRICTS_LIST.some(d => {
+              if (d === dist) return false;
+              const dRegex = new RegExp(`\\b${d}\\b`, 'i');
+              if (dRegex.test(pClean)) return true;
+              if (DISTRICT_TRANSLATIONS[d]) {
+                return DISTRICT_TRANSLATIONS[d].some(mal => pClean.includes(mal));
+              }
+              return false;
+            }));
+
+            if (!isTarget) continue;
+
             let hasKw = false;
             for (const kw of LOCAL_HOLIDAY_KEYWORDS) {
               if (pLower.includes(kw)) {
@@ -655,38 +757,55 @@ async function runScraper() {
             let excludes = null;
             let reason = "Adverse weather and heavy rainfall";
 
-            // If mentions "including professional colleges", it's definitely district-wide
-            const isAllInstitutions = pLower.includes("including professional") || pLower.includes("all educational");
+            // Check if professional colleges are excluded
+            const mentionsProfessional = pLower.includes("professional") || pLower.includes("പ്രൊഫഷണൽ");
+            const hasExclusionKw = pLower.includes("except") || pLower.includes("not") || pLower.includes("excluding") || 
+                                   pLower.includes("ഒഴികെ") || pLower.includes("ഒഴികെയുള്ള");
+
+            const excludesProfessional = mentionsProfessional && hasExclusionKw;
+
+            const isAllInstitutions = (pLower.includes("including professional") || pLower.includes("all educational") ||
+                                      pLower.includes("എല്ലാ വിദ്യാഭ്യാസ")) && !excludesProfessional;
+
+            if (excludesProfessional) {
+              appliesTo = "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)";
+              excludes = "Professional colleges NOT covered.";
+            }
 
             // Check for relief camp closures (only if explicitly limited to relief camps)
             const isReliefCampOnly = !isAllInstitutions &&
-              (pLower.includes("relief camp") || pLower.includes("relief-camp")) &&
-              (pLower.includes("only") || pLower.includes("except") || pLower.includes("functioning as"));
+              (pLower.includes("relief camp") || pLower.includes("relief-camp") || pLower.includes("ദുരിതാശ്വാസ") || pLower.includes("ക്യാമ്പ്")) &&
+              (pLower.includes("only") || pLower.includes("except") || pLower.includes("functioning as") || pLower.includes("പ്രവർത്തിക്കുന്ന") || pLower.includes("മാത്രം"));
 
             if (isReliefCampOnly) {
               scope = "Relief camp schools only";
               appliesTo = "All schools functioning as relief camps";
               excludes = "All other educational institutions";
               reason = "Schools serving as relief camps during floods";
-            } else if (!isAllInstitutions && (pLower.includes("taluk") || pLower.includes("taluks"))) {
-              // Only mark as taluk-limited if NOT mentioning "all institutions" or "professional colleges"
+            } else if (!isAllInstitutions && (pLower.includes("taluk") || pLower.includes("taluks") || pLower.includes("താലൂക്ക്") || pLower.includes("താലൂക്കുകൾ"))) {
               scope = "Select taluks only";
               appliesTo = "Educational institutions in specific taluks";
-              if (dist === "Kannur" && pLower.includes("professional") && (pLower.includes("not") || pLower.includes("except"))) {
-                excludes = "Professional colleges NOT covered. Residential schools remain open.";
+              if (excludesProfessional) {
+                excludes = "Professional colleges NOT covered.";
               }
             }
 
-            districtReadings.push({ scope, appliesTo, excludes, reason });
+            districtReadingsMap[dist].push({ scope, appliesTo, excludes, reason });
           }
+        }
 
-          if (districtReadings.length > 0) {
+        // Now update evidenceMap with best readings
+        for (const dist of DISTRICTS_LIST) {
+          const readings = districtReadingsMap[dist];
+          if (readings && readings.length > 0) {
             if (!evidenceMap.has(dist)) evidenceMap.set(dist, []);
 
             const scopePriority = { "District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1 };
-            const bestReading = districtReadings.reduce((best, current) =>
-              (scopePriority[current.scope] || 0) > (scopePriority[best.scope] || 0) ? current : best
-            );
+            const bestReading = readings.reduce((best, current) => {
+              const bestScore = (scopePriority[best.scope] || 0) + (best.excludes ? 0.5 : 0);
+              const currentScore = (scopePriority[current.scope] || 0) + (current.excludes ? 0.5 : 0);
+              return currentScore > bestScore ? current : best;
+            });
 
             evidenceMap.get(dist).push({
               status: "confirmed",
@@ -730,9 +849,9 @@ async function runScraper() {
           "Select taluks only": 2
         };
         const reading = readings.reduce((best, current) => {
-          const bestPriority = scopePriority[best.scope] || 0;
-          const currentPriority = scopePriority[current.scope] || 0;
-          return currentPriority > bestPriority ? current : best;
+          const bestScore = (scopePriority[best.scope] || 0) + (best.excludes ? 0.5 : 0);
+          const currentScore = (scopePriority[current.scope] || 0) + (current.excludes ? 0.5 : 0);
+          return currentScore > bestScore ? current : best;
         });
         districtsData.push({
           name: dist,

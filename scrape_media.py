@@ -107,50 +107,95 @@ def scrape_onmanorama():
     except Exception as e:
         print(f"Error scraping Onmanorama: {e}")
 
+def scrape_mathrubhumi_article(article_url):
+    """Scrapes content from a specific Mathrubhumi article."""
+    print(f"\n--- Scraping Mathrubhumi Article: {article_url} ---")
+
+    try:
+        response = requests.get(article_url, headers=HEADERS, timeout=10)
+        if response.status_code != 200:
+            print(f"[-] Failed to fetch article. Status code: {response.status_code}")
+            return None
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Extract title
+        title_elem = soup.find("h1")
+        title = title_elem.text.strip() if title_elem else "No title found"
+
+        # Extract article content
+        article_content = soup.find("article")
+        if not article_content:
+            # Fallback: look for main content div
+            article_content = soup.find(class_=re.compile(r"article|content|main"))
+
+        content_text = article_content.get_text(separator=" ").strip() if article_content else ""
+
+        # Check for relevance
+        combined_text = f"{title} {content_text}"
+        is_relevant_en, matched_en = check_text(combined_text, KEYWORDS_EN)
+        is_relevant_ml, matched_ml = check_text(combined_text, KEYWORDS_ML)
+
+        if is_relevant_en or is_relevant_ml:
+            all_matches = list(set(matched_en + matched_ml))
+            return {
+                "title": title,
+                "url": article_url,
+                "content": content_text[:500],  # First 500 chars
+                "matches": all_matches
+            }
+        else:
+            print("[-] Article does not contain holiday-related keywords.")
+            return None
+
+    except Exception as e:
+        print(f"Error scraping article: {e}")
+        return None
+
 def scrape_mathrubhumi():
     """Scrapes the Kerala news section of Mathrubhumi (Malayalam)."""
     url = "https://www.mathrubhumi.com/news/kerala"
     print(f"\n--- Scraping Mathrubhumi: {url} ---")
-    
+
     try:
         response = requests.get(url, headers=HEADERS, timeout=10)
         if response.status_code != 200:
             print(f"[-] Failed to fetch Mathrubhumi. Status code: {response.status_code}")
             return
-        
+
         soup = BeautifulSoup(response.text, "html.parser")
-        
+
         # Mathrubhumi titles are usually inside headings or links with specific styling classes.
         stories = soup.find_all("a")
-        
+
         found_announcements = []
         seen_urls = set()
-        
+
         for link in stories:
             href = link.get("href")
             title_text = link.text.strip()
-            
+
             if not href or not title_text or len(title_text) < 10:
                 continue
-                
+
             if not href.startswith("http"):
                 href = "https://www.mathrubhumi.com" + href
-                
+
             if href in seen_urls:
                 continue
-                
+
             seen_urls.add(href)
-            
+
             # Match against Malayalam keywords
             is_relevant, matched_kws = check_text(title_text, KEYWORDS_ML)
-            
+
             if is_relevant:
                 found_announcements.append({
                     "title": title_text,
                     "url": href,
                     "matches": matched_kws
                 })
-                
+
         print(f"Scanned {len(seen_urls)} unique news articles.")
         if found_announcements:
             print(f"[+] Found {len(found_announcements)} potential Malayalam updates:")
@@ -160,18 +205,32 @@ def scrape_mathrubhumi():
                 print(f"    Matches: {', '.join(item['matches'])}")
         else:
             print("No holiday updates found on the Mathrubhumi Kerala homepage.")
-            
+
     except Exception as e:
         print(f"Error scraping Mathrubhumi: {e}")
 
 def main():
     print("Starting Media Scraper...")
-    
+
     # 1. Scrape Onmanorama (English)
     scrape_onmanorama()
-    
-    # 2. Scrape Mathrubhumi (Malayalam)
+
+    # 2. Scrape Mathrubhumi homepage (Malayalam)
     scrape_mathrubhumi()
+
+    # 3. Scrape specific Mathrubhumi articles
+    mathrubhumi_articles = [
+        "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg?utm_source=Facebook&utm_medium=ShortURL&utm_campaign=mbiurl.in"
+    ]
+
+    print("\n--- Scraping Mathrubhumi Articles ---")
+    for article_url in mathrubhumi_articles:
+        result = scrape_mathrubhumi_article(article_url)
+        if result:
+            print(f"\n[+] Article: {result['title']}")
+            print(f"    URL: {result['url']}")
+            print(f"    Matches: {', '.join(result['matches'])}")
+            print(f"    Preview: {result['content'][:200]}...")
 
 if __name__ == "__main__":
     main()
