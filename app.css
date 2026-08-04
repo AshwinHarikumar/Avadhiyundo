@@ -10,31 +10,31 @@
 /* ── TOKENS: night is the default, because the reader is in bed ── */
 :root {
   /* Ground */
-  --ink:        #0a1416;
-  --ink-2:      #0f1c1f;
-  --ink-3:      #142428;
-  --rule:       #1e3238;
-  --rule-2:     #2a454d;
+  --ink:        #080808;
+  --ink-2:      #121212;
+  --ink-3:      #1b1b1b;
+  --rule:       #262626;
+  --rule-2:     #3c3c3c;
 
   /* Signal lamps */
-  --lamp:       #ffb43d;   /* declared — the answer */
-  --lamp-dim:   #7a5418;
-  --lamp-wash:  rgba(255,180,61,.10);
-  --cyan:       #4fd6e8;   /* unconfirmed */
-  --cyan-dim:   #1d5d68;
-  --cyan-wash:  rgba(79,214,232,.10);
-  --violet:     #b39cff;   /* partial */
-  --violet-dim: #4a3d80;
-  --violet-wash:rgba(179,156,255,.10);
-  --rose:       #ff7a7a;   /* debunked / red alert */
-  --rose-wash:  rgba(255,122,122,.10);
-  --yellow:     #d8c04a;   /* yellow IMD alert */
+  --lamp:       #ff9f19;   /* declared — warm warnings amber */
+  --lamp-dim:   #4e2e00;
+  --lamp-wash:  rgba(255,159,25,.08);
+  --cyan:       #00e5ff;   /* unconfirmed — neon cyan */
+  --cyan-dim:   #005963;
+  --cyan-wash:  rgba(0,229,255,.08);
+  --violet:     #9e7aff;   /* partial — electric violet */
+  --violet-dim: #321c70;
+  --violet-wash:rgba(158,122,255,.08);
+  --rose:       #ff4545;   /* debunked / red alert — rich ruby red */
+  --rose-wash:  rgba(255,69,69,.08);
+  --yellow:     #ffea00;   /* yellow IMD alert — pure bright yellow */
 
   /* Text on night — every step clears 4.5:1 on --ink and --ink-2 */
-  --text:       #f2f7f8;
-  --text-2:     #b0c3c7;
-  --text-3:     #8ca0a6;
-  --text-4:     #78888c;
+  --text:       #f5f5f5;
+  --text-2:     #bebebe;
+  --text-3:     #8c8c8c;
+  --text-4:     #606060;
 
   /* Type */
   --station:    'Archivo', system-ui, sans-serif;
@@ -108,7 +108,7 @@ ol, ul { list-style: none; }
   z-index: 200;
   transform: translateY(-140%);
   background: var(--lamp);
-  color: #0a1416;
+  color: var(--ink);
   padding: 10px 18px;
   font-weight: 700;
   transition: transform .18s;

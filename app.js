@@ -266,17 +266,7 @@
   var pinned = readStore("krhw-pin");
   if (pinned && !districts.some(function (d) { return d.name === pinned; })) pinned = null;
 
-  /* Newest transition for a district within the current target date. Events
-     from an earlier forDate describe a different night and are ignored. */
-  function latestEvent(name) {
-    if (!history || !Array.isArray(history.events)) return null;
-    var found = null;
-    for (var i = 0; i < history.events.length; i++) {
-      var e = history.events[i];
-      if (e.d === name && e.forDate === data.forDate) found = e;
-    }
-    return found;
-  }
+
 
   var ORDER = { declared: 0, partial: 1, unconfirmed: 2, none: 3, debunked: 4 };
 
@@ -327,13 +317,6 @@
       meta += '<span class="meta-row"><b>Note</b> ' + esc(d.confidenceNote) + "</span>";
     }
 
-    /* When this district changed tonight, say when. Observed, not inferred. */
-    var ev = latestEvent(d.name);
-    var when = ev && agoText(ev.at);
-    if (when) {
-      var moved = ev.to && ev.to.status === "confirmed" ? "Declared" : "Updated";
-      meta += '<span class="meta-row m-when"><b>' + moved + "</b> " + esc(when) + "</span>";
-    }
 
     var sources = (d.sources || []).map(function (s) {
       var href = safeUrl(s.url);
@@ -426,16 +409,12 @@
     else if (kind === "debunked") line = d.reason || "Circulating claim, checked and found false.";
     else line = "No closure order reported for this district.";
 
-    var ev = latestEvent(d.name);
-    var when = ev && agoText(ev.at);
-
     el.innerHTML =
       '<p class="pin-label">Your district</p>' +
       '<p class="pin-name">' + esc(d.name) +
         '<span class="pin-verdict v-' + kind + '">' + ICON[kind] + VERDICT_LABEL[kind] + "</span>" +
       "</p>" +
-      '<p class="pin-line">' + esc(line) + "</p>" +
-      (when ? '<p class="pin-when">Changed ' + esc(when) + "</p>" : "");
+      '<p class="pin-line">' + esc(line) + "</p>";
   }
 
   function renderFilters() {
@@ -514,48 +493,6 @@
     });
   }
 
-  /* ── What changed since this reader last looked ── */
-  (function () {
-    var el = $("changes");
-    if (!el) return;
-
-    var SEEN = "krhw-seen";
-    var raw = readStore(SEEN);
-    var snapshot = { forDate: data.forDate, checkedAt: data.checkedAt, districts: {} };
-    districts.forEach(function (d) { snapshot.districts[d.name] = kindOf(d); });
-
-    function persist() { writeStore(SEEN, JSON.stringify(snapshot)); }
-
-    var prev = null;
-    try { prev = raw ? JSON.parse(raw) : null; } catch (e) { /* corrupt */ }
-
-    /* A snapshot from a different night describes a different question. */
-    if (!prev || prev.forDate !== data.forDate || !prev.districts) { persist(); return; }
-    if (prev.checkedAt === data.checkedAt) { persist(); return; }
-
-    var moves = [];
-    districts.forEach(function (d) {
-      var before = prev.districts[d.name];
-      var now = kindOf(d);
-      if (before && before !== now) moves.push({ name: d.name, from: before, to: now });
-    });
-
-    if (!moves.length) { persist(); return; }
-
-    el.innerHTML =
-      '<p class="chg-label">Since you last looked</p>' +
-      '<ul class="chg-list">' + moves.map(function (m) {
-        return '<li class="chg-item c-' + m.to + '">' +
-          '<span class="chg-name">' + esc(m.name) + "</span>" +
-          '<span class="chg-move">' + esc(VERDICT_LABEL[m.from]) +
-            ' <span class="chg-arrow" aria-hidden="true">→</span>' +
-            '<span class="sr-only"> changed to </span> ' +
-            '<b>' + esc(VERDICT_LABEL[m.to]) + "</b></span>" +
-        "</li>";
-      }).join("") + "</ul>";
-    el.hidden = false;
-    persist();
-  })();
 
   renderPinned();
   renderFilters();
