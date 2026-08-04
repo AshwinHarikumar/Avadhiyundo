@@ -2,13 +2,23 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-04",
   "forDateLabel": "Tuesday, 04 August 2026",
-  "checkedAt": "2026-08-04T07:36:01.362+05:30",
+  "checkedAt": "2026-08-04T10:20:45.244+05:30",
   "headline": "Holidays declared in 10 districts and partial/conditional closures in 2 other districts.",
   "advisories": [
     {
       "level": "warn",
       "title": "Announcements may still be issued tonight",
       "body": "Individual District Collectors continue to review local conditions. Remaining districts under rain warnings may still issue closure orders later tonight."
+    },
+    {
+      "level": "info",
+      "title": "Kerala PSC Exams Postponed",
+      "body": "The Kerala Public Service Commission (PSC) has cancelled/postponed OMR and online exams scheduled due to inclement weather."
+    },
+    {
+      "level": "info",
+      "title": "MG University Exams Postponed",
+      "body": "Mahatma Gandhi (MG) University has postponed pre-scheduled theory and practical exams. Revised dates will be announced later."
     }
   ],
   "weather": {
@@ -17,7 +27,7 @@ window.KERALA_STATUS = {
     "impact": "High risk of waterlogging and localized flooding. Relief camps active.",
     "source": {
       "name": "Onmanorama",
-      "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html"
+      "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html"
     }
   },
   "districts": [
@@ -64,8 +74,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -86,8 +96,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -108,8 +118,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -130,8 +140,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -152,8 +162,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -174,8 +184,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -196,8 +206,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -218,8 +228,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -240,8 +250,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -262,8 +272,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -274,18 +284,18 @@ window.KERALA_STATUS = {
       "status": "confirmed",
       "alert": "orange",
       "confidence": 95,
-      "scope": "Relief camp schools only",
-      "appliesTo": "All schools functioning as relief camps",
-      "excludes": "All other educational institutions",
-      "reason": "Schools serving as relief camps during floods",
+      "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
+      "appliesTo": "Educational institutions in specific taluks",
+      "excludes": null,
+      "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Kannur",
       "exams": "Scheduled public and university examinations proceed unless specified.",
       "confidenceNote": "Confirmed by major news report quoting Collector's declaration.",
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -306,8 +316,8 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain: Death toll rises to 20; holiday for educational institutions in 10 districts today",
-          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
         }

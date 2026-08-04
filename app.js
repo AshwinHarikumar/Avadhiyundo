@@ -76,6 +76,52 @@
     debunked: "Debunked"
   };
 
+  function coverageFor(d, inst) {
+    var kind = kindOf(d);
+    if (kind !== "declared" && kind !== "partial") {
+      return { covered: "n/a", line: null };
+    }
+    var ex = (d.excludes || "").toLowerCase();
+    var txt = ((d.appliesTo || "") + " " + (d.scope || "")).toLowerCase();
+    var schoolRegex = /\bschools?\b|\banganwadi|\btuition\b/;
+    var collegeRegex = /\bcolleges?\b|\buniversit|\bhigher education\b/;
+    if (inst === "college") {
+      if (ex && collegeRegex.test(ex)) {
+        return {
+          covered: "no",
+          line: "The order explicitly excludes your institution type: " + d.excludes
+        };
+      }
+    } else {
+      if (ex && schoolRegex.test(ex)) {
+        return {
+          covered: "no",
+          line: "The order explicitly excludes your institution type: " + d.excludes
+        };
+      }
+    }
+    if (/relief camp|relief-camp/.test(txt)) {
+      return {
+        covered: "unclear",
+        line: inst === "college"
+          ? "This order covers schools functioning as relief camps only — colleges are not named."
+          : "Only schools being used as relief camps are closed. Check with your own school."
+      };
+    }
+    if (/all educational institutions|educational institutions/.test(txt)) {
+      return { covered: "yes", line: null };
+    }
+    if (inst === "college" ? collegeRegex.test(txt) : schoolRegex.test(txt)) {
+      return { covered: "yes", line: null };
+    }
+    return {
+      covered: "unclear",
+      line: "The order's wording does not say whether " +
+            (inst === "college" ? "colleges" : "schools") +
+            " are covered. Read the scope line and check your institution."
+    };
+  }
+
   /* Pull taluk names out of a prose scope line. Returns [] when the scope
      is not taluk-shaped, so district-wide orders never grow chips. */
   function parseTaluks(scope) {
@@ -390,8 +436,24 @@
     var el = $("pinnedAnswer");
     if (!el) return;
 
+    var districtOptions = '<option value="">Choose your district</option>' +
+      districts.map(function (d) {
+        return '<option value="' + esc(d.name) + '"' + (d.name === pinned ? ' selected' : '') + '>' +
+          esc(d.name) + '</option>';
+      }).join("");
+
+    var inst = readStore("krhw-inst") || "school";
+    var notifyBtn = location.protocol !== "file:" && "PushManager" in window
+      ? '<button type="button" id="notifyBtn" class="pin-notify">Notify when declared</button>'
+      : '';
+
     if (!pinned) {
-      el.innerHTML = '<p class="pin-hint">Pin your district below and it will be answered here first.</p>';
+      el.innerHTML =
+        '<div class="pin-setup">' +
+          '<select id="setupDistrict">' + districtOptions + '</select>' +
+        '</div>' +
+        '<p class="pin-hint">Select your district above to see your personal answer.</p>' +
+        notifyBtn;
       return;
     }
 
@@ -402,19 +464,35 @@
     if (!d) { el.innerHTML = ""; return; }
 
     var kind = kindOf(d);
-    var line;
-    if (kind === "declared") line = d.appliesTo || d.scope || "All educational institutions";
-    else if (kind === "partial") line = d.appliesTo || d.scope || "A subset of institutions only";
-    else if (kind === "unconfirmed") line = d.scope || "Reported, but no Collector's order confirmed.";
-    else if (kind === "debunked") line = d.reason || "Circulating claim, checked and found false.";
-    else line = "No closure order reported for this district.";
+    var baseLine;
+    if (kind === "declared") baseLine = d.appliesTo || d.scope || "All educational institutions";
+    else if (kind === "partial") baseLine = d.appliesTo || d.scope || "A subset of institutions only";
+    else if (kind === "unconfirmed") baseLine = d.scope || "Reported, but no Collector's order confirmed.";
+    else if (kind === "debunked") baseLine = d.reason || "Circulating claim, checked and found false.";
+    else baseLine = "No closure order reported for this district.";
+
+    var coverage = coverageFor(d, inst);
+    var caveatClass = coverage.covered === "unclear" ? ' class="pin-caveat"' : '';
+    var caveatLine = coverage.line ? '<p' + caveatClass + '>' + esc(coverage.line) + '</p>' : '';
+
+    var taluks = parseTaluks(d.scope);
+    var talukHtml = taluks.length
+      ? '<span class="taluks">' + taluks.map(function (t) {
+          return '<span class="taluk">' + esc(t) + '</span>';
+        }).join('') + '</span>'
+      : '';
 
     el.innerHTML =
-      '<p class="pin-label">Your district</p>' +
+      '<div class="pin-setup">' +
+        '<select id="setupDistrict">' + districtOptions + '</select>' +
+      '</div>' +
       '<p class="pin-name">' + esc(d.name) +
-        '<span class="pin-verdict v-' + kind + '">' + ICON[kind] + VERDICT_LABEL[kind] + "</span>" +
-      "</p>" +
-      '<p class="pin-line">' + esc(line) + "</p>";
+        '<span class="pin-verdict v-' + kind + '">' + ICON[kind] + VERDICT_LABEL[kind] + '</span>' +
+      '</p>' +
+      '<p class="pin-line">' + esc(baseLine) + '</p>' +
+      caveatLine +
+      talukHtml +
+      notifyBtn;
   }
 
   function renderFilters() {
@@ -467,6 +545,82 @@
     toastTimer = setTimeout(function () { el.hidden = true; }, 3200);
   }
 
+  /* ── Push subscription ── */
+  function subscribeToPush(district) {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      toast("Push notifications not supported on this device.");
+      return;
+    }
+
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "denied") {
+        toast("Push notifications are blocked. Enable them in browser settings.");
+        return;
+      }
+      if (permission !== "granted") return;
+
+      navigator.serviceWorker.ready.then(function (reg) {
+        console.log("[Push Client] Service Worker is ready. Fetching VAPID key...");
+        return fetch("/api/vapid")
+          .then(function (r) { 
+            console.log("[Push Client] VAPID response status:", r.status);
+            return r.ok ? r.json() : null; 
+          })
+          .then(function (vapidData) {
+            if (!vapidData || !vapidData.publicKey) {
+              console.error("[Push Client] Failed to retrieve VAPID public key from backend");
+              toast("Push setup failed. Try again later.");
+              return;
+            }
+            console.log("[Push Client] Retained VAPID public key. Subscribing push manager...");
+            return reg.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(vapidData.publicKey)
+            });
+          })
+          .then(function (subscription) {
+            if (!subscription) {
+              console.error("[Push Client] Subscription object is empty or null");
+              return;
+            }
+            console.log("[Push Client] Subscription created successfully. Sending to backend...");
+            var inst = readStore("krhw-inst") || "school";
+            return fetch("/api/subscribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                subscription: subscription,
+                district: district,
+                inst: inst
+              })
+            });
+          })
+          .then(function (r) {
+            var ok = r && r.ok;
+            console.log("[Push Client] Backend subscription status response ok:", ok);
+            toast(ok
+              ? "Push notifications enabled for " + district + "."
+              : "Push setup failed. Try again later.");
+          })
+          .catch(function (err) {
+            console.error("[Push Client] Error in subscription process:", err);
+            toast("Push setup failed. Try again later.");
+          });
+      });
+    });
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+    var padding = '='.repeat((4 - base64String.length % 4) % 4);
+    var base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    var rawData = window.atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
+    for (var i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
   /* ── Row actions: pin ── */
 
   if (boardRows) {
@@ -486,6 +640,7 @@
       writeStore("krhw-pin", pinned);
       renderPinned();
       renderBoard();
+      wireSetupHandlers();
       toast(pinned ? name + " pinned. It will lead the board." : name + " unpinned.");
       /* The row was replaced by the re-render, so focus has to be re-found. */
       var again = boardRows.querySelector('article.row[data-name="' + name + '"] .act-pin');
@@ -493,10 +648,45 @@
     });
   }
 
-
   renderPinned();
   renderFilters();
   renderBoard();
+
+  /* ── Setup panel: district select, institution toggle, notify button ── */
+  var pinnedEl = $("pinnedAnswer");
+
+  function wireSetupHandlers() {
+    if (!pinnedEl) return;
+
+    var districtSelect = $("setupDistrict");
+    if (districtSelect) {
+      districtSelect.addEventListener("change", function (e) {
+        var newDistrict = e.target.value || null;
+        pinned = newDistrict;
+        writeStore("krhw-pin", pinned);
+        renderPinned();
+        renderBoard();
+        wireSetupHandlers();
+        toast(pinned ? pinned + " set as your district." : "District cleared.");
+      });
+    }
+
+
+
+    var notifyBtn = $("notifyBtn");
+    if (notifyBtn) {
+      notifyBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (!pinned) {
+          toast("Please select your district first.");
+          return;
+        }
+        subscribeToPush(pinned);
+      });
+    }
+  }
+
+  wireSetupHandlers();
 
   var boardFoot = $("boardFoot");
   if (boardFoot) {
@@ -641,6 +831,19 @@
       fetch("/api/scrape", { cache: "no-store" })
         .then(function (r) { return r.ok ? done() : fail(); })
         .catch(fail);
+    });
+  })();
+
+  /* ── Feedback Form submission ── */
+  (function () {
+    var form = $("feedbackForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function () {
+      var content = $("feedbackContent");
+      var success = $("feedbackSuccess");
+      if (content) content.hidden = true;
+      if (success) success.hidden = false;
     });
   })();
 

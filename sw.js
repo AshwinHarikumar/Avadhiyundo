@@ -6,13 +6,13 @@
  * fails we fall back to the cached copy, and app.js states its age out loud.
  */
 
-var CACHE = "krhw-v17";
+var CACHE = "krhw-v25";
 
 var SHELL = [
   "./",
   "./index.html",
-  "./app.css?v=17",
-  "./app.js?v=17",
+  "./app.css?v=25",
+  "./app.js?v=25",
   "./logo.png",
   "./manifest.webmanifest"
 ];
@@ -89,6 +89,35 @@ self.addEventListener("fetch", function (e) {
         if (req.mode === "navigate") return caches.match("./index.html");
         return Response.error();
       });
+    })
+  );
+});
+
+self.addEventListener("push", function (e) {
+  if (!e.data) return;
+  var payload = e.data.json();
+  var tag = payload.district + "|" + payload.forDate;
+  e.waitUntil(
+    self.registration.showNotification(payload.title, {
+      body: payload.body,
+      icon: "./logo.png",
+      tag: tag,
+      requireInteraction: false,
+      data: { url: "./" }
+    })
+  );
+});
+
+self.addEventListener("notificationclick", function (e) {
+  e.notification.close();
+  e.waitUntil(
+    clients.matchAll({ type: "window" }).then(function (list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].url.indexOf(self.location.origin) > -1 && "focus" in list[i]) {
+          return list[i].focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(e.notification.data.url);
     })
   );
 });

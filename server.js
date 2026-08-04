@@ -4,11 +4,13 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const webpush = require('web-push');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
+app.use(express.json({limit:'16kb'}));
 
 // State variables for scrape cooldown
 let lastScrapeTime = 0;
@@ -25,6 +27,135 @@ const LOCAL_HOLIDAY_KEYWORDS = [
   "holiday", "closed", "closure", "declared", "postponed", "cancel", "shut",
   "അവധി", "പ്രഖ്യാപിച്ചു", "നൽകി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
 ];
+
+// Push notification setup
+let vapidPublicKey = null;
+let vapidPrivateKey = null;
+let vapidSubject = null;
+
+function initVapidKeys() {
+  const vapidPublic = process.env.VAPID_PUBLIC;
+  const vapidPrivate = process.env.VAPID_PRIVATE;
+  const vapidSubj = process.env.VAPID_SUBJECT;
+
+  if (vapidPublic && vapidPrivate && vapidSubj) {
+    vapidPublicKey = vapidPublic;
+    vapidPrivateKey = vapidPrivate;
+    vapidSubject = vapidSubj;
+    webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+    console.log("[Push] VAPID keys loaded from environment.");
+    return true;
+  }
+
+  const vapidPath = path.join(__dirname, '.vapid.json');
+  if (fs.existsSync(vapidPath)) {
+    try {
+      const vapidData = JSON.parse(fs.readFileSync(vapidPath, 'utf-8'));
+      vapidPublicKey = vapidData.publicKey;
+      vapidPrivateKey = vapidData.privateKey;
+      vapidSubject = vapidData.subject || 'mailto:admin@avdhiundo.com';
+      webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+      console.log("[Push] VAPID keys loaded from .vapid.json.");
+      return true;
+    } catch (e) {
+      console.warn("[Push] .vapid.json exists but is invalid:", e.message);
+    }
+  }
+
+  console.log("[Push] No VAPID keys found. Push notifications disabled.");
+  return false;
+}
+
+const PUSH_ENABLED = initVapidKeys();
+
+function readSubscriptions() {
+  try {
+    const subsPath = path.join(__dirname, '.subs.json');
+    if (!fs.existsSync(subsPath)) return [];
+    const data = JSON.parse(fs.readFileSync(subsPath, 'utf-8'));
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function writeSubscriptions(subs) {
+  try {
+    const subsPath = path.join(__dirname, '.subs.json');
+    fs.writeFileSync(subsPath, JSON.stringify(subs, null, 2), 'utf-8');
+  } catch (e) {
+    console.error("[Push] Failed to write subscriptions:", e.message);
+  }
+}
+
+function isPartialServer(d) {
+  if (d.status !== "confirmed") return false;
+  const s = ((d.scope || "") + " " + (d.appliesTo || "")).toLowerCase();
+  return s.indexOf("relief") > -1 || s.indexOf("taluk") > -1;
+}
+
+function kindOfServer(d) {
+  if (d.status === "confirmed") return isPartialServer(d) ? "partial" : "declared";
+  if (d.status === "unconfirmed") return "unconfirmed";
+  if (d.status === "false") return "debunked";
+  return "none";
+}
+
+async function notifySubscribers(statusData) {
+  if (!PUSH_ENABLED || !statusData || !statusData.districts) return;
+
+  const subs = readSubscriptions();
+  if (subs.length === 0) return;
+
+  const now = new Date();
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istNow = new Date(now.getTime() + istOffset);
+  const todayStr = istNow.toISOString().split('T')[0];
+
+  for (const sub of subs) {
+    if (!sub.district || !sub.subscription) continue;
+
+    const district = statusData.districts.find(d => d.name === sub.district);
+    if (!district) continue;
+
+    const kind = kindOfServer(district);
+    if (kind !== "declared" && kind !== "partial") continue;
+
+    const key = sub.district + "|" + (statusData.forDate || todayStr);
+    if (!sub.sentFor) sub.sentFor = {};
+    if (sub.sentFor[key]) continue;
+
+    try {
+      const payload = JSON.stringify({
+        title: "Holiday declared in " + sub.district,
+        body: kind === "partial" ? "Partial closure" : "Holiday declared",
+        district: sub.district,
+        forDate: statusData.forDate || todayStr
+      });
+
+      await webpush.sendNotification(sub.subscription, payload);
+      sub.sentFor[key] = true;
+    } catch (e) {
+      if (e.statusCode === 410 || e.statusCode === 404) {
+        subs.splice(subs.indexOf(sub), 1);
+      } else {
+        console.error("[Push] Failed to notify", sub.district, ":", e.message);
+      }
+    }
+  }
+
+  const cutoff = new Date(istNow.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  for (const sub of subs) {
+    if (sub.sentFor) {
+      for (const key of Object.keys(sub.sentFor)) {
+        const date = key.split("|")[1];
+        if (date < cutoff) delete sub.sentFor[key];
+      }
+    }
+  }
+
+  writeSubscriptions(subs);
+}
 
 // Helper to get IST time formats
 function getISTTime() {
@@ -412,11 +543,28 @@ async function runScraper() {
     const jsContent = `/* Kerala Rain Holiday Watch — findings data */\nwindow.KERALA_STATUS = ${JSON.stringify(finalJson, null, 2)};\n`;
     fs.writeFileSync(path.join(outDir, 'status.js'), jsContent, 'utf-8');
 
+    await notifySubscribers(finalJson);
+
     console.log(`[Scraper] Successfully updated data/status.js! (${nEvents} transitions retained)`);
     return true;
   } catch (err) {
     console.error(`[Scraper] Run error: ${err.message}`);
     return false;
+  }
+}
+
+// Helper to read the current status from status.js
+function readCurrentStatus() {
+  try {
+    const statusPath = path.join(__dirname, 'data', 'status.js');
+    if (!fs.existsSync(statusPath)) return null;
+    const raw = fs.readFileSync(statusPath, 'utf-8');
+    const startPrefix = "window.KERALA_STATUS = ";
+    const start = raw.indexOf(startPrefix) + startPrefix.length;
+    const end = raw.lastIndexOf(';');
+    return JSON.parse(raw.slice(start, end));
+  } catch (e) {
+    return null;
   }
 }
 
@@ -466,6 +614,103 @@ app.get(['/', '/index.html'], (req, res, next) => {
       isScraping = false;
       console.error("[Server] Background scrape error:", err);
     });
+  }
+  next();
+});
+
+// Push API endpoints
+app.get('/api/vapid', (req, res) => {
+  if (!PUSH_ENABLED || !vapidPublicKey) {
+    return res.status(503).json({ error: "Push not enabled" });
+  }
+  res.json({ publicKey: vapidPublicKey });
+});
+
+app.post('/api/subscribe', (req, res) => {
+  if (!PUSH_ENABLED) {
+    return res.status(503).json({ error: "Push not enabled" });
+  }
+
+  const { subscription, district, inst } = req.body;
+  if (!subscription || !subscription.endpoint || !district) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const subs = readSubscriptions();
+  const existing = subs.findIndex(s => s.subscription.endpoint === subscription.endpoint);
+
+  if (existing !== -1) {
+    subs[existing].district = district;
+    subs[existing].inst = inst || "school";
+  } else {
+    subs.push({
+      subscription: subscription,
+      district: district,
+      inst: inst || "school",
+      sentFor: {}
+    });
+  }
+
+  console.log("[Push] Received subscription request for:", district);
+  writeSubscriptions(subs);
+
+  // Send an immediate trial notification to verify it works
+  const statusData = readCurrentStatus();
+  if (statusData && statusData.districts) {
+    const d = statusData.districts.find(item => item.name === district);
+    if (d) {
+      const kind = kindOfServer(d);
+      let title = "Holiday Watch: " + district;
+      let body = "Push notifications are active. We will notify you if a holiday is declared.";
+      
+      if (kind === "declared" || kind === "partial") {
+        title = "Holiday declared in " + district;
+        body = kind === "partial" ? "Partial closure" : "Holiday declared";
+      }
+
+      const now = new Date();
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      const istNow = new Date(now.getTime() + istOffset);
+      const todayStr = istNow.toISOString().split('T')[0];
+      
+      const payload = JSON.stringify({
+        title: title,
+        body: body,
+        district: district,
+        forDate: statusData.forDate || todayStr
+      });
+
+      console.log("[Push] Sending trial notification to subscription...");
+      webpush.sendNotification(subscription, payload)
+        .then(() => {
+          console.log("[Push] Trial notification sent successfully!");
+        })
+        .catch(err => {
+          console.error("[Push] Trial notification failed:", err.message);
+        });
+    }
+  }
+
+  res.json({ success: true, message: "Subscription saved" });
+});
+
+app.post('/api/unsubscribe', (req, res) => {
+  const { endpoint } = req.body;
+  if (!endpoint) {
+    return res.status(400).json({ error: "Missing endpoint" });
+  }
+
+  const subs = readSubscriptions();
+  const filtered = subs.filter(s => s.subscription.endpoint !== endpoint);
+  writeSubscriptions(filtered);
+
+  res.json({ success: true, message: "Unsubscribed" });
+});
+
+// Deny access to dotfiles
+app.use((req, res, next) => {
+  if (req.path.startsWith('/.')) {
+    return res.status(404).end();
   }
   next();
 });

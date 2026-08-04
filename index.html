@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@500;700;800&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Narrow:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="app.css?v=17" />
+  <link rel="stylesheet" href="app.css?v=26" />
   <link rel="icon" href="logo.png" />
   <link rel="manifest" href="manifest.webmanifest" />
 </head>
@@ -155,6 +155,20 @@
       <p class="foot-note" id="limits"></p>
     </div>
 
+    <div class="feedback-box">
+      <div id="feedbackContent">
+        <strong>Help improve this page</strong>
+        <p class="feedback-desc">Found a mistake or have a suggestion? Let me know.</p>
+        <form action="https://docs.google.com/forms/d/e/1FAIpQLSfGd_llgqBvqdCK3MJQ0D6VeO0aKQW90g_7s5XrRdXtPaMdMg/formResponse" method="POST" target="hidden_iframe" id="feedbackForm">
+          <div class="feedback-field">
+            <textarea name="entry.1624022749" id="feedbackText" placeholder="Write your feedback here..." required></textarea>
+            <button type="submit" class="feedback-submit">Send Feedback</button>
+          </div>
+        </form>
+      </div>
+      <p class="feedback-success" id="feedbackSuccess" hidden>Feedback submitted successfully. Thank you!</p>
+    </div>
+
     <p class="foot-rule" id="footRule"></p>
   </div>
 </footer>
@@ -163,6 +177,7 @@
 
 <script src="data/history.js" onerror="void 0"></script>
 <script src="data/status.js"></script>
-<script src="app.js?v=17"></script>
+<script src="app.js?v=26"></script>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </body>
 </html>

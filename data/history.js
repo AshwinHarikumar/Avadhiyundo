@@ -73,8 +73,8 @@ window.KERALA_HISTORY = {
       },
       "Kannur": {
         "status": "confirmed",
-        "scope": "Relief camp schools only",
-        "appliesTo": "All schools functioning as relief camps"
+        "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
+        "appliesTo": "Educational institutions in specific taluks"
       },
       "Kasaragod": {
         "status": "confirmed",
@@ -277,6 +277,21 @@ window.KERALA_HISTORY = {
         "status": "confirmed",
         "scope": "District-wide",
         "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-04",
+      "at": "2026-08-04T08:55:16.380+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
+        "appliesTo": "Educational institutions in specific taluks"
       }
     }
   ]
