@@ -392,7 +392,7 @@ ol, ul { list-style: none; }
   font-family: var(--mono);
   font-size: 11.5px;
   line-height: 1.6;
-  color: var(--text-4);
+  color: var(--text-3);
   max-width: 70ch;
 }
 
@@ -407,7 +407,7 @@ ol, ul { list-style: none; }
   font-family: var(--mono);
   font-size: 11.5px;
   line-height: 1.6;
-  color: var(--text-4);
+  color: var(--text-3);
 }
 .pin-label {
   font-family: var(--narrow);
@@ -560,7 +560,7 @@ ol, ul { list-style: none; }
   font-size: 11px;
   letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--text-4);
+  color: var(--text-3);
 }
 .chg-move b { color: var(--text); font-weight: 500; }
 .chg-arrow { color: var(--text-3); padding: 0 2px; }
@@ -778,7 +778,7 @@ ol, ul { list-style: none; }
   font-weight: 500;
   letter-spacing: .04em;
   text-transform: uppercase;
-  color: var(--text-4);
+  color: var(--text-3);
 }
 .alert-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; background: currentColor; }
 .al-red    { color: var(--rose); }
@@ -833,10 +833,10 @@ ol, ul { list-style: none; }
   font-family: var(--mono);
   font-size: 11px;
   line-height: 1.5;
-  color: var(--text-4);
+  color: var(--text-3);
 }
 .meta-row b {
-  color: var(--text-3);
+  color: var(--text-2);
   font-weight: 500;
   letter-spacing: .05em;
   text-transform: uppercase;
