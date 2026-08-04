@@ -87,6 +87,32 @@ def parse_alerts(body_text):
                 
     return alerts
 
+def is_sentence_relevant_for_date(sentence, target_str):
+    DAYS_ENG = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    DAYS_MAL = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"]
+    
+    target_dt = datetime.strptime(target_str, "%Y-%m-%d")
+    target_day_index = (target_dt.weekday() + 1) % 7
+    
+    target_day_eng = DAYS_ENG[target_day_index]
+    target_day_mal = DAYS_MAL[target_day_index]
+    
+    sentence_lower = sentence.lower()
+    other_days_eng = [d for d in DAYS_ENG if d != target_day_eng]
+    other_days_mal = [d for d in DAYS_MAL if d != target_day_mal]
+    
+    # Check English days
+    if any(day in sentence_lower for day in other_days_eng):
+        if target_day_eng not in sentence_lower and "tomorrow" not in sentence_lower:
+            return False
+            
+    # Check Malayalam days
+    if any(day in sentence_lower for day in other_days_mal):
+        if target_day_mal not in sentence_lower and "നാളെ" not in sentence_lower:
+            return False
+            
+    return True
+
 def find_latest_holiday_article():
     """Scrapes Onmanorama Kerala page to find the URL of the latest rain holiday article.
     Returns (url, title, None) if article is from today (or yesterday before 03:00 IST).
@@ -119,8 +145,14 @@ def find_latest_holiday_article():
             if not href or not title:
                 continue
                 
-            # Look for active holiday updates in the title
-            if "holiday" in title.lower() and ("district" in title.lower() or "school" in title.lower() or "rain" in title.lower()):
+            title_lower = title.lower()
+            href_lower = href.lower() if href else ""
+            
+            is_holiday_article = "holiday" in title_lower and ("district" in title_lower or "school" in title_lower or "rain" in title_lower)
+            is_rain_breaking_article = ("rain" in title_lower or "flood" in title_lower or "alert" in title_lower) and \
+                ("district" in title_lower or "alert" in title_lower or "holiday" in href_lower or "school" in href_lower)
+                
+            if is_holiday_article or is_rain_breaking_article:
                 if not href.startswith("http"):
                     full_href = "https://www.onmanorama.com" + href
                 else:
@@ -172,10 +204,81 @@ def fetch_article_body(url):
         print(f"Error fetching article body: {e}")
         return ""
 
-def parse_holiday_data(body_text, article_url, article_title):
+def fetch_holiday_body(url, target_str):
+    """Fetches the article body specifically formatted for holiday parsing.
+    If it's a live blog, fetches dynamic updates from the AEM JSON and filters by target date window.
+    Otherwise, filters static paragraphs by day-of-week name."""
+    print(f"Fetching holiday article text: {url}")
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=10)
+        if response.status_code != 200:
+            return ""
+            
+        soup = BeautifulSoup(response.text, "html.parser")
+        
+        # Check if it's a live blog
+        file_path_match = re.search(r'var\s+filePath\s*=\s*[\'"]([^\'"]+)[\'"]', response.text)
+        if file_path_match:
+            file_path_raw = file_path_match.group(1)
+            file_path = file_path_raw.replace(r'\/', '/')
+            file_path = re.sub(r'\\u([0-9a-fA-F]{4})', lambda m: chr(int(m.group(1), 16)), file_path)
+            json_url = f"https://www.onmanorama.com{file_path}.5.json"
+            try:
+                print(f"[Scraper] Live blog detected. Fetching updates from AEM JSON: {json_url}")
+                json_res = requests.get(json_url, headers=HEADERS, timeout=10)
+                if json_res.status_code == 200:
+                    json_data = json_res.json()
+                    
+                    # Parse target date range in UTC
+                    target_dt = datetime.strptime(target_str, "%Y-%m-%d")
+                    window_start = (target_dt - timedelta(days=1)).replace(hour=8, minute=30, second=0)
+                    window_end = target_dt.replace(hour=6, minute=30, second=0)
+                    
+                    updates = []
+                    for k, v in json_data.items():
+                        if k.startswith("livenewsupdate"):
+                            master = v.get("jcr:content", {}).get("data", {}).get("master", {})
+                            created_str = v.get("jcr:created")
+                            if master and created_str:
+                                try:
+                                    time_part = created_str.split(" GMT")[0]
+                                    dt_local = datetime.strptime(time_part, "%a %b %d %Y %H:%M:%S")
+                                    dt_utc = dt_local - timedelta(hours=5, minutes=30)
+                                    
+                                    if window_start <= dt_utc <= window_end:
+                                        desc = master.get("description", "")
+                                        updates.append((dt_utc, desc))
+                                except Exception as e:
+                                    print(f"Error parsing date {created_str}: {e}")
+                                    
+                    updates.sort(key=lambda x: x[0], reverse=True)
+                    
+                    holiday_paragraphs = []
+                    for _, desc in updates:
+                        desc_soup = BeautifulSoup(desc, "html.parser")
+                        text = desc_soup.get_text().strip()
+                        if text:
+                            holiday_paragraphs.append(text)
+                            
+                    print(f"[Scraper] Gathered {len(holiday_paragraphs)} live update(s) within the target date window.")
+                    return "\n".join(holiday_paragraphs)
+            except Exception as e:
+                print(f"[Scraper] Failed to fetch live updates JSON: {e}. Falling back to static HTML.")
+                
+        # Fallback for standard article or failed JSON fetch
+        paragraphs = soup.find_all("p")
+        raw_paragraphs = [p.text.strip() for p in paragraphs if p.text.strip()]
+        relevant_paragraphs = [p for p in raw_paragraphs if is_sentence_relevant_for_date(p, target_str)]
+        return "\n".join(relevant_paragraphs)
+        
+    except Exception as e:
+        print(f"Error fetching holiday body: {e}")
+        return ""
+
+def parse_holiday_data(full_body, holiday_body, article_url, article_title):
     """Parses the article body text to determine district holiday declarations and exam delays."""
     today_str, target_str, target_label, checked_at = get_ist_time()
-    alerts_map = parse_alerts(body_text)
+    alerts_map = parse_alerts(full_body)
     
     # Initialize all districts with 'none' status
     districts_data = []
@@ -191,7 +294,7 @@ def parse_holiday_data(body_text, article_url, article_title):
         is_holiday = False
         context = ""
         
-        paragraphs = [p.strip() for p in body_text.split('\n') if p.strip()]
+        paragraphs = [p.strip() for p in re.split(r'\n|\.\s+', holiday_body) if p.strip()]
         for p in paragraphs:
             if re.search(r'\b' + re.escape(dist) + r'\b', p, re.IGNORECASE):
                 p_lower = p.lower()
@@ -278,8 +381,8 @@ def parse_holiday_data(body_text, article_url, article_title):
     advisories = []
     
     # Check for PSC postponements
-    psc_match = re.search(r'PSC\s(has\s)?(cancelled|postponed|deferred)', body_text, re.IGNORECASE)
-    if psc_match or "kerala public service commission" in body_text.lower():
+    psc_match = re.search(r'PSC\s(has\s)?(cancelled|postponed|deferred)', full_body, re.IGNORECASE)
+    if psc_match or "kerala public service commission" in full_body.lower():
         advisories.append({
             "level": "info",
             "title": "Kerala PSC Exams Postponed",
@@ -287,7 +390,7 @@ def parse_holiday_data(body_text, article_url, article_title):
         })
         
     # Check for MG University postponements
-    mg_match = re.search(r'(mahatma gandhi university|mg university)\s(has\s)?(postponed|deferred)', body_text, re.IGNORECASE)
+    mg_match = re.search(r'(mahatma gandhi university|mg university)\s(has\s)?(postponed|deferred)', full_body, re.IGNORECASE)
     if mg_match:
         advisories.append({
             "level": "info",
@@ -493,40 +596,301 @@ def write_no_holiday_status(alerts_map=None):
 def main():
     print("=== AUTOMATIC HOLIDAY DATA UPDATE AGENT ===")
     
-    # 1. Scan for the latest holiday news article
-    article_url, article_title, fallback_url = find_latest_holiday_article()
+    # 1. Scan for recent candidates
+    url = "https://www.onmanorama.com/news/kerala.html"
+    print(f"Scanning news portal: {url}")
     
-    if not article_url:
-        # No today's article. Try fetching the fallback (old) article just for IMD alert levels.
-        alerts_map = None
-        if fallback_url:
-            print(f"[-] Fetching old article for IMD alert data only: {fallback_url}")
-            fallback_body = fetch_article_body(fallback_url)
-            if fallback_body:
-                alerts_map = parse_alerts(fallback_body)
-                print("[+] Parsed IMD alerts from old article (for display only, no holiday data used).")
-        print("[-] No today's article found. Writing no-holiday status for today.")
-        write_no_holiday_status(alerts_map)
-        return
+    today_str, target_str, target_label, checked_at = get_ist_time()
+    
+    target_dt = datetime.strptime(target_str, "%Y-%m-%d")
+    target_path = target_dt.strftime("%Y/%m/%d")
+    yesterday_target_path = (target_dt - timedelta(days=1)).strftime("%Y/%m/%d")
+    
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=10)
+        if response.status_code != 200:
+            print("[-] Fetch failed. Writing no-holiday status.")
+            write_no_holiday_status()
+            return
+            
+        soup = BeautifulSoup(response.text, "html.parser")
+        links = soup.find_all("a")
         
-    print(f"[+] Found Article: {article_title}")
-    print(f"[+] URL: {article_url}")
-    
-    # 2. Fetch full body text of the article
-    body_text = fetch_article_body(article_url)
-    
-    if not body_text:
-        print("[-] Error: Empty article body fetched. Writing no-holiday status as fallback.")
-        write_no_holiday_status()
-        return
+        candidates = []
+        for link in links:
+            href = link.get("href")
+            title = link.text.strip()
+            if not href or not title:
+                continue
+                
+            title_lower = title.lower()
+            href_lower = href.lower()
+            
+            is_holiday_article = "holiday" in title_lower and ("district" in title_lower or "school" in title_lower or "rain" in title_lower)
+            is_rain_breaking_article = ("rain" in title_lower or "flood" in title_lower or "alert" in title_lower) and \
+                ("district" in title_lower or "alert" in title_lower or "holiday" in href_lower or "school" in href_lower)
+                
+            if is_holiday_article or is_rain_breaking_article:
+                full_href = href if href.startswith("http") else "https://www.onmanorama.com" + href
+                candidates.append({"url": full_href, "title": title, "href": href})
+                
+        # Unique candidates
+        seen = set()
+        unique_candidates = []
+        for c in candidates:
+            if c["url"] not in seen:
+                seen.add(c["url"])
+                unique_candidates.append(c)
+                
+        # Filter recent
+        recent_candidates = [c for c in unique_candidates if target_path in c["href"] or yesterday_target_path in c["href"]]
         
-    # 3. Parse article content to update district statuses
-    status_data = parse_holiday_data(body_text, article_url, article_title)
-    
-    # 4. Record transitions, then write data
-    n_events = update_history(status_data)
-    write_status_file(status_data)
-    print(f"    History:     {n_events} transitions retained")
+        def candidate_score(c):
+            c_lower = (c["title"] + " " + c["url"]).lower()
+            score = 0
+            if "live" in c_lower:
+                score += 2
+            if "holiday" in c_lower:
+                score += 2
+            return score
+            
+        recent_candidates.sort(key=candidate_score, reverse=True)
+        
+        if not recent_candidates:
+            print("[-] No recent articles found. Writing no-holiday status.")
+            fallback_url = unique_candidates[0]["url"] if unique_candidates else None
+            alerts_map = None
+            if fallback_url:
+                print(f"[-] Fetching old article for IMD alert data only: {fallback_url}")
+                fallback_body = fetch_article_body(fallback_url)
+                if fallback_body:
+                    alerts_map = parse_alerts(fallback_body)
+            write_no_holiday_status(alerts_map)
+            return
+            
+        print(f"[+] Found {len(recent_candidates)} recent candidate(s). Processing top 6...")
+        
+        evidence_map = {}
+        chosen_body = ""
+        chosen_url = ""
+        chosen_title = ""
+        
+        LOCAL_HOLIDAY_KEYWORDS = [
+            "holiday", "closed", "closure", "declared", "postponed", "cancel", "shut",
+            "അവധി", "പ്രഖ്യാപിച്ചു", "നൽകി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
+        ]
+        
+        for candidate in recent_candidates[:6]:
+            print(f"[*] Gathering evidence from: {candidate['title'][:50]}...")
+            try:
+                c_res = requests.get(candidate["url"], headers=HEADERS, timeout=10)
+                if c_res.status_code != 200:
+                    continue
+                    
+                c_soup = BeautifulSoup(c_res.text, "html.parser")
+                
+                # Extract full body for alerts/advisories
+                full_body = ""
+                for script in c_soup.find_all("script", type="application/ld+json"):
+                    try:
+                        ld = json.loads(script.string or "")
+                        if isinstance(ld, dict) and "articleBody" in ld:
+                            full_body = ld["articleBody"]
+                            break
+                    except Exception:
+                        pass
+                if not full_body.strip():
+                    full_body = "\n".join([p.text.strip() for p in c_soup.find_all("p") if p.text.strip()])
+                    
+                if not chosen_body:
+                    chosen_body = full_body
+                    chosen_url = candidate["url"]
+                    chosen_title = candidate["title"]
+                    
+                # Fetch holiday-specific paragraphs
+                holiday_body = fetch_holiday_body(candidate["url"], target_str)
+                if not holiday_body.strip():
+                    continue
+                    
+                paragraphs = [p.strip() for p in re.split(r'\n|\.\s+', holiday_body) if p.strip()]
+                
+                for dist in DISTRICTS_LIST:
+                    district_readings = []
+                    for p in paragraphs:
+                        if re.search(r'\b' + re.escape(dist) + r'\b', p, re.IGNORECASE):
+                            p_lower = p.lower()
+                            if any(kw in p_lower for kw in LOCAL_HOLIDAY_KEYWORDS):
+                                scope = "District-wide"
+                                applies_to = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+                                excludes = None
+                                reason = "Adverse weather and heavy rainfall"
+                                
+                                is_all_institutions = "including professional" in p_lower or "all educational" in p_lower
+                                is_relief_camp_only = not is_all_institutions and \
+                                    ("relief camp" in p_lower or "relief-camp" in p_lower or "functioning as relief" in p_lower)
+                                    
+                                if is_relief_camp_only:
+                                    scope = "Relief camp schools only"
+                                    applies_to = "All schools functioning as relief camps"
+                                    excludes = "All other educational institutions"
+                                    reason = "Schools serving as relief camps during floods"
+                                elif not is_all_institutions and ("taluk" in p_lower or "taluks" in p_lower):
+                                    scope = "Select taluks only"
+                                    applies_to = "Educational institutions in specific taluks"
+                                    if dist == "Kannur" and "professional" in p_lower and ("not" in p_lower or "except" in p_lower):
+                                        excludes = "Professional colleges NOT covered. Residential schools remain open."
+                                        
+                                district_readings.append({"scope": scope, "appliesTo": applies_to, "excludes": excludes, "reason": reason})
+                                
+                    if district_readings:
+                        if dist not in evidence_map:
+                            evidence_map[dist] = []
+                        
+                        scope_priority = {"District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1}
+                        best_reading = max(district_readings, key=lambda x: scope_priority.get(x["scope"], 0))
+                        
+                        evidence_map[dist].append({
+                            "status": "confirmed",
+                            "scope": best_reading["scope"],
+                            "appliesTo": best_reading["appliesTo"],
+                            "excludes": best_reading["excludes"],
+                            "reason": best_reading["reason"],
+                            "source": {
+                                "name": "Onmanorama",
+                                "title": candidate["title"],
+                                "url": candidate["url"]
+                            }
+                        })
+            except Exception as e:
+                print(f"Error processing candidate {candidate['title']}: {e}")
+                
+        if not chosen_body:
+            print("[-] Empty body. Writing no-holiday status.")
+            write_no_holiday_status()
+            return
+            
+        # Parse alerts & advisories
+        alerts_map = parse_alerts(chosen_body)
+        advisories = []
+        
+        psc_match = re.search(r'PSC\s(has\s)?(cancelled|postponed|deferred)', chosen_body, re.IGNORECASE)
+        if psc_match or "kerala public service commission" in chosen_body.lower():
+            advisories.append({
+                "level": "info",
+                "title": "Kerala PSC Exams Postponed",
+                "body": "The Kerala Public Service Commission (PSC) has cancelled/postponed OMR and online exams scheduled due to inclement weather."
+            })
+            
+        mg_match = re.search(r'(mahatma gandhi university|mg university)\s(has\s)?(postponed|deferred)', chosen_body, re.IGNORECASE)
+        if mg_match:
+            advisories.append({
+                "level": "info",
+                "title": "MG University Exams Postponed",
+                "body": "Mahatma Gandhi (MG) University has postponed pre-scheduled theory and practical exams. Revised dates will be announced later."
+            })
+            
+        advisories.insert(0, {
+            "level": "warn",
+            "title": "Announcements may still be issued tonight",
+            "body": "Individual District Collectors continue to review local conditions. Remaining districts under rain warnings may still issue closure orders later tonight."
+        })
+        
+        # Merge multi-source verdicts
+        districts_data = []
+        for dist in DISTRICTS_LIST:
+            if dist in evidence_map:
+                readings = evidence_map[dist]
+                source_count = len(set(r["source"]["name"] for r in readings))
+                
+                confidence = 60
+                if source_count >= 3:
+                    confidence = 92
+                elif source_count >= 2:
+                    confidence = 80
+                    
+                confidence_note = f"Reported by {', '.join(r['source']['name'] for r in readings)}."
+                if len(readings) == 1:
+                    confidence_note = f"Reported by {readings[0]['source']['name']}."
+                    
+                scope_priority = {"District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1}
+                best_reading = max(readings, key=lambda x: scope_priority.get(x["scope"], 0))
+                
+                districts_data.append({
+                    "name": dist,
+                    "status": "confirmed",
+                    "alert": alerts_map.get(dist, "none"),
+                    "confidence": confidence,
+                    "scope": best_reading["scope"],
+                    "appliesTo": best_reading["appliesTo"],
+                    "excludes": best_reading["excludes"],
+                    "reason": best_reading["reason"],
+                    "declaredBy": f"District Collector, {dist}",
+                    "exams": "Scheduled public and university examinations proceed unless specified.",
+                    "confidenceNote": confidence_note,
+                    "sources": [{
+                        "name": r["source"]["name"],
+                        "title": r["source"]["title"],
+                        "url": r["source"]["url"],
+                        "time": "Latest Update",
+                        "tier": 1
+                    } for r in readings]
+                })
+            else:
+                districts_data.append({
+                    "name": dist,
+                    "status": "none",
+                    "alert": alerts_map.get(dist, "none"),
+                    "confidence": None,
+                    "scope": None,
+                    "appliesTo": None,
+                    "excludes": None,
+                    "reason": None,
+                    "declaredBy": None,
+                    "exams": None,
+                    "confidenceNote": None,
+                    "sources": []
+                })
+                
+        # Headline
+        confirmed_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] == "District-wide"])
+        partial_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] != "District-wide"])
+        
+        headline = f"Holidays declared in {confirmed_count} districts"
+        if partial_count > 0:
+            headline += f" and partial/conditional closures in {partial_count} other districts."
+        else:
+            headline += "."
+            
+        status_data = {
+            "forDate": target_str,
+            "forDateLabel": target_label,
+            "checkedAt": checked_at,
+            "headline": headline,
+            "advisories": advisories,
+            "weather": {
+                "summary": "Orange alert in force across multiple districts. Heavy to very heavy rainfall expected in isolated areas.",
+                "outlook": "IMD forecast predicts continued rain statewide.",
+                "impact": "High risk of waterlogging and localized flooding. Relief camps active.",
+                "source": {
+                    "name": "Onmanorama",
+                    "url": chosen_url
+                }
+            },
+            "districts": districts_data,
+            "debunked": [],
+            "limitations": [
+                "Parsed automatically from news media reports. Verify with local administrative announcements."
+            ]
+        }
+        
+        n_events = update_history(status_data)
+        write_status_file(status_data)
+        print(f"    History:     {n_events} transitions retained")
+        
+    except Exception as e:
+        print(f"Main run error: {e}")
+        import traceback
+        traceback.print_exc()
 
 if __name__ == "__main__":
     main()

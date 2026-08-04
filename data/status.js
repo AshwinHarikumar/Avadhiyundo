@@ -2,22 +2,22 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-05",
   "forDateLabel": "Wednesday, 05 August 2026",
-  "checkedAt": "2026-08-04T16:10:11.663+05:30",
-  "headline": "No district holiday declarations found yet.",
+  "checkedAt": "2026-08-04T17:45:53.613+05:30",
+  "headline": "Holidays declared in 1 districts.",
   "advisories": [
     {
       "level": "warn",
-      "title": "No holiday articles found for today",
-      "body": "No holiday announcements have been detected from Onmanorama for today. Collectors may still issue orders later tonight — check your District Collector directly."
+      "title": "Announcements may still be issued tonight",
+      "body": "Individual District Collectors continue to review local conditions. Remaining districts under rain warnings may still issue closure orders later tonight."
     }
   ],
   "weather": {
-    "summary": "",
-    "outlook": "",
-    "impact": "",
+    "summary": "Orange alert in force across multiple districts. Heavy to very heavy rainfall expected in isolated areas.",
+    "outlook": "IMD forecast predicts continued rain statewide.",
+    "impact": "High risk of waterlogging and localized flooding. Relief camps active.",
     "source": {
-      "name": "",
-      "url": ""
+      "name": "Onmanorama",
+      "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html"
     }
   },
   "districts": [
@@ -52,7 +52,7 @@ window.KERALA_STATUS = {
     {
       "name": "Pathanamthitta",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -80,7 +80,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kottayam",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -94,7 +94,7 @@ window.KERALA_STATUS = {
     {
       "name": "Idukki",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -108,7 +108,7 @@ window.KERALA_STATUS = {
     {
       "name": "Ernakulam",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -164,7 +164,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kozhikode",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -177,22 +177,30 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Wayanad",
-      "status": "none",
-      "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
+      "status": "confirmed",
+      "alert": "red",
+      "confidence": 60,
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Wayanad",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "LIVE\n                            \n\n                            \n                            \t\tRAIN HAVOC\n                            \n                            \n                            \n                            \tKerala rain fury: Red alert in 8 districts today, death toll climbs to 20",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/04/kerala-rain-death-toll-pathanamthitta-kottayam-flooding-landslides-school-holiday-live.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Kannur",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -206,7 +214,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kasaragod",
       "status": "none",
-      "alert": "orange",
+      "alert": "red",
       "confidence": null,
       "scope": null,
       "appliesTo": null,

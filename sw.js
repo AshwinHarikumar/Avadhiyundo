@@ -6,13 +6,13 @@
  * fails we fall back to the cached copy, and app.js states its age out loud.
  */
 
-var CACHE = "krhw-v30";
+var CACHE = "krhw-v31";
 
 var SHELL = [
   "./",
   "./index.html",
-  "./app.css?v=30",
-  "./app.js?v=30",
+  "./app.css?v=31",
+  "./app.js?v=31",
   "./logo.png",
   "./manifest.webmanifest"
 ];
@@ -77,7 +77,17 @@ self.addEventListener("fetch", function (e) {
 
   e.respondWith(
     caches.match(req).then(function (hit) {
-      if (hit) return hit;
+      /* Stale-while-revalidate: return cache immediately if available, then update in background. */
+      if (hit) {
+        fetch(req).then(function (res) {
+          if (res && res.ok) {
+            var copy = res.clone();
+            caches.open(CACHE).then(function (c) { c.put(req, copy); });
+          }
+        }).catch(function () { /* offline, silently skip update */ });
+        return hit;
+      }
+      /* No cache hit: fetch from network. */
       return fetch(req).then(function (res) {
         if (res && res.ok) {
           var copy = res.clone();

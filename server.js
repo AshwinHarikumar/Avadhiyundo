@@ -184,6 +184,37 @@ function getISTTime() {
   return { todayStr, targetStr, targetLabel, checkedAt };
 }
 
+function isSentenceRelevantForDate(sentence, targetStr) {
+  const DAYS_ENG = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+  const DAYS_MAL = ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"];
+  
+  const [yr, mo, dy] = targetStr.split('-').map(Number);
+  const targetDayIndex = new Date(Date.UTC(yr, mo - 1, dy)).getDay();
+  
+  const targetDayEng = DAYS_ENG[targetDayIndex];
+  const targetDayMal = DAYS_MAL[targetDayIndex];
+  
+  const sentenceLower = sentence.toLowerCase();
+  const otherDaysEng = DAYS_ENG.filter(d => d !== targetDayEng);
+  const otherDaysMal = DAYS_MAL.filter(d => d !== targetDayMal);
+  
+  // Check English day names
+  if (otherDaysEng.some(day => sentenceLower.includes(day))) {
+    if (!sentenceLower.includes(targetDayEng) && !sentenceLower.includes("tomorrow")) {
+      return false; // Skip
+    }
+  }
+  
+  // Check Malayalam day names
+  if (otherDaysMal.some(day => sentenceLower.includes(day))) {
+    if (!sentenceLower.includes(targetDayMal) && !sentenceLower.includes("നാളെ")) {
+      return false; // Skip
+    }
+  }
+  
+  return true;
+}
+
 // Dynamic IMD alert parser
 function parseAlerts(bodyText) {
   const alerts = {};
@@ -382,6 +413,57 @@ function writeNoHolidayStatus(outDir, istTimeInfo, alertsMap) {
 }
 
 // Scrape logic
+async function fetchArticlesFromSource(sourceName, newsUrl, domain, headers) {
+  try {
+    const listRes = await axios.get(newsUrl, { headers, timeout: 10000 });
+    const $ = cheerio.load(listRes.data);
+
+    const candidates = [];
+    $('a').each((i, el) => {
+      const href = $(el).attr('href');
+      const text = $(el).text().trim();
+
+      if (href && text) {
+        const textLower = text.toLowerCase();
+        const hrefLower = (href || '').toLowerCase();
+        const isHolidayArticle = textLower.includes('holiday') &&
+          (textLower.includes('district') || textLower.includes('school') || textLower.includes('rain'));
+        const isRainBreakingArticle = (textLower.includes('rain') || textLower.includes('flood') || textLower.includes('alert')) &&
+          (textLower.includes('district') || textLower.includes('alert') || hrefLower.includes('holiday') || hrefLower.includes('school'));
+        if (isHolidayArticle || isRainBreakingArticle) {
+          const fullUrl = href.startsWith('http') ? href : domain + href;
+          candidates.push({ url: fullUrl, title: text, href: href, source: sourceName });
+        }
+      }
+    });
+
+    return candidates;
+  } catch (e) {
+    console.warn(`[Scraper] Error fetching from ${sourceName}: ${e.message}`);
+    return [];
+  }
+}
+
+function getDatePaths() {
+  const now = new Date();
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istNow = new Date(now.getTime() + istOffset);
+  const istHour = istNow.getUTCHours();
+
+  const todayIST = istNow.toISOString().split('T')[0];
+  const [todayYear, todayMonth, todayDay] = todayIST.split('-');
+  const todayPath = `${todayYear}/${todayMonth}/${todayDay}`;
+
+  const targetTime = istHour >= 15
+    ? new Date(istNow.getTime() + 24 * 60 * 60 * 1000)
+    : istNow;
+  const targetIST = targetTime.toISOString().split('T')[0];
+  const [tYear, tMonth, tDay] = targetIST.split('-');
+  const targetPath = `${tYear}/${tMonth}/${tDay}`;
+
+  return { todayPath, targetPath };
+}
+
 async function runScraper() {
   console.log(`[Scraper] Starting scrape run: ${new Date().toISOString()}`);
   const outDir = path.join(__dirname, 'data');
@@ -390,207 +472,293 @@ async function runScraper() {
   const now = new Date();
   const istOffset = 5.5 * 60 * 60 * 1000;
   const istNow = new Date(now.getTime() + istOffset);
-  const todayStr = istNow.toISOString().split('T')[0]; // YYYY-MM-DD
-  const [todayYear, todayMonth, todayDay] = todayStr.split('-');
-  const todayPath = `${todayYear}/${todayMonth}/${todayDay}`; // YYYY/MM/DD for URLs
 
-  // 1. Scan for the latest holiday news article on Onmanorama
-  const keralaNewsUrl = "https://www.onmanorama.com/news/kerala.html";
+  // Multi-source news fetching
+  const sources = [
+    { name: 'Onmanorama', newsUrl: 'https://www.onmanorama.com/news/kerala.html', domain: 'https://www.onmanorama.com' },
+    { name: 'Mathrubhumi', newsUrl: 'https://www.mathrubhumi.com/news/latest-news.html', domain: 'https://www.mathrubhumi.com' },
+    { name: 'Manorama', newsUrl: 'https://www.manoramaonline.com/news/latest-news.html', domain: 'https://www.manoramaonline.com' }
+  ];
+
   const headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
   };
+
+  const { todayPath, targetPath } = getDatePaths();
 
   let articleUrl = null;
   let articleTitle = "";
 
   try {
-    const listRes = await axios.get(keralaNewsUrl, { headers, timeout: 10000 });
-    const $ = cheerio.load(listRes.data);
+    // Fetch from all sources in parallel
+    console.log(`[Scraper] Checking ${sources.length} news source(s)...`);
+    const sourcePromises = sources.map(src =>
+      fetchArticlesFromSource(src.name, src.newsUrl, src.domain, headers)
+    );
+    const allArticles = await Promise.all(sourcePromises);
 
-    // Collect all matching articles
-    const candidates = [];
-    $('a').each((i, el) => {
-      const href = $(el).attr('href');
-      const text = $(el).text().trim();
-
-      if (href && text) {
-        const textLower = text.toLowerCase();
-        if (textLower.includes('holiday') && (textLower.includes('district') || textLower.includes('school') || textLower.includes('rain'))) {
-          const fullUrl = href.startsWith('http') ? href : 'https://www.onmanorama.com' + href;
-          candidates.push({ url: fullUrl, title: text, href: href });
-        }
-      }
-    });
+    // Flatten and deduplicate by URL
+    const allCandidates = allArticles.flat();
+    const candidatesByUrl = new Map();
+    for (const c of allCandidates) {
+      if (!candidatesByUrl.has(c.url)) candidatesByUrl.set(c.url, c);
+    }
+    const candidates = Array.from(candidatesByUrl.values());
 
     if (candidates.length === 0) {
-      console.log("[-] No rain holiday news articles found on Onmanorama today. Writing no-holiday status.");
+      console.log("[-] No rain holiday news articles found on any source. Writing no-holiday status.");
       return writeNoHolidayStatus(outDir, getISTTime(), null);
     }
 
     console.log(`[Scraper] Found ${candidates.length} candidate article(s):`);
     candidates.forEach((c, i) => {
-      console.log(`  [${i}] "${c.title.substring(0, 60)}..." - ${c.href}`);
+      console.log(`  [${i}] [${c.source}] "${c.title.substring(0, 60)}..." - ${c.href}`);
     });
 
-    // Sort candidates by date: prioritize today's articles, then recent ones
-    candidates.sort((a, b) => {
-      const aHasToday = a.href.includes(todayPath);
-      const bHasToday = b.href.includes(todayPath);
-      console.log(`[Scraper] Comparing: "${a.title.substring(0, 40)}..." (hasToday=${aHasToday}) vs "${b.title.substring(0, 40)}..." (hasToday=${bHasToday})`);
-      if (aHasToday && !bHasToday) return -1;
-      if (!aHasToday && bHasToday) return 1;
-      return 0; // keep original order for ties
+    // Accept recent articles (today or yesterday) - content may describe tomorrow's closures
+    const recentCandidates = candidates.filter(c =>
+      c.href.includes(todayPath) || c.href.includes(targetPath)
+    );
+
+    recentCandidates.sort((a, b) => {
+      const aLower = (a.title + ' ' + a.url).toLowerCase();
+      const bLower = (b.title + ' ' + b.url).toLowerCase();
+      let aScore = 0;
+      if (aLower.includes('live')) aScore += 2;
+      if (aLower.includes('holiday')) aScore += 2;
+      let bScore = 0;
+      if (bLower.includes('live')) bScore += 2;
+      if (bLower.includes('holiday')) bScore += 2;
+      return bScore - aScore;
     });
 
-    // ── Staleness guard ────────────────────────────────────────────────────────
-    // If the best candidate does not belong to today's date path, we refuse to
-    // overwrite status.js. Writing yesterday's article data with a fresh
-    // checkedAt timestamp is worse than doing nothing — it makes stale data
-    // look current. We only accept a yesterday-dated article if it is before
-    // 03:00 IST (collector announcements from late the previous night are still
-    // the operative ones for the current school day).
-    const bestHref = candidates[0].href;
-    const bestHasToday = bestHref.includes(todayPath);
+    if (recentCandidates.length === 0) {
+      console.log(`[Scraper] No recent articles found. Writing no-holiday status.`);
+      return writeNoHolidayStatus(outDir, getISTTime(), null);
+    }
 
-    if (!bestHasToday) {
-      // Allow yesterday's article only in the early-morning grace window (<03:00 IST)
-      const istHourNow = istNow.getUTCHours();
-      const isEarlyMorning = istHourNow < 3;
+    console.log(`[Scraper] Using ${recentCandidates.length} recent article(s) for evidence gathering...`);
 
-      const yesterdayIST = new Date(istNow.getTime() - 24 * 60 * 60 * 1000);
-      const [yyYear, yyMonth, yyDay] = yesterdayIST.toISOString().split('T')[0].split('-');
-      const yesterdayPath = `${yyYear}/${yyMonth}/${yyDay}`;
-      const bestHasYesterday = bestHref.includes(yesterdayPath);
+    const { targetStr, targetLabel, checkedAt } = getISTTime();
 
-      if (isEarlyMorning && bestHasYesterday) {
-        console.log(`[Scraper] Early-morning grace window: accepting yesterday's article.`);
-      } else {
-        // No today's article found — there may genuinely be no holiday declared yet.
-        // Write a clean "no holidays" status for today. Still fetch the old article
-        // to extract IMD alert levels (red/orange/yellow), which are day-persistent
-        // and independent of whether a holiday was declared.
-        console.log(`[Scraper] No article from today (${todayPath}) found. Fetching old article for IMD alerts only.`);
-        let alertsMap = null;
-        try {
-          const oldRes = await axios.get(candidates[0].url, { headers, timeout: 10000 });
-          const $old = cheerio.load(oldRes.data);
-          let oldBody = '';
-          $old('p').each((i, el) => { oldBody += $old(el).text().trim() + '\n'; });
-          if (oldBody.trim()) {
-            alertsMap = parseAlerts(oldBody);
-            console.log(`[Scraper] Parsed IMD alerts from old article (for display only).`);
-          }
-        } catch (e) {
-          console.warn(`[Scraper] Could not fetch old article for alerts: ${e.message}`);
+    // 2. Gather evidence from recent articles
+    let chosenBody = '';
+    let chosenUrl = '';
+    let chosenTitle = '';
+    const evidenceMap = new Map();
+
+    const tryList = recentCandidates.slice(0, 6);
+
+    for (const candidate of tryList) {
+      console.log(`[Scraper] Gathering from: "${candidate.title.substring(0, 70)}"`);
+      try {
+        const res = await axios.get(candidate.url, { headers, timeout: 10000 });
+        const $a = cheerio.load(res.data);
+        
+        let fullBodyText = '';
+        // Extract full body for alerts (from JSON-LD or p tags)
+        $a('script[type="application/ld+json"]').each((i, el) => {
+          if (fullBodyText) return;
+          try {
+            const ld = JSON.parse($a(el).html());
+            if (ld.articleBody) fullBodyText = ld.articleBody;
+          } catch (e) {}
+        });
+        if (!fullBodyText.trim()) {
+          $a('p').each((i, el) => { fullBodyText += $a(el).text().trim() + '\n'; });
         }
-        return writeNoHolidayStatus(outDir, getISTTime(), alertsMap);
+
+        if (!chosenBody) {
+          chosenBody = fullBodyText;
+          chosenUrl = candidate.url;
+          chosenTitle = candidate.title;
+        }
+
+        // Now extract clean paragraphs for holiday parsing
+        let holidayParagraphs = [];
+        let fetchedFromLiveBlog = false;
+
+        const filePathMatch = res.data.match(/var\s+filePath\s*=\s*['"]([^'"]+)['"]/);
+        if (filePathMatch) {
+          const filePath = filePathMatch[1]
+            .replace(/\\\//g, '/')
+            .replace(/\\u([0-9a-fA-F]{4})/g, (match, grp) => String.fromCharCode(parseInt(grp, 16)));
+          const jsonUrl = `https://www.onmanorama.com${filePath}.5.json`;
+          try {
+            console.log(`[Scraper] Live blog detected. Fetching updates from AEM JSON: ${jsonUrl}`);
+            const jsonRes = await axios.get(jsonUrl, { headers, timeout: 10000 });
+            
+            // Calculate active window in UTC ms
+            const [yr, mo, dy] = targetStr.split('-').map(Number);
+            const windowStart = Date.UTC(yr, mo - 1, dy - 1, 8, 30, 0);
+            const windowEnd = Date.UTC(yr, mo - 1, dy, 6, 30, 0);
+            
+            const updates = [];
+            for (const [k, v] of Object.entries(jsonRes.data)) {
+              if (k.startsWith('livenewsupdate')) {
+                const master = v['jcr:content']?.data?.master;
+                if (master && v['jcr:created']) {
+                  const createdTime = new Date(v['jcr:created']).getTime();
+                  if (createdTime >= windowStart && createdTime <= windowEnd) {
+                    updates.push({
+                      createdTime,
+                      description: master.description || ''
+                    });
+                  }
+                }
+              }
+            }
+            
+            // Sort updates descending by time
+            updates.sort((a, b) => b.createdTime - a.createdTime);
+            
+            // Strip HTML tags and map to paragraphs
+            holidayParagraphs = updates.map(u => u.description.replace(/<[^>]+>/g, ' ').trim()).filter(Boolean);
+            fetchedFromLiveBlog = true;
+            console.log(`[Scraper] Gathered ${holidayParagraphs.length} live update(s) within the target date window.`);
+          } catch (jsonErr) {
+            console.warn(`[Scraper] Failed to fetch live updates JSON: ${jsonErr.message}. Falling back to static HTML.`);
+          }
+        }
+
+        if (!fetchedFromLiveBlog) {
+          // Parse from static HTML, but apply isSentenceRelevantForDate check
+          const rawParagraphs = [];
+          $a('p').each((i, el) => { rawParagraphs.push($a(el).text().trim()); });
+          
+          holidayParagraphs = rawParagraphs
+            .map(p => p.trim())
+            .filter(Boolean)
+            .filter(p => isSentenceRelevantForDate(p, targetStr));
+        }
+
+        // Now process holidayParagraphs for each district
+        for (const dist of DISTRICTS_LIST) {
+          const districtReadings = [];
+          for (const p of holidayParagraphs) {
+            const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
+            if (!distRegex.test(p)) continue;
+
+            const pLower = p.toLowerCase();
+            let hasKw = false;
+            for (const kw of LOCAL_HOLIDAY_KEYWORDS) {
+              if (pLower.includes(kw)) {
+                hasKw = true;
+                break;
+              }
+            }
+
+            if (!hasKw) continue;
+
+            let scope = "District-wide";
+            let appliesTo = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres";
+            let excludes = null;
+            let reason = "Adverse weather and heavy rainfall";
+
+            // If mentions "including professional colleges", it's definitely district-wide
+            const isAllInstitutions = pLower.includes("including professional") || pLower.includes("all educational");
+
+            // Check for relief camp closures (only if explicitly limited to relief camps)
+            const isReliefCampOnly = !isAllInstitutions &&
+              (pLower.includes("relief camp") || pLower.includes("relief-camp")) &&
+              (pLower.includes("only") || pLower.includes("except") || pLower.includes("functioning as"));
+
+            if (isReliefCampOnly) {
+              scope = "Relief camp schools only";
+              appliesTo = "All schools functioning as relief camps";
+              excludes = "All other educational institutions";
+              reason = "Schools serving as relief camps during floods";
+            } else if (!isAllInstitutions && (pLower.includes("taluk") || pLower.includes("taluks"))) {
+              // Only mark as taluk-limited if NOT mentioning "all institutions" or "professional colleges"
+              scope = "Select taluks only";
+              appliesTo = "Educational institutions in specific taluks";
+              if (dist === "Kannur" && pLower.includes("professional") && (pLower.includes("not") || pLower.includes("except"))) {
+                excludes = "Professional colleges NOT covered. Residential schools remain open.";
+              }
+            }
+
+            districtReadings.push({ scope, appliesTo, excludes, reason });
+          }
+
+          if (districtReadings.length > 0) {
+            if (!evidenceMap.has(dist)) evidenceMap.set(dist, []);
+
+            const scopePriority = { "District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1 };
+            const bestReading = districtReadings.reduce((best, current) =>
+              (scopePriority[current.scope] || 0) > (scopePriority[best.scope] || 0) ? current : best
+            );
+
+            evidenceMap.get(dist).push({
+              status: "confirmed",
+              scope: bestReading.scope,
+              appliesTo: bestReading.appliesTo,
+              excludes: bestReading.excludes,
+              reason: bestReading.reason,
+              source: {
+                name: candidate.source,
+                title: candidate.title,
+                url: candidate.url
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.warn(`[Scraper] Error fetching "${candidate.title.substring(0, 40)}": ${e.message}`);
       }
     }
-    // ──────────────────────────────────────────────────────────────────────────
 
-    articleUrl = candidates[0].url;
-    articleTitle = candidates[0].title;
-
-    console.log(`[Scraper] Selected Article: "${articleTitle}"`);
-    console.log(`[Scraper] Fetching text from: ${articleUrl}`);
-
-    // 2. Fetch full body text of the article
-    const articleRes = await axios.get(articleUrl, { headers, timeout: 10000 });
-    const $art = cheerio.load(articleRes.data);
-    
-    let bodyText = "";
-    $art('p').each((i, el) => {
-      bodyText += $art(el).text().trim() + "\n";
-    });
-
-    if (!bodyText.trim()) {
-      console.log("[-] Error: Empty article body fetched.");
-      return false;
-    }
-
-    // 3. Parse data
-    const { targetStr, targetLabel, checkedAt } = getISTTime();
-    const alertsMap = parseAlerts(bodyText);
+    // 3. Merge multi-source verdicts
+    const alertsMap = parseAlerts(chosenBody || '');
     const districtsData = [];
 
     for (const dist of DISTRICTS_LIST) {
-      let isHoliday = false;
-      let context = "";
+      if (evidenceMap.has(dist)) {
+        const readings = evidenceMap.get(dist);
+        const sourceCount = new Set(readings.map(r => r.source.name)).size;
 
-      const paragraphs = bodyText.split('\n').map(p => p.trim()).filter(Boolean);
-      for (const p of paragraphs) {
-        const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
-        if (distRegex.test(p)) {
-          const pLower = p.toLowerCase();
-          let hasKw = false;
-          for (const kw of LOCAL_HOLIDAY_KEYWORDS) {
-            if (pLower.includes(kw)) {
-              hasKw = true;
-              break;
-            }
-          }
-          if (hasKw) {
-            isHoliday = true;
-            context = pLower;
-            break;
-          }
-        }
-      }
+        let confidence = 60;
+        if (sourceCount >= 3) confidence = 92;
+        else if (sourceCount >= 2) confidence = 80;
 
-      if (isHoliday) {
-        let scope = "District-wide";
-        let appliesTo = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres";
-        let excludes = null;
-        let reason = "Adverse weather and heavy rainfall";
-        const declaredBy = `District Collector, ${dist}`;
+        let confidenceNote = `Reported by ${readings.map(r => r.source.name).join(', ')}.`;
+        if (sourceCount === 1) confidenceNote = `Reported by ${readings[0].source.name}.`;
 
-        // 1. Relief Camps
-        if (context.includes("relief camp") || context.includes("relief-camp") || context.includes("functioning as relief")) {
-          scope = "Relief camp schools only";
-          appliesTo = "All schools functioning as relief camps";
-          excludes = "All other educational institutions";
-          reason = "Schools serving as relief camps during floods";
-        }
-        // 2. Taluks
-        else if (context.includes("taluk") || context.includes("taluks")) {
-          const taluksMatch = context.match(/([a-zA-Z\s,]+)\staluk/i);
-          if (taluksMatch) {
-            scope = `${taluksMatch[1].trim()} taluks only`;
-          } else {
-            scope = "Select taluks only";
-          }
-          appliesTo = "Educational institutions in specific taluks";
-          
-          if (dist === "Kannur" && context.includes("professional") && (context.includes("not") || context.includes("except"))) {
-            excludes = "Professional colleges NOT covered. Residential schools remain open.";
-          }
-        }
-
+        // Prefer broader scope: District-wide > Taluk > Relief camp
+        const scopePriority = {
+          "District-wide": 3,
+          "Relief camp schools only": 1,
+          "Select taluks only": 2
+        };
+        const reading = readings.reduce((best, current) => {
+          const bestPriority = scopePriority[best.scope] || 0;
+          const currentPriority = scopePriority[current.scope] || 0;
+          return currentPriority > bestPriority ? current : best;
+        });
         districtsData.push({
           name: dist,
           status: "confirmed",
-          alert: alertsMap[dist],
-          confidence: 95,
-          scope,
-          appliesTo,
-          excludes,
-          reason,
-          declaredBy,
+          alert: alertsMap[dist] || "none",
+          confidence,
+          scope: reading.scope,
+          appliesTo: reading.appliesTo,
+          excludes: reading.excludes,
+          reason: reading.reason,
+          declaredBy: `District Collector, ${dist}`,
           exams: "Scheduled public and university examinations proceed unless specified.",
-          confidenceNote: "Confirmed by major news report quoting Collector's declaration.",
-          sources: [{
-            name: "Onmanorama",
-            title: articleTitle,
-            url: articleUrl,
+          confidenceNote,
+          sources: readings.map(r => ({
+            name: r.source.name,
+            title: r.source.title,
+            url: r.source.url,
             time: "Latest Update",
             tier: 1
-          }]
+          }))
         });
       } else {
         districtsData.push({
           name: dist,
           status: "none",
-          alert: alertsMap[dist],
+          alert: alertsMap[dist] || "none",
           confidence: null,
           scope: null,
           appliesTo: null,
@@ -613,7 +781,7 @@ async function runScraper() {
       }
     ];
 
-    if (/PSC\s(has\s)?(cancelled|postponed|deferred)/i.test(bodyText) || bodyText.toLowerCase().includes("kerala public service commission")) {
+    if (/PSC\s(has\s)?(cancelled|postponed|deferred)/i.test(chosenBody) || chosenBody.toLowerCase().includes("kerala public service commission")) {
       advisories.push({
         level: "info",
         title: "Kerala PSC Exams Postponed",
@@ -621,7 +789,7 @@ async function runScraper() {
       });
     }
 
-    if (/(mahatma gandhi university|mg university)\s(has\s)?(postponed|deferred)/i.test(bodyText)) {
+    if (/(mahatma gandhi university|mg university)\s(has\s)?(postponed|deferred)/i.test(chosenBody)) {
       advisories.push({
         level: "info",
         title: "MG University Exams Postponed",
@@ -651,7 +819,7 @@ async function runScraper() {
         impact: "High risk of waterlogging and localized flooding. Relief camps active.",
         source: {
           name: "Onmanorama",
-          url: articleUrl
+          url: chosenUrl
         }
       },
       districts: districtsData,
