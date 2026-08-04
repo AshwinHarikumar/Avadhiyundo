@@ -6,13 +6,13 @@
  * fails we fall back to the cached copy, and app.js states its age out loud.
  */
 
-var CACHE = "krhw-v29";
+var CACHE = "krhw-v30";
 
 var SHELL = [
   "./",
   "./index.html",
-  "./app.css?v=29",
-  "./app.js?v=29",
+  "./app.css?v=30",
+  "./app.js?v=30",
   "./logo.png",
   "./manifest.webmanifest"
 ];
