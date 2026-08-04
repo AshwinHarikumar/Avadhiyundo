@@ -468,6 +468,10 @@ ol, ul { list-style: none; }
   font-family: var(--station);
   font-size: 14px;
 }
+#setupDistrict option {
+  background: var(--ink-2);
+  color: var(--text);
+}
 #setupDistrict:focus {
   outline: 2px solid var(--text);
   outline-offset: 1px;
