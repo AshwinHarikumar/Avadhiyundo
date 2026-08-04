@@ -20,16 +20,72 @@ HEADERS = {
 }
 
 def get_ist_time():
-    """Returns current date, time, and tomorrow's date in IST (UTC+5:30)."""
+    """Returns current date, time, and target date in IST (UTC+5:30) based on 15:00 (3 PM) rollover."""
     utc_now = datetime.utcnow()
     ist_now = utc_now + timedelta(hours=5, minutes=30)
     
     today_str = ist_now.strftime("%Y-%m-%d")
-    tomorrow_str = (ist_now + timedelta(days=1)).strftime("%Y-%m-%d")
-    tomorrow_label = (ist_now + timedelta(days=1)).strftime("%A, %d %B %Y")
+    
+    # If before 3:00 PM (15:00) IST, target is today; otherwise tomorrow
+    if ist_now.hour < 15:
+        target_date = ist_now
+    else:
+        target_date = ist_now + timedelta(days=1)
+        
+    target_str = target_date.strftime("%Y-%m-%d")
+    target_label = target_date.strftime("%A, %d %B %Y")
     checked_at = ist_now.isoformat() + "+05:30"
     
-    return today_str, tomorrow_str, tomorrow_label, checked_at
+    return today_str, target_str, target_label, checked_at
+
+def parse_alerts(body_text):
+    """Parses the article body text to extract dynamic IMD alerts for all districts."""
+    alerts = {dist: "none" for dist in DISTRICTS_LIST}
+    
+    # Split into sentences (by period or newline)
+    sentences = re.split(r'\.|\n', body_text)
+    default_alert = "none"
+    explicit_mapped = set()
+    
+    for sentence in sentences:
+        sentence = sentence.strip()
+        if not sentence or "alert" not in sentence.lower():
+            continue
+            
+        # Split by while, but, whereas, semicolon
+        clauses = re.split(r'\bwhile\b|\bbut\b|\bwhereas\b|;', sentence, flags=re.IGNORECASE)
+        for clause in clauses:
+            clause_lower = clause.lower()
+            color = None
+            if "red alert" in clause_lower or (re.search(r'\bred\b', clause_lower) and "alert" in clause_lower):
+                color = "red"
+            elif "orange alert" in clause_lower or (re.search(r'\borange\b', clause_lower) and "alert" in clause_lower):
+                color = "orange"
+            elif "yellow alert" in clause_lower or (re.search(r'\byellow\b', clause_lower) and "alert" in clause_lower):
+                color = "yellow"
+                
+            if not color:
+                continue
+                
+            clause_districts = []
+            for dist in DISTRICTS_LIST:
+                if re.search(r'\b' + re.escape(dist) + r'\b', clause, re.IGNORECASE):
+                    clause_districts.append(dist)
+                    
+            if clause_districts:
+                for dist in clause_districts:
+                    alerts[dist] = color
+                    explicit_mapped.add(dist)
+            else:
+                if "district" in clause_lower or "state" in clause_lower or "kerala" in clause_lower or "multiple" in clause_lower:
+                    default_alert = color
+                    
+    if default_alert != "none":
+        for dist in DISTRICTS_LIST:
+            if dist not in explicit_mapped:
+                alerts[dist] = default_alert
+                
+    return alerts
 
 def find_latest_holiday_article():
     """Scrapes Onmanorama Kerala page to find the URL of the latest rain holiday article."""
@@ -83,7 +139,8 @@ def fetch_article_body(url):
 
 def parse_holiday_data(body_text, article_url, article_title):
     """Parses the article body text to determine district holiday declarations and exam delays."""
-    today_str, tomorrow_str, tomorrow_label, checked_at = get_ist_time()
+    today_str, target_str, target_label, checked_at = get_ist_time()
+    alerts_map = parse_alerts(body_text)
     
     # Initialize all districts with 'none' status
     districts_data = []
@@ -147,7 +204,7 @@ def parse_holiday_data(body_text, article_url, article_title):
             districts_data.append({
                 "name": dist,
                 "status": status,
-                "alert": "orange",  # Default alert level if mentioned in a rain disaster context
+                "alert": alerts_map[dist],  # Parsed alert level
                 "confidence": 95,
                 "scope": scope,
                 "appliesTo": applies_to,
@@ -169,7 +226,7 @@ def parse_holiday_data(body_text, article_url, article_title):
             districts_data.append({
                 "name": dist,
                 "status": "none",
-                "alert": "none",
+                "alert": alerts_map[dist],
                 "confidence": None,
                 "scope": None,
                 "appliesTo": None,
@@ -220,8 +277,8 @@ def parse_holiday_data(body_text, article_url, article_title):
         headline += "."
         
     status_data = {
-        "forDate": tomorrow_str,
-        "forDateLabel": tomorrow_label,
+        "forDate": target_str,
+        "forDateLabel": target_label,
         "checkedAt": checked_at,
         "headline": headline,
         "advisories": advisories,
@@ -242,6 +299,89 @@ def parse_holiday_data(body_text, article_url, article_title):
     }
     
     return status_data
+
+HISTORY_PATH = "data/history.js"
+HISTORY_PREFIX = "window.KERALA_HISTORY = "
+HISTORY_MAX_AGE_DAYS = 60
+HISTORY_MAX_EVENTS = 400
+
+
+def _tuple_of(d):
+    """The fields that decide whether a district actually changed. Deliberately
+    raw — classification (declared vs partial) is a product rule that lives only
+    in app.js, so history never second-guesses it."""
+    return {
+        "status": d.get("status"),
+        "scope": d.get("scope"),
+        "appliesTo": d.get("appliesTo"),
+    }
+
+
+def read_history():
+    try:
+        with open(HISTORY_PATH, "r", encoding="utf-8") as f:
+            raw = f.read()
+        start = raw.index(HISTORY_PREFIX) + len(HISTORY_PREFIX)
+        end = raw.rindex(";")
+        parsed = json.loads(raw[start:end])
+        if not isinstance(parsed.get("events"), list):
+            raise ValueError("events missing")
+        return parsed
+    except Exception:
+        # A corrupt or absent history must never stop a scrape.
+        return {"latest": None, "events": []}
+
+
+def update_history(data):
+    """Appends district transitions to data/history.js, then rewrites it."""
+    history = read_history()
+    latest = history.get("latest") or {}
+    events = history.get("events") or []
+
+    snapshot = {
+        "forDate": data["forDate"],
+        "districts": {d["name"]: _tuple_of(d) for d in data["districts"]},
+    }
+
+    # The 3pm IST rollover resets every district to `none`. Comparing across
+    # that boundary would invent 14 "reverted" transitions every single day.
+    if latest.get("forDate") == data["forDate"]:
+        previous = latest.get("districts") or {}
+        for d in data["districts"]:
+            before = previous.get(d["name"])
+            after = _tuple_of(d)
+            if before is not None and before != after:
+                events.append({
+                    "d": d["name"],
+                    "forDate": data["forDate"],
+                    "at": data["checkedAt"],
+                    "from": before,
+                    "to": after,
+                })
+
+    cutoff = (datetime.utcnow() + timedelta(hours=5, minutes=30)
+              - timedelta(days=HISTORY_MAX_AGE_DAYS)).strftime("%Y-%m-%d")
+    events = [e for e in events if e.get("forDate", "") >= cutoff]
+    events = events[-HISTORY_MAX_EVENTS:]
+
+    os.makedirs(os.path.dirname(HISTORY_PATH), exist_ok=True)
+    payload = {"latest": snapshot, "events": events}
+    js_content = f"""/* Kerala Rain Holiday Watch — transition history
+ *
+ * Appended to on each check, immediately before status.js is overwritten.
+ * `latest` is the snapshot the next run compares against; `events` are the
+ * district transitions observed within a single target date.
+ *
+ * Optional: when this file is absent the app simply hides the features that
+ * depend on it, so file:// keeps working.
+ */
+{HISTORY_PREFIX}{json.dumps(payload, indent=2, ensure_ascii=False)};
+"""
+    with open(HISTORY_PATH, "w", encoding="utf-8") as f:
+        f.write(js_content)
+
+    return len(events)
+
 
 def write_status_file(data):
     """Writes the parsed holiday data to data/status.js."""
@@ -291,8 +431,10 @@ def main():
     # 3. Parse article content to update district statuses
     status_data = parse_holiday_data(body_text, article_url, article_title)
     
-    # 4. Write data to status.js
+    # 4. Record transitions, then write data
+    n_events = update_history(status_data)
     write_status_file(status_data)
+    print(f"    History:     {n_events} transitions retained")
 
 if __name__ == "__main__":
     main()

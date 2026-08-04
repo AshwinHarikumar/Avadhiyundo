@@ -11,8 +11,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@500;700;800&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Narrow:wght@500;600;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="app.css?v=9" />
+  <link rel="stylesheet" href="app.css?v=12" />
   <link rel="icon" href="logo.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
 </head>
 <body>
 
@@ -75,8 +76,12 @@
       <div class="lamp-split" id="tally"></div>
 
       <p class="lamp-caveat" id="caveat"></p>
+
+      <div class="pin" id="pinnedAnswer"></div>
     </div>
   </section>
+
+  <section class="shell chg" id="changes" aria-label="Changes since your last visit" hidden></section>
 
   <section class="shell board-wrap" id="board" aria-labelledby="boardTitle">
     <div class="board-head">
@@ -156,7 +161,10 @@
   </div>
 </footer>
 
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="data/history.js" onerror="void 0"></script>
 <script src="data/status.js"></script>
-<script src="app.js?v=9"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>

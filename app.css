@@ -28,6 +28,7 @@
   --violet-wash:rgba(179,156,255,.10);
   --rose:       #ff7a7a;   /* debunked / red alert */
   --rose-wash:  rgba(255,122,122,.10);
+  --yellow:     #d8c04a;   /* yellow IMD alert */
 
   /* Text on night — every step clears 4.5:1 on --ink and --ink-2 */
   --text:       #f2f7f8;
@@ -64,6 +65,7 @@
   --violet-wash:rgba(76,58,168,.09);
   --rose:       #a81f1f;
   --rose-wash:  rgba(168,31,31,.09);
+  --yellow:     #7d6a00;
 
   --text:       #0d1a1c;
   --text-2:     #33484c;
@@ -396,6 +398,132 @@ ol, ul { list-style: none; }
   max-width: 70ch;
 }
 
+/* ── The pinned answer: the reader's own district, answered outright ── */
+.pin {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  max-width: 62ch;
+}
+.pin-hint {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-4);
+}
+.pin-label {
+  font-family: var(--narrow);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 7px;
+}
+.pin-name {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+.pin-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--narrow);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.pin-line {
+  margin-top: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.pin-when {
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-4);
+}
+
+/* ── What changed since the reader last looked ── */
+.chg:not([hidden]) {
+  display: block;
+  padding-top: 26px;
+}
+.chg-label {
+  font-family: var(--narrow);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.chg-item {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--rule);
+}
+.chg-item::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: transparent;
+}
+.chg-item.c-declared::before    { background: var(--lamp); }
+.chg-item.c-partial::before     { background: var(--violet); }
+.chg-item.c-unconfirmed::before { background: var(--cyan); }
+.chg-item.c-debunked::before    { background: var(--rose); }
+.chg-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.chg-move {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+.chg-move b { color: var(--text); font-weight: 500; }
+.chg-arrow { color: var(--text-3); padding: 0 2px; }
+
+/* ── Toast: the only transient notice on the page ── */
+.toast:not([hidden]) {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 130;
+  max-width: calc(100vw - 32px);
+  padding: 9px 16px;
+  background: var(--ink-3);
+  border: 1px solid var(--rule-2);
+  border-radius: 2px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
 /* ══════════════════════════════════════
    THE BOARD
 ══════════════════════════════════════ */
@@ -518,49 +646,61 @@ ol, ul { list-style: none; }
 .filters button[aria-pressed="true"] .fc { color: var(--lamp); }
 
 /* Column legend */
+/* Column legend */
 .board-legend {
-  display: grid;
-  grid-template-columns: minmax(0,1.05fr) 132px minmax(0,1.5fr);
-  gap: 20px;
-  padding: 0 4px 9px;
-  border-bottom: 1px solid var(--rule-2);
-  font-family: var(--narrow);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--text-4);
+  display: none;
 }
 
-/* ── The rows ── */
-.board { border-top: 0; }
+/* ── The rows (now cards in a grid) ── */
+.board {
+  border-top: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
 
 .row {
-  display: grid;
-  grid-template-columns: minmax(0,1.05fr) 132px minmax(0,1.5fr);
-  gap: 20px;
-  align-items: start;
-  padding: 17px 4px;
-  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  background: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 20px 20px 20px 24px; /* extra padding left for status bar */
   position: relative;
-  transition: background .18s;
+  transition: transform .2s, border-color .2s, box-shadow .2s, background .2s;
+  height: 100%;
 }
-.row:hover { background: var(--ink-2); }
+.row:hover {
+  transform: translateY(-2px);
+  border-color: var(--rule-2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  background: var(--ink-3);
+}
 
-/* The lamp edge — 2px, the status carrier */
+/* Pinned state styling on card */
+.row.is-pinned {
+  border-color: var(--lamp-dim);
+  background: var(--lamp-wash);
+}
+
+/* The lamp edge — 4px absolute bar on the left edge of the card */
 .row::before {
   content: "";
   position: absolute;
-  left: -10px;
-  top: 17px;
-  bottom: 17px;
-  width: 2px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
   background: transparent;
 }
 .row.r-declared::before   { background: var(--lamp); }
 .row.r-partial::before    { background: var(--violet); }
 .row.r-unconfirmed::before{ background: var(--cyan); }
 .row.r-debunked::before   { background: var(--rose); }
+.row.r-none::before       { background: var(--text-4); opacity: 0.3; }
 
 .row-name {
   font-size: 19px;
@@ -583,11 +723,10 @@ ol, ul { list-style: none; }
 .alert-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; background: currentColor; }
 .al-red    { color: var(--rose); }
 .al-orange { color: var(--lamp); }
-.al-yellow { color: #d8c04a; }
-[data-theme="day"] .al-yellow { color: #7d6a00; }
+.al-yellow { color: var(--yellow); }
 .al-none   { color: var(--text-4); }
 
-/* Verdict — the word, set as signal type */
+/* Verdict — styled as a pill badge or compact section inside the card */
 .row-verdict {
   font-family: var(--narrow);
   font-size: 13px;
@@ -598,7 +737,8 @@ ol, ul { list-style: none; }
   display: flex;
   align-items: center;
   gap: 7px;
-  padding-top: 2px;
+  margin-top: 8px;
+  margin-bottom: 12px;
 }
 .v-declared    { color: var(--lamp); }
 .v-partial     { color: var(--violet); }
@@ -608,7 +748,13 @@ ol, ul { list-style: none; }
 
 .verdict-glyph { width: 13px; height: 13px; flex: none; }
 
-.row-scope { min-width: 0; }
+.row-scope {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 8px;
+}
 .scope-line {
   font-size: 14px;
   line-height: 1.5;
@@ -675,6 +821,60 @@ ol, ul { list-style: none; }
 .src:hover { color: var(--lamp); }
 .src:hover span { border-color: var(--lamp); }
 .src svg { width: 12px; height: 12px; flex: none; }
+
+/* ── Row actions. Inside column 3, after the evidence — a fourth grid
+   column would desync .row from .board-legend and both breakpoints. ── */
+.row-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+.act {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 9px;
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  color: var(--text-3);
+  font-family: var(--narrow);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .18s, border-color .18s, background .18s;
+}
+.act svg { width: 13px; height: 13px; flex: none; }
+.act:hover { color: var(--text); border-color: var(--rule-2); background: var(--ink-2); }
+.act-pin[aria-pressed="true"] {
+  color: var(--lamp);
+  border-color: var(--lamp-dim);
+  background: var(--lamp-wash);
+}
+
+/* The pinned row leads the board, so it says why rather than just jumping.
+   Inline, not absolute — .row-verdict moves to the right edge under 860px. */
+.pin-flag {
+  display: inline-block;
+  margin-left: 9px;
+  vertical-align: middle;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid var(--lamp-dim);
+  color: var(--lamp);
+  background: var(--lamp-wash);
+  border-radius: 2px;
+}
 
 .board-empty {
   padding: 46px 4px;
@@ -866,16 +1066,7 @@ ol, ul { list-style: none; }
    RESPONSIVE — the phone is the design target
 ══════════════════════════════════════ */
 @media (max-width: 860px) {
-  .board-legend { display: none; }
-
-  .row {
-    grid-template-columns: 1fr auto;
-    gap: 8px 14px;
-    padding: 16px 4px 17px;
-  }
-  .row-name    { grid-column: 1; grid-row: 1; }
-  .row-verdict { grid-column: 2; grid-row: 1; justify-self: end; text-align: right; padding-top: 4px; }
-  .row-scope   { grid-column: 1 / -1; grid-row: 2; }
+  /* Legend is already hidden globally */
 }
 
 @media (max-width: 620px) {
@@ -908,9 +1099,18 @@ ol, ul { list-style: none; }
   .filters { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
   .filters button { white-space: nowrap; }
 
-  .row::before { left: -6px; }
   .row-name { font-size: 17.5px; }
   .row-verdict { font-size: 11.5px; letter-spacing: .1em; }
+
+  .pin { margin-top: 20px; padding-top: 16px; }
+  .pin-name { font-size: 22px; gap: 10px; }
+
+  .chg:not([hidden]) { padding-top: 20px; }
+  .chg-item::before { left: -6px; }
+  .chg-item { gap: 4px 12px; }
+
+  /* Thumb-sized on a phone; the board's own rhythm keeps them quiet. */
+  .act { min-height: 34px; padding: 0 11px; }
 
   .context { padding-top: 32px; gap: 28px; }
   .foot { padding: 34px 0 30px; }
@@ -922,6 +1122,6 @@ ol, ul { list-style: none; }
 }
 
 @media print {
-  .masthead, .filters, .tool, .lamp-glow { display: none; }
+  .masthead, .filters, .tool, .lamp-glow, .row-acts, .toast { display: none; }
   body { background: #fff; color: #000; }
 }

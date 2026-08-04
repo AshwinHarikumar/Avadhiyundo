@@ -1,0 +1,15 @@
+{
+  "name": "അവധിയുണ്ടോ? — Kerala Rain Holiday Watch",
+  "short_name": "അവധിയുണ്ടോ?",
+  "description": "Verified rain-holiday declarations for all 14 Kerala districts, with the declaring authority and a dated source for every one.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1416",
+  "theme_color": "#0a1416",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

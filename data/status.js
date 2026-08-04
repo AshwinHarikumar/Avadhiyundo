@@ -2,8 +2,8 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-04",
   "forDateLabel": "Tuesday, 04 August 2026",
-  "checkedAt": "2026-08-03T23:04:47.785+05:30",
-  "headline": "Holidays declared in 9 districts and partial/conditional closures in 3 other districts.",
+  "checkedAt": "2026-08-04T06:19:48.690+05:30",
+  "headline": "Holidays declared in 10 districts and partial/conditional closures in 2 other districts.",
   "advisories": [
     {
       "level": "warn",
@@ -34,7 +34,7 @@ window.KERALA_STATUS = {
     {
       "name": "Thiruvananthapuram",
       "status": "none",
-      "alert": "none",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -48,7 +48,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kollam",
       "status": "none",
-      "alert": "none",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -74,7 +74,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -96,7 +96,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -118,7 +118,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -130,17 +130,17 @@ window.KERALA_STATUS = {
       "status": "confirmed",
       "alert": "orange",
       "confidence": 95,
-      "scope": "Relief camp schools only",
-      "appliesTo": "All schools functioning as relief camps",
-      "excludes": "All other educational institutions",
-      "reason": "Schools serving as relief camps during floods",
+      "scope": "District-wide",
+      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "excludes": null,
+      "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Idukki",
       "exams": "Scheduled public and university examinations proceed unless specified.",
       "confidenceNote": "Confirmed by major news report quoting Collector's declaration.",
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -162,7 +162,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -184,7 +184,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -206,7 +206,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -228,7 +228,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -250,7 +250,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -272,7 +272,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -294,7 +294,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1
@@ -316,7 +316,7 @@ window.KERALA_STATUS = {
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Kerala Rain: Holiday in 9 districts tomorrow, PSC exams postponed",
+          "title": "Kerala Rain: Holiday in 10 districts tomorrow, PSC exams postponed",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/03/kerala-rain-educational-institutions-holiday-august-3.html",
           "time": "Latest Update",
           "tier": 1

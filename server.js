@@ -34,18 +34,166 @@ function getISTTime() {
   const istOffset = 5.5 * 60 * 60 * 1000;
   const istTime = new Date(now.getTime() + istOffset);
 
-  // Format today and tomorrow string (YYYY-MM-DD)
+  // Format today string (YYYY-MM-DD)
   const todayStr = istTime.toISOString().split('T')[0];
-  const tomorrowTime = new Date(istTime.getTime() + 24 * 60 * 60 * 1000);
-  const tomorrowStr = tomorrowTime.toISOString().split('T')[0];
 
-  // Tomorrow label format using 'UTC' timezone option, because tomorrowTime is already shifted
+  // Roll over to tomorrow's date at 15:00 (3:00 PM) IST
+  const istHour = istTime.getUTCHours();
+  const isBeforeRollover = istHour < 15;
+
+  const targetTime = isBeforeRollover ? istTime : new Date(istTime.getTime() + 24 * 60 * 60 * 1000);
+  const targetStr = targetTime.toISOString().split('T')[0];
+
+  // Target label format using 'UTC' timezone option, because targetTime is already shifted
   const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', timeZone: 'UTC' };
-  const tomorrowLabel = new Intl.DateTimeFormat('en-IN', options).format(tomorrowTime);
+  const targetLabel = new Intl.DateTimeFormat('en-IN', options).format(targetTime);
 
   const checkedAt = istTime.toISOString().replace('Z', '+05:30');
 
-  return { todayStr, tomorrowStr, tomorrowLabel, checkedAt };
+  return { todayStr, targetStr, targetLabel, checkedAt };
+}
+
+// Dynamic IMD alert parser
+function parseAlerts(bodyText) {
+  const alerts = {};
+  for (const dist of DISTRICTS_LIST) {
+    alerts[dist] = "none";
+  }
+
+  // Split into sentences (by period or newline)
+  const sentences = bodyText.split(/[.\n]/);
+  let defaultAlert = "none";
+  const explicitMapped = new Set();
+
+  for (let sentence of sentences) {
+    sentence = sentence.trim();
+    if (!sentence || !sentence.toLowerCase().includes("alert")) {
+      continue;
+    }
+
+    // Split by while, but, whereas, semicolon
+    const clauses = sentence.split(/\bwhile\b|\bbut\b|\bwhereas\b|;/i);
+    for (const clause of clauses) {
+      const clauseLower = clause.toLowerCase();
+      let color = null;
+      if (clauseLower.includes("red alert") || (/\bred\b/.test(clauseLower) && clauseLower.includes("alert"))) {
+        color = "red";
+      } else if (clauseLower.includes("orange alert") || (/\borange\b/.test(clauseLower) && clauseLower.includes("alert"))) {
+        color = "orange";
+      } else if (clauseLower.includes("yellow alert") || (/\byellow\b/.test(clauseLower) && clauseLower.includes("alert"))) {
+        color = "yellow";
+      }
+
+      if (!color) continue;
+
+      const clauseDistricts = [];
+      for (const dist of DISTRICTS_LIST) {
+        const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
+        if (distRegex.test(clause)) {
+          clauseDistricts.push(dist);
+        }
+      }
+
+      if (clauseDistricts.length > 0) {
+        for (const dist of clauseDistricts) {
+          alerts[dist] = color;
+          explicitMapped.add(dist);
+        }
+      } else {
+        if (clauseLower.includes("district") || clauseLower.includes("state") || clauseLower.includes("kerala") || clauseLower.includes("multiple")) {
+          defaultAlert = color;
+        }
+      }
+    }
+  }
+
+  if (defaultAlert !== "none") {
+    for (const dist of DISTRICTS_LIST) {
+      if (!explicitMapped.has(dist)) {
+        alerts[dist] = defaultAlert;
+      }
+    }
+  }
+
+  return alerts;
+}
+
+const HISTORY_PREFIX = "window.KERALA_HISTORY = ";
+const HISTORY_MAX_AGE_DAYS = 60;
+const HISTORY_MAX_EVENTS = 400;
+
+/* The fields that decide whether a district actually changed. Deliberately
+   raw — classification (declared vs partial) is a product rule that lives only
+   in app.js, so history never second-guesses it. */
+function tupleOf(d) {
+  return { status: d.status, scope: d.scope, appliesTo: d.appliesTo };
+}
+
+function sameTuple(a, b) {
+  return a.status === b.status && a.scope === b.scope && a.appliesTo === b.appliesTo;
+}
+
+function readHistory(historyPath) {
+  try {
+    const raw = fs.readFileSync(historyPath, 'utf-8');
+    const start = raw.indexOf(HISTORY_PREFIX) + HISTORY_PREFIX.length;
+    const end = raw.lastIndexOf(';');
+    const parsed = JSON.parse(raw.slice(start, end));
+    if (!Array.isArray(parsed.events)) throw new Error('events missing');
+    return parsed;
+  } catch (e) {
+    // A corrupt or absent history must never stop a scrape.
+    return { latest: null, events: [] };
+  }
+}
+
+function updateHistory(outDir, data) {
+  const historyPath = path.join(outDir, 'history.js');
+  const history = readHistory(historyPath);
+  const latest = history.latest || {};
+  let events = history.events || [];
+
+  const snapshot = { forDate: data.forDate, districts: {} };
+  for (const d of data.districts) snapshot.districts[d.name] = tupleOf(d);
+
+  // The 3pm IST rollover resets every district to `none`. Comparing across
+  // that boundary would invent 14 "reverted" transitions every single day.
+  if (latest.forDate === data.forDate) {
+    const previous = latest.districts || {};
+    for (const d of data.districts) {
+      const before = previous[d.name];
+      const after = tupleOf(d);
+      if (before && !sameTuple(before, after)) {
+        events.push({
+          d: d.name,
+          forDate: data.forDate,
+          at: data.checkedAt,
+          from: before,
+          to: after
+        });
+      }
+    }
+  }
+
+  const cutoffMs = Date.now() + 5.5 * 3600 * 1000 - HISTORY_MAX_AGE_DAYS * 864e5;
+  const cutoff = new Date(cutoffMs).toISOString().slice(0, 10);
+  events = events.filter(e => (e.forDate || '') >= cutoff).slice(-HISTORY_MAX_EVENTS);
+
+  const payload = { latest: snapshot, events };
+  const jsContent =
+    `/* Kerala Rain Holiday Watch — transition history\n` +
+    ` *\n` +
+    ` * Appended to on each check, immediately before status.js is overwritten.\n` +
+    ` * \`latest\` is the snapshot the next run compares against; \`events\` are the\n` +
+    ` * district transitions observed within a single target date.\n` +
+    ` *\n` +
+    ` * Optional: when this file is absent the app simply hides the features that\n` +
+    ` * depend on it, so file:// keeps working.\n` +
+    ` */\n` +
+    `${HISTORY_PREFIX}${JSON.stringify(payload, null, 2)};\n`;
+
+  fs.writeFileSync(historyPath, jsContent, 'utf-8');
+  return events.length;
 }
 
 // Scrape logic
@@ -101,7 +249,8 @@ async function runScraper() {
     }
 
     // 3. Parse data
-    const { tomorrowStr, tomorrowLabel, checkedAt } = getISTTime();
+    const { targetStr, targetLabel, checkedAt } = getISTTime();
+    const alertsMap = parseAlerts(bodyText);
     const districtsData = [];
 
     for (const dist of DISTRICTS_LIST) {
@@ -158,7 +307,7 @@ async function runScraper() {
         districtsData.push({
           name: dist,
           status: "confirmed",
-          alert: "orange", // default alert context
+          alert: alertsMap[dist],
           confidence: 95,
           scope,
           appliesTo,
@@ -179,7 +328,7 @@ async function runScraper() {
         districtsData.push({
           name: dist,
           status: "none",
-          alert: "none",
+          alert: alertsMap[dist],
           confidence: null,
           scope: null,
           appliesTo: null,
@@ -229,8 +378,8 @@ async function runScraper() {
     }
 
     const finalJson = {
-      forDate: tomorrowStr,
-      forDateLabel: tomorrowLabel,
+      forDate: targetStr,
+      forDateLabel: targetLabel,
       checkedAt,
       headline,
       advisories,
@@ -256,10 +405,12 @@ async function runScraper() {
       fs.mkdirSync(outDir, { recursive: true });
     }
     
+    const nEvents = updateHistory(outDir, finalJson);
+
     const jsContent = `/* Kerala Rain Holiday Watch — findings data */\nwindow.KERALA_STATUS = ${JSON.stringify(finalJson, null, 2)};\n`;
     fs.writeFileSync(path.join(outDir, 'status.js'), jsContent, 'utf-8');
-    
-    console.log(`[Scraper] Successfully updated data/status.js!`);
+
+    console.log(`[Scraper] Successfully updated data/status.js! (${nEvents} transitions retained)`);
     return true;
   } catch (err) {
     console.error(`[Scraper] Run error: ${err.message}`);

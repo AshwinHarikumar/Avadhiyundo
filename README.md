@@ -13,6 +13,9 @@ The platform distinguishes between confirmed holidays, unconfirmed rumours, part
 - **Reliable Data:** Every `confirmed` district carries at least one dated source and a declaring authority.
 - **Accessibility:** Designed primarily for phone screens at night in poor lighting. Status is not conveyed by color alone.
 - **Automated Scrapers:** Background Python scripts run periodically to aggregate declarations and update the data out-of-band.
+- **Pin your district:** One district is remembered in `localStorage` and answered above the board, then sorted first.
+- **What changed:** Transitions are recorded across checks, so a district that flips reads "Declared 22 min ago", and returning readers see what moved since their last visit.
+- **Works offline:** A service worker caches the shell so the last answer survives a dead connection. Data is always network-first — a cached verdict is only ever served as a fallback, and its age is stated on the page.
 
 ## Data Sources
 The application scrapes data from official and reliable media sources:
@@ -30,10 +33,31 @@ The application scrapes data from official and reliable media sources:
 
 ## Project Structure
 - `index.html`, `app.css`, `app.js` - The frontend application.
-- `data/status.js` - The compiled JSON-like data file containing the current holiday statuses.
+- `data/status.js` - The compiled JSON-like data file containing the current holiday statuses. **Schema is frozen** — new data goes in a new file rather than a new field.
+- `data/history.js` - Generated. District transitions observed across checks, written by both writers immediately before `status.js` is overwritten. Optional: when absent, the app hides the features that depend on it and keeps working from `file://`.
+- `sw.js`, `manifest.webmanifest` - Offline shell. Shell is precached; `data/*` is network-first with cache fallback.
 - `server.js` - Node.js Express server to serve data and trigger scraping.
 - `scrape_collectors.py`, `scrape_media.py` - Scrapers for fetching data from sources.
 - `auto_update.py`, `cron_update.sh` - Scripts for automating the scraping process.
+
+### `data/history.js` schema
+```js
+window.KERALA_HISTORY = {
+  latest: {                       // the snapshot the next run compares against
+    forDate: "2026-08-04",
+    districts: { "Kannur": { status, scope, appliesTo }, ... }
+  },
+  events: [                       // transitions within a single target date
+    { d: "Kannur", forDate: "2026-08-04", at: "2026-08-04T21:38:02+05:30",
+      from: { status, scope, appliesTo }, to: { status, scope, appliesTo } }
+  ]
+};
+```
+Events store the raw status tuple, never a derived verdict — classifying a closure as
+*declared* vs *partial* is a product rule that lives only in `app.js`. No events are emitted
+when `forDate` changes, because the 3pm IST rollover resets every district and would
+otherwise fabricate 14 spurious transitions daily. Events older than 60 days are pruned,
+and the newest 400 are kept.
 
 ## Setup and Deployment
 

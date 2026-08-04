@@ -51,7 +51,15 @@ repeatedly through an evening, and a stale page is dangerous, so the data carrie
 - `alert` is one of `red`, `orange`, `yellow`, `none` (IMD colour warnings).
 - Partial closures are not a status; they are derived from `scope`/`appliesTo` mentioning
   relief camps or taluks.
-- No server, no build, no network at render time. Must keep working from `file://`.
+- `data/history.js` is a separate generated file holding district transitions (`latest` +
+  `events`), written by the scrapers before `status.js` is overwritten. It is optional: when
+  absent, the features that read it hide themselves. It stores raw status tuples only —
+  classification stays in `app.js` so there is one source of product truth.
+- No build. Must keep working from `file://`: `status.js` and `history.js` are plain scripts,
+  never fetched, and the controls that need a server suppress themselves.
+- A service worker may cache the shell, but never serves data cache-first — a silently stale
+  verdict is the most dangerous thing this product can show. Cached data is a fallback only,
+  and its age is stated on the page.
 - Data is only as fresh as the last agent run; the UI must never imply live certainty it
   does not have.
 
