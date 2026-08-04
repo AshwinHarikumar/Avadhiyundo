@@ -327,10 +327,73 @@ function updateHistory(outDir, data) {
   return events.length;
 }
 
+// Writes a clean "no holidays declared" status for today when no article is found.
+// This prevents yesterday's stale confirmed data from persisting with a fresh timestamp.
+// alertsMap: optional {DistrictName: 'red'|'orange'|'yellow'|'none'} from the latest article.
+function writeNoHolidayStatus(outDir, istTimeInfo, alertsMap) {
+  const { targetStr, targetLabel, checkedAt } = istTimeInfo;
+
+  const districtsData = DISTRICTS_LIST.map(dist => ({
+    name: dist,
+    status: 'none',
+    alert: (alertsMap && alertsMap[dist]) || 'none',
+    confidence: null,
+    scope: null,
+    appliesTo: null,
+    excludes: null,
+    reason: null,
+    declaredBy: null,
+    exams: null,
+    confidenceNote: null,
+    sources: []
+  }));
+
+  const finalJson = {
+    forDate: targetStr,
+    forDateLabel: targetLabel,
+    checkedAt,
+    headline: 'No district holiday declarations found yet.',
+    advisories: [
+      {
+        level: 'warn',
+        title: 'No holiday articles found for today',
+        body: 'No holiday announcements have been detected from Onmanorama for today. Collectors may still issue orders later tonight — check your District Collector directly.'
+      }
+    ],
+    weather: {
+      summary: '',
+      outlook: '',
+      impact: '',
+      source: { name: '', url: '' }
+    },
+    districts: districtsData,
+    debunked: [],
+    limitations: [
+      'Parsed automatically from news media reports. Verify with local administrative announcements.'
+    ]
+  };
+
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+  const nEvents = updateHistory(outDir, finalJson);
+  const jsContent = `/* Kerala Rain Holiday Watch — findings data */\nwindow.KERALA_STATUS = ${JSON.stringify(finalJson, null, 2)};\n`;
+  fs.writeFileSync(path.join(outDir, 'status.js'), jsContent, 'utf-8');
+  console.log(`[Scraper] Wrote no-holiday status for ${targetStr}. (${nEvents} history events retained)`);
+  return true;
+}
+
 // Scrape logic
 async function runScraper() {
   console.log(`[Scraper] Starting scrape run: ${new Date().toISOString()}`);
-  
+  const outDir = path.join(__dirname, 'data');
+
+  // Get today's date in IST for URL matching
+  const now = new Date();
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istNow = new Date(now.getTime() + istOffset);
+  const todayStr = istNow.toISOString().split('T')[0]; // YYYY-MM-DD
+  const [todayYear, todayMonth, todayDay] = todayStr.split('-');
+  const todayPath = `${todayYear}/${todayMonth}/${todayDay}`; // YYYY/MM/DD for URLs
+
   // 1. Scan for the latest holiday news article on Onmanorama
   const keralaNewsUrl = "https://www.onmanorama.com/news/kerala.html";
   const headers = {
@@ -343,26 +406,92 @@ async function runScraper() {
   try {
     const listRes = await axios.get(keralaNewsUrl, { headers, timeout: 10000 });
     const $ = cheerio.load(listRes.data);
-    
+
+    // Collect all matching articles
+    const candidates = [];
     $('a').each((i, el) => {
       const href = $(el).attr('href');
       const text = $(el).text().trim();
-      
-      if (href && text && !articleUrl) {
+
+      if (href && text) {
         const textLower = text.toLowerCase();
         if (textLower.includes('holiday') && (textLower.includes('district') || textLower.includes('school') || textLower.includes('rain'))) {
-          articleUrl = href.startsWith('http') ? href : 'https://www.onmanorama.com' + href;
-          articleTitle = text;
+          const fullUrl = href.startsWith('http') ? href : 'https://www.onmanorama.com' + href;
+          candidates.push({ url: fullUrl, title: text, href: href });
         }
       }
     });
 
-    if (!articleUrl) {
-      console.log("[-] No rain holiday news articles found on Onmanorama today.");
-      return false;
+    if (candidates.length === 0) {
+      console.log("[-] No rain holiday news articles found on Onmanorama today. Writing no-holiday status.");
+      return writeNoHolidayStatus(outDir, getISTTime(), null);
     }
 
-    console.log(`[Scraper] Found Article: "${articleTitle}"`);
+    console.log(`[Scraper] Found ${candidates.length} candidate article(s):`);
+    candidates.forEach((c, i) => {
+      console.log(`  [${i}] "${c.title.substring(0, 60)}..." - ${c.href}`);
+    });
+
+    // Sort candidates by date: prioritize today's articles, then recent ones
+    candidates.sort((a, b) => {
+      const aHasToday = a.href.includes(todayPath);
+      const bHasToday = b.href.includes(todayPath);
+      console.log(`[Scraper] Comparing: "${a.title.substring(0, 40)}..." (hasToday=${aHasToday}) vs "${b.title.substring(0, 40)}..." (hasToday=${bHasToday})`);
+      if (aHasToday && !bHasToday) return -1;
+      if (!aHasToday && bHasToday) return 1;
+      return 0; // keep original order for ties
+    });
+
+    // ── Staleness guard ────────────────────────────────────────────────────────
+    // If the best candidate does not belong to today's date path, we refuse to
+    // overwrite status.js. Writing yesterday's article data with a fresh
+    // checkedAt timestamp is worse than doing nothing — it makes stale data
+    // look current. We only accept a yesterday-dated article if it is before
+    // 03:00 IST (collector announcements from late the previous night are still
+    // the operative ones for the current school day).
+    const bestHref = candidates[0].href;
+    const bestHasToday = bestHref.includes(todayPath);
+
+    if (!bestHasToday) {
+      // Allow yesterday's article only in the early-morning grace window (<03:00 IST)
+      const istHourNow = istNow.getUTCHours();
+      const isEarlyMorning = istHourNow < 3;
+
+      const yesterdayIST = new Date(istNow.getTime() - 24 * 60 * 60 * 1000);
+      const [yyYear, yyMonth, yyDay] = yesterdayIST.toISOString().split('T')[0].split('-');
+      const yesterdayPath = `${yyYear}/${yyMonth}/${yyDay}`;
+      const bestHasYesterday = bestHref.includes(yesterdayPath);
+
+      if (isEarlyMorning && bestHasYesterday) {
+        console.log(`[Scraper] Early-morning grace window: accepting yesterday's article.`);
+      } else {
+        // No today's article found — there may genuinely be no holiday declared yet.
+        // Write a clean "no holidays" status for today. Still fetch the old article
+        // to extract IMD alert levels (red/orange/yellow), which are day-persistent
+        // and independent of whether a holiday was declared.
+        console.log(`[Scraper] No article from today (${todayPath}) found. Fetching old article for IMD alerts only.`);
+        let alertsMap = null;
+        try {
+          const oldRes = await axios.get(candidates[0].url, { headers, timeout: 10000 });
+          const $old = cheerio.load(oldRes.data);
+          let oldBody = '';
+          $old('p').each((i, el) => { oldBody += $old(el).text().trim() + '\n'; });
+          if (oldBody.trim()) {
+            alertsMap = parseAlerts(oldBody);
+            console.log(`[Scraper] Parsed IMD alerts from old article (for display only).`);
+          }
+        } catch (e) {
+          console.warn(`[Scraper] Could not fetch old article for alerts: ${e.message}`);
+        }
+        return writeNoHolidayStatus(outDir, getISTTime(), alertsMap);
+      }
+    }
+    // ──────────────────────────────────────────────────────────────────────────
+
+    articleUrl = candidates[0].url;
+    articleTitle = candidates[0].title;
+
+    console.log(`[Scraper] Selected Article: "${articleTitle}"`);
     console.log(`[Scraper] Fetching text from: ${articleUrl}`);
 
     // 2. Fetch full body text of the article
@@ -532,8 +661,7 @@ async function runScraper() {
       ]
     };
 
-    // Write to file path data/status.js
-    const outDir = path.join(__dirname, 'data');
+    // Write to data/status.js
     if (!fs.existsSync(outDir)) {
       fs.mkdirSync(outDir, { recursive: true });
     }

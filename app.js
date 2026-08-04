@@ -239,6 +239,18 @@
   window.addEventListener("offline", renderGuard);
   window.addEventListener("online", renderGuard);
 
+  /* Detect when the date has rolled over and refresh data automatically */
+  (function () {
+    var lastDateCheck = istDateStr(0);
+    var dateCheckInterval = setInterval(function () {
+      var today = istDateStr(0);
+      if (today !== lastDateCheck) {
+        lastDateCheck = today;
+        location.reload();
+      }
+    }, 60000); /* check every minute */
+  })();
+
   /* ── Masthead stamp ── */
   (function () {
     var el = $("stamp");

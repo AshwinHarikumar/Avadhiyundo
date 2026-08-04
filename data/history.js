@@ -9,7 +9,7 @@
  */
 window.KERALA_HISTORY = {
   "latest": {
-    "forDate": "2026-08-04",
+    "forDate": "2026-08-05",
     "districts": {
       "Thiruvananthapuram": {
         "status": "none",
@@ -22,64 +22,64 @@ window.KERALA_HISTORY = {
         "appliesTo": null
       },
       "Pathanamthitta": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Alappuzha": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Kottayam": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Idukki": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Ernakulam": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Thrissur": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Palakkad": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Malappuram": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Kozhikode": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Wayanad": {
-        "status": "confirmed",
-        "scope": "Relief camp schools only",
-        "appliesTo": "All schools functioning as relief camps"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Kannur": {
-        "status": "confirmed",
-        "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
-        "appliesTo": "Educational institutions in specific taluks"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       },
       "Kasaragod": {
-        "status": "confirmed",
-        "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       }
     }
   },
@@ -292,6 +292,186 @@ window.KERALA_HISTORY = {
         "status": "confirmed",
         "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
         "appliesTo": "Educational institutions in specific taluks"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Idukki",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Palakkad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Malappuram",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "in kannur, a holiday has been declared for educational institutions in taliparamba, payyannur and iritty taluks only",
+        "appliesTo": "Educational institutions in specific taluks"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T16:02:47.568+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       }
     }
   ]

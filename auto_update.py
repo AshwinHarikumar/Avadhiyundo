@@ -88,18 +88,30 @@ def parse_alerts(body_text):
     return alerts
 
 def find_latest_holiday_article():
-    """Scrapes Onmanorama Kerala page to find the URL of the latest rain holiday article."""
+    """Scrapes Onmanorama Kerala page to find the URL of the latest rain holiday article.
+    Returns (url, title, None) if article is from today (or yesterday before 03:00 IST).
+    Returns (None, None, fallback_url) if no fresh article found — fallback_url is the
+    best available article URL to use only for IMD alert parsing."""
     url = "https://www.onmanorama.com/news/kerala.html"
     print(f"Scanning news portal: {url}")
+    
+    # Build today's date path for URL matching (YYYY/MM/DD)
+    utc_now = datetime.utcnow()
+    ist_now = utc_now + timedelta(hours=5, minutes=30)
+    today_path = ist_now.strftime("%Y/%m/%d")
+    yesterday_path = (ist_now - timedelta(days=1)).strftime("%Y/%m/%d")
+    ist_hour = ist_now.hour
+    is_early_morning = ist_hour < 3  # grace window: yesterday's late-night articles
     
     try:
         response = requests.get(url, headers=HEADERS, timeout=10)
         if response.status_code != 200:
-            return None, None
+            return None, None, None
             
         soup = BeautifulSoup(response.text, "html.parser")
         links = soup.find_all("a")
         
+        candidates = []
         for link in links:
             href = link.get("href")
             title = link.text.strip()
@@ -110,13 +122,36 @@ def find_latest_holiday_article():
             # Look for active holiday updates in the title
             if "holiday" in title.lower() and ("district" in title.lower() or "school" in title.lower() or "rain" in title.lower()):
                 if not href.startswith("http"):
-                    href = "https://www.onmanorama.com" + href
-                return href, title
-                
-        return None, None
+                    full_href = "https://www.onmanorama.com" + href
+                else:
+                    full_href = href
+                candidates.append((full_href, title, href))
+        
+        if not candidates:
+            print("[-] No rain holiday news articles found on Onmanorama today.")
+            return None, None, None
+        
+        # Prefer today's article
+        for full_href, title, href in candidates:
+            if today_path in href:
+                print(f"[+] Found today's article: {title}")
+                return full_href, title, None  # None = no fallback needed
+        
+        # Fall back to yesterday only in early-morning grace window
+        if is_early_morning:
+            for full_href, title, href in candidates:
+                if yesterday_path in href:
+                    print(f"[+] Early-morning grace window: using yesterday's article: {title}")
+                    return full_href, title, None
+        
+        # No fresh article — return best candidate as fallback for IMD alert parsing only
+        print(f"[-] No article from today ({today_path}) found. Will write no-holiday status.")
+        print(f"    Best candidate URL: {candidates[0][0]}")
+        return None, None, candidates[0][0]
+            
     except Exception as e:
         print(f"Error finding article: {e}")
-        return None, None
+        return None, None, None
 
 def fetch_article_body(url):
     """Fetches the full text of an Onmanorama article."""
@@ -409,14 +444,69 @@ window.KERALA_STATUS = {json.dumps(data, indent=2, ensure_ascii=False)};
     print(f"    Checked At:  {data['checkedAt']}")
     print(f"    Headline:    {data['headline']}")
 
+def write_no_holiday_status(alerts_map=None):
+    """Writes a clean 'no holidays declared' status.js for today.
+    Called when no today's article is found on Onmanorama, so yesterday's
+    stale confirmed data does not persist with a misleading fresh timestamp.
+    alerts_map: optional dict {district_name: 'red'|'orange'|'yellow'|'none'}
+    from the best available article, used to preserve IMD alert dot colours."""
+    today_str, target_str, target_label, checked_at = get_ist_time()
+    districts_data = [
+        {
+            "name": dist,
+            "status": "none",
+            "alert": (alerts_map.get(dist) if alerts_map else None) or "none",
+            "confidence": None,
+            "scope": None,
+            "appliesTo": None,
+            "excludes": None,
+            "reason": None,
+            "declaredBy": None,
+            "exams": None,
+            "confidenceNote": None,
+            "sources": []
+        }
+        for dist in DISTRICTS_LIST
+    ]
+    status_data = {
+        "forDate": target_str,
+        "forDateLabel": target_label,
+        "checkedAt": checked_at,
+        "headline": "No district holiday declarations found yet.",
+        "advisories": [
+            {
+                "level": "warn",
+                "title": "No holiday articles found for today",
+                "body": "No holiday announcements have been detected from Onmanorama for today. "
+                        "Collectors may still issue orders later tonight \u2014 check your District Collector directly."
+            }
+        ],
+        "weather": {"summary": "", "outlook": "", "impact": "", "source": {"name": "", "url": ""}},
+        "districts": districts_data,
+        "debunked": [],
+        "limitations": ["Parsed automatically from news media reports. Verify with local administrative announcements."]
+    }
+    n_events = update_history(status_data)
+    write_status_file(status_data)
+    print(f"    History:     {n_events} transitions retained")
+
 def main():
     print("=== AUTOMATIC HOLIDAY DATA UPDATE AGENT ===")
     
     # 1. Scan for the latest holiday news article
-    article_url, article_title = find_latest_holiday_article()
+    article_url, article_title, fallback_url = find_latest_holiday_article()
     
     if not article_url:
-        print("[-] No rain holiday news articles found on Onmanorama today.")
+        # No today's article. Try fetching the fallback (old) article just for IMD alert levels.
+        alerts_map = None
+        if fallback_url:
+            print(f"[-] Fetching old article for IMD alert data only: {fallback_url}")
+            fallback_body = fetch_article_body(fallback_url)
+            if fallback_body:
+                alerts_map = parse_alerts(fallback_body)
+                print("[+] Parsed IMD alerts from old article (for display only, no holiday data used).")
+        print("[-] No today's article found. Writing no-holiday status for today.")
+        write_no_holiday_status(alerts_map)
         return
         
     print(f"[+] Found Article: {article_title}")
@@ -426,7 +516,8 @@ def main():
     body_text = fetch_article_body(article_url)
     
     if not body_text:
-        print("[-] Error: Empty article body fetched. Exiting.")
+        print("[-] Error: Empty article body fetched. Writing no-holiday status as fallback.")
+        write_no_holiday_status()
         return
         
     # 3. Parse article content to update district statuses
