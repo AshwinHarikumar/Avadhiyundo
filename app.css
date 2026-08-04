@@ -32,9 +32,9 @@
 
   /* Text on night — every step clears 4.5:1 on --ink and --ink-2 */
   --text:       #f5f5f5;
-  --text-2:     #bebebe;
-  --text-3:     #8c8c8c;
-  --text-4:     #606060;
+  --text-2:     #d0d0d0;
+  --text-3:     #a3a3a3;
+  --text-4:     #808080;
 
   /* Type */
   --station:    'Archivo', system-ui, sans-serif;
