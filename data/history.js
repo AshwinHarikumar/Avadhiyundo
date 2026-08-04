@@ -64,7 +64,7 @@ window.KERALA_HISTORY = {
       "Kozhikode": {
         "status": "confirmed",
         "scope": "District-wide",
-        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        "appliesTo": "All educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
       },
       "Wayanad": {
         "status": "confirmed",
@@ -3395,6 +3395,21 @@ window.KERALA_HISTORY = {
         "status": "confirmed",
         "scope": "District-wide",
         "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-05",
+      "at": "2026-08-04T22:00:56.359+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
       }
     }
   ]

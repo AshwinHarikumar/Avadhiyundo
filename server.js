@@ -848,19 +848,30 @@ async function runScraper() {
           "Relief camp schools only": 1,
           "Select taluks only": 2
         };
+        // Date-scoped override for Kozhikode (2026-08-05):
+        // Mathrubhumi article body is truncated by the site before reaching the exclusion paragraph,
+        // so the scraper cannot auto-detect it. This override applies the known DC announcement:
+        // Professional colleges are NOT included in the holiday.
         const reading = readings.reduce((best, current) => {
           const bestScore = (scopePriority[best.scope] || 0) + (best.excludes ? 0.5 : 0);
           const currentScore = (scopePriority[current.scope] || 0) + (current.excludes ? 0.5 : 0);
           return currentScore > bestScore ? current : best;
         });
+        let finalExcludes = reading.excludes;
+        let finalAppliesTo = reading.appliesTo;
+        if (dist === 'Kozhikode' && targetStr === '2026-08-05' && reading.excludes === null) {
+          finalExcludes = 'Professional colleges are NOT covered — they function as normal.';
+          finalAppliesTo = 'All educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)';
+          console.log('[Scraper] Applied Kozhikode professional-college override for 2026-08-05.');
+        }
         districtsData.push({
           name: dist,
           status: "confirmed",
           alert: alertsMap[dist] || "none",
           confidence,
           scope: reading.scope,
-          appliesTo: reading.appliesTo,
-          excludes: reading.excludes,
+          appliesTo: finalAppliesTo,
+          excludes: finalExcludes,
           reason: reading.reason,
           declaredBy: `District Collector, ${dist}`,
           exams: "Scheduled public and university examinations proceed unless specified.",
