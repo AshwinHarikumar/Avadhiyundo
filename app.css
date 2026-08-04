@@ -42,7 +42,7 @@
   --mono:       'Roboto Mono', ui-monospace, monospace;
   --mal:        'Anek Malayalam', 'Noto Sans Malayalam', system-ui, sans-serif;
 
-  --shell:      1180px;
+  --shell:      1280px;
   --mast-h:     58px;
 }
 
@@ -1060,6 +1060,33 @@ ol, ul { list-style: none; }
   background: var(--lamp);
   transform-origin: left;
   animation: rule-draw .7s cubic-bezier(.16,1,.3,1) .18s both;
+}
+
+@media (min-width: 900px) {
+  .lamp-inner {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 0 40px;
+  }
+  .lamp-date { grid-column: 1; }
+  .lamp-ask { grid-column: 1; }
+  .lamp-read { grid-column: 1; }
+  .lamp-line { grid-column: 1; }
+  .lamp-split { grid-column: 1; }
+  .lamp-caveat { grid-column: 1; }
+  .pin {
+    grid-column: 2;
+    grid-row: 1 / 7;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+    padding-left: 40px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 /* ══════════════════════════════════════
