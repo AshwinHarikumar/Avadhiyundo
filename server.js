@@ -631,8 +631,8 @@ async function runScraper() {
           $a('p').each((i, el) => { fullBodyText += $a(el).text().trim() + '\n'; });
         }
 
-        if (!chosenBody) {
-          chosenBody = fullBodyText;
+        chosenBody += '\n\n' + fullBodyText;
+        if (!chosenUrl) {
           chosenUrl = candidate.url;
           chosenTitle = candidate.title;
         }
