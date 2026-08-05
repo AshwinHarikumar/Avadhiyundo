@@ -27,14 +27,14 @@ window.KERALA_HISTORY = {
         "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Alappuzha": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Kottayam": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Idukki": {
         "status": "none",
@@ -68,8 +68,8 @@ window.KERALA_HISTORY = {
       },
       "Wayanad": {
         "status": "confirmed",
-        "scope": "Relief camp schools only",
-        "appliesTo": "All schools functioning as relief camps"
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Kannur": {
         "status": "none",
@@ -3635,6 +3635,411 @@ window.KERALA_HISTORY = {
         "status": "confirmed",
         "scope": "Thiruvalla taluk only",
         "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:13:25.658053+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:13:25.658053+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:13:25.658053+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:13:25.658053+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:38.210340+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:14:54.731+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:19:09.707230+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:19:09.707230+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:19:09.707230+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:19:09.707230+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:21:59.177+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:21:59.177+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:21:59.177+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:21:59.177+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Thiruvananthapuram",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T20:22:19.267032+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
       }
     }
   ]

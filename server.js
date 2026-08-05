@@ -856,7 +856,7 @@ async function runScraper() {
         let activeDistrict = null;
 
         for (const p of holidayParagraphs) {
-          const pClean = p.replace(/^[^\n:]{2,40}:\s*/, '');
+          const pClean = p.replace(/^[^:\n•●∙\-\—\|]{2,50}[:•●∙\-\—\|]\s*/, '');
           const pLower = pClean.toLowerCase();
 
           // Check if this paragraph is a district heading

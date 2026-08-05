@@ -921,7 +921,7 @@ def main():
                     active_district = None
 
                     for p in paragraphs:
-                        p_clean = re.sub(r'^[^\n:]{2,40}:\s*', '', p)
+                        p_clean = re.sub(r'^[^:\n•●∙\-\—\|]{2,50}[:•●∙\-\—\|]\s*', '', p)
                         p_lower = p_clean.lower()
                         
                         # Check if this paragraph is a district heading
