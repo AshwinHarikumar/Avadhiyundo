@@ -1,9 +1,9 @@
 /* Kerala Rain Holiday Watch — findings data */
 window.KERALA_STATUS = {
-  "forDate": "2026-08-05",
-  "forDateLabel": "Wednesday, 05 August 2026",
-  "checkedAt": "2026-08-05T07:10:03.833+05:30",
-  "headline": "Holidays declared in 10 districts.",
+  "forDate": "2026-08-06",
+  "forDateLabel": "Thursday, 06 August 2026",
+  "checkedAt": "2026-08-05T15:18:52.985+05:30",
+  "headline": "Holidays declared in 0 districts.",
   "advisories": [
     {
       "level": "warn",
@@ -17,14 +17,14 @@ window.KERALA_STATUS = {
     "impact": "High risk of waterlogging and localized flooding. Relief camps active.",
     "source": {
       "name": "Onmanorama",
-      "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html"
+      "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-orange-alert-yellow-red-holiday-educational-institutions-live.html"
     }
   },
   "districts": [
     {
       "name": "Thiruvananthapuram",
       "status": "none",
-      "alert": "none",
+      "alert": "orange",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -38,7 +38,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kollam",
       "status": "none",
-      "alert": "none",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -51,224 +51,92 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Pathanamthitta",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Pathanamthitta",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Alappuzha",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Alappuzha",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Kottayam",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Kottayam",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Idukki",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Idukki",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Ernakulam",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Ernakulam",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Thrissur",
-      "status": "confirmed",
-      "alert": "none",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "status": "none",
+      "alert": "yellow",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Thrissur",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Palakkad",
       "status": "none",
-      "alert": "none",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -282,7 +150,7 @@ window.KERALA_STATUS = {
     {
       "name": "Malappuram",
       "status": "none",
-      "alert": "none",
+      "alert": "orange",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -295,147 +163,59 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Kozhikode",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)",
-      "excludes": "Professional colleges are NOT covered — they function as normal.",
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Kozhikode",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
+      "excludes": null,
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Wayanad",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Wayanad",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Kannur",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Kannur",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     },
     {
       "name": "Kasaragod",
-      "status": "confirmed",
+      "status": "none",
       "alert": "orange",
-      "confidence": 80,
-      "scope": "District-wide",
-      "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+      "confidence": null,
+      "scope": null,
+      "appliesTo": null,
       "excludes": null,
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Kasaragod",
-      "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama, Mathrubhumi, Mathrubhumi.",
-      "sources": [
-        {
-          "name": "Manorama",
-          "title": "LIVE\n                            \n\n                            \n                            \n                            \n                            \tഇന്ന് 10 ജില്ലകളിൽ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് അവധി; 9 ഇടത്ത് ഓറഞ്ച് അലർട്ട്: മരണം 27 ആയി",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴക്കെടുതി: 26 മരണം, കള്ളക്കടൽ പ്രതിഭാസത്തിന് സാധ്യത; 10 ജില്ലകളിൽ ഇന്ന് അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/kerala-rain-orange-alert-school-holidays-update-mbytceyh",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "കനത്ത മഴയ്ക്ക് സാധ്യത: സംസ്ഥാനത്തെ 10 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/wayanad-school-holiday-tourist-spots-closed-red-alert-q1zpv0eg",
-          "time": "Latest Update",
-          "tier": 1
-        }
-      ]
+      "reason": null,
+      "declaredBy": null,
+      "exams": null,
+      "confidenceNote": null,
+      "sources": []
     }
   ],
   "debunked": [],

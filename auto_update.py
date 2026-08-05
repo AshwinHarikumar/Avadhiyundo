@@ -136,11 +136,16 @@ def is_sentence_relevant_for_date(sentence, target_str):
     if target_str != today_str:
         has_past_or_today = "today" in sentence_lower or "yesterday" in sentence_lower or \
                             "ഇന്ന്" in sentence_lower or "ഇന്നലെ" in sentence_lower
-        if has_past_or_today:
-            has_future = "tomorrow" in sentence_lower or "നാളെ" in sentence_lower or \
-                         target_day_eng in sentence_lower or target_day_mal in sentence_lower
-            if not has_future:
-                return False
+        has_future = "tomorrow" in sentence_lower or "നാളെ" in sentence_lower or \
+                     target_day_eng in sentence_lower or target_day_mal in sentence_lower
+                     
+        if has_past_or_today and not has_future:
+            return False
+            
+        # For a future target date, we must see a future reference.
+        # Otherwise, old paragraphs from today's static article will bleed into tomorrow.
+        if not has_future:
+            return False
                 
     return True
 
@@ -262,7 +267,7 @@ def fetch_holiday_body(url, target_str):
                     
                     # Parse target date range in UTC
                     target_dt = datetime.strptime(target_str, "%Y-%m-%d")
-                    window_start = (target_dt - timedelta(days=1)).replace(hour=8, minute=30, second=0)
+                    window_start = (target_dt - timedelta(days=1)).replace(hour=9, minute=30, second=0)
                     window_end = target_dt.replace(hour=6, minute=30, second=0)
                     
                     updates = []

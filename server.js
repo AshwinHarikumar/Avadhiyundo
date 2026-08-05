@@ -7,6 +7,7 @@ const path = require('path');
 const webpush = require('web-push');
 const { initTelegramBot, notifyTelegramSubscribers } = require('./telegram_bot');
 
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
@@ -241,14 +242,19 @@ function isSentenceRelevantForDate(sentence, targetStr) {
                            sentenceLower.includes("yesterday") || 
                            sentenceLower.includes("ഇന്ന്") || 
                            sentenceLower.includes("ഇന്നലെ");
-    if (hasPastOrToday) {
-      const hasFuture = sentenceLower.includes("tomorrow") || 
-                        sentenceLower.includes("നാളെ") || 
-                        sentenceLower.includes(targetDayEng) || 
-                        sentenceLower.includes(targetDayMal);
-      if (!hasFuture) {
-        return false;
-      }
+    const hasFuture = sentenceLower.includes("tomorrow") || 
+                      sentenceLower.includes("നാളെ") || 
+                      sentenceLower.includes(targetDayEng) || 
+                      sentenceLower.includes(targetDayMal);
+                      
+    if (hasPastOrToday && !hasFuture) {
+      return false;
+    }
+    
+    // For a future target date, we must see a future reference.
+    // Otherwise, old paragraphs from today's static article will bleed into tomorrow.
+    if (!hasFuture) {
+      return false;
     }
   }
   
@@ -653,7 +659,7 @@ async function runScraper() {
             
             // Calculate active window in UTC ms
             const [yr, mo, dy] = targetStr.split('-').map(Number);
-            const windowStart = Date.UTC(yr, mo - 1, dy - 1, 8, 30, 0);
+            const windowStart = Date.UTC(yr, mo - 1, dy - 1, 9, 30, 0); // 3:00 PM IST (aligns with rollover)
             const windowEnd = Date.UTC(yr, mo - 1, dy, 6, 30, 0);
             
             const updates = [];
@@ -978,6 +984,7 @@ async function runScraper() {
     await notifySubscribers(finalJson);
     await notifyTelegramSubscribers(finalJson);
 
+
     console.log(`[Scraper] Successfully updated data/status.js! (${nEvents} transitions retained)`);
     return true;
   } catch (err) {
@@ -1164,6 +1171,7 @@ app.listen(PORT, async () => {
   
   // Initialize Telegram Bot
   initTelegramBot();
+
 
   // Trigger initial scrape on startup
   await runScraper();

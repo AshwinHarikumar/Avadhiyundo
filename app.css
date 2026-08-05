@@ -1254,9 +1254,29 @@ ol, ul { list-style: none; }
 /* ── Feedback form ── */
 .feedback-box {
   margin-top: 34px;
-  max-width: 500px;
   border-top: 1px solid var(--rule);
   padding-top: 28px;
+}
+.feedback-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .feedback-layout {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  .feedback-text {
+    flex: 1;
+    max-width: 400px;
+  }
+  #feedbackForm {
+    flex: 1.5;
+    max-width: 500px;
+  }
 }
 .feedback-box strong {
   display: block;
