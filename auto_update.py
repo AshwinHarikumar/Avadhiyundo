@@ -37,14 +37,16 @@ HEADERS = {
 }
 
 def get_ist_time():
-    """Returns current date, time, and target date in IST (UTC+5:30) based on 15:00 (3 PM) rollover."""
+    """Returns current date, time, and target date in IST (UTC+5:30) based on 18:30 (6:30 PM) rollover."""
     utc_now = datetime.utcnow()
     ist_now = utc_now + timedelta(hours=5, minutes=30)
     
     today_str = ist_now.strftime("%Y-%m-%d")
     
-    # If before 3:00 PM (15:00) IST, target is today; otherwise tomorrow
-    if ist_now.hour < 15:
+    # If before 6:30 PM (18:30) IST, target is today; otherwise tomorrow
+    current_minutes = ist_now.hour * 60 + ist_now.minute
+    rollover_minutes = 18 * 60 + 30
+    if current_minutes < rollover_minutes:
         target_date = ist_now
     else:
         target_date = ist_now + timedelta(days=1)
@@ -215,6 +217,20 @@ def derive_reading(text):
         # A named-taluk order. Keep the scope line taluk-shaped — the UI lifts
         # the names out of it into chips.
         label = ", ".join(taluks) + (" taluk" if len(taluks) == 1 else " taluks")
+        
+        # Check if this is a mixed order (has "remaining", "other", "elsewhere")
+        is_mixed = relief_camp_only and any(x in lower for x in ["remaining", "other", "elsewhere", "ശേഷിക്കുന്ന", "മറ്റു", "മറ്റുള്ള"])
+        
+        if relief_camp_only and not is_mixed:
+            # Case B: Only relief camp schools in the named taluks are closed
+            return {
+                "scope": f"Relief camp schools in {label} only",
+                "appliesTo": f"Schools functioning as relief camps in {label}.",
+                "excludes": "All other educational institutions",
+                "reason": "Schools serving as relief camps during floods",
+                "qualified": True
+            }
+            
         reading = {
             "scope": label + " only",
             "appliesTo": type_label + " in " + label + ".",
@@ -261,10 +277,10 @@ def _scope_rank(scope):
     s = (scope or "").lower()
     if "district-wide" in s:
         return 3
+    if "relief" in s:
+        return 1
     if "taluk" in s:
         return 2
-    if "relief camp" in s:
-        return 1
     return 0
 
 def pick_best_reading(readings):
@@ -283,6 +299,7 @@ def pick_best_reading(readings):
     # rather than dropping it.
     if "taluk" in (best["scope"] or "").lower() and \
             "relief camp" not in (best.get("appliesTo") or "").lower() and \
+            "relief camp" not in (best.get("scope") or "").lower() and \
             any("relief camp" in (r["scope"] or "").lower() for r in pool):
         best = dict(best)
         best["appliesTo"] = (best.get("appliesTo") or "").rstrip() + \
@@ -408,8 +425,8 @@ def fetch_holiday_body(url, target_str):
                     
                     # Parse target date range in UTC
                     target_dt = datetime.strptime(target_str, "%Y-%m-%d")
-                    window_start = (target_dt - timedelta(days=1)).replace(hour=9, minute=30, second=0)
-                    window_end = target_dt.replace(hour=6, minute=30, second=0)
+                    window_start = (target_dt - timedelta(days=1)).replace(hour=13, minute=0, second=0)
+                    window_end = target_dt.replace(hour=13, minute=0, second=0)
                     
                     updates = []
                     for k, v in json_data.items():
@@ -770,6 +787,67 @@ def write_no_holiday_status(alerts_map=None):
     write_status_file(status_data)
     print(f"    History:     {n_events} transitions retained")
 
+def segment_text_by_districts(text):
+    matches = []
+    for dist in DISTRICTS_LIST:
+        names_to_check = [dist.lower()] + [n.lower() for n in DISTRICT_TRANSLATIONS.get(dist, [])]
+        for name in names_to_check:
+            for m in re.finditer(re.escape(name), text.lower()):
+                matches.append((m.start(), m.end(), dist))
+                
+    if not matches:
+        return [(text, None)]
+        
+    matches.sort(key=lambda x: x[0])
+    
+    unique_matches = []
+    for m in matches:
+        if not unique_matches or m[0] >= unique_matches[-1][1]:
+            unique_matches.append(m)
+            
+    if not unique_matches:
+        return [(text, None)]
+        
+    segments = []
+    num_matches = len(unique_matches)
+    for idx in range(num_matches):
+        if idx == 0:
+            start_idx = 0
+        else:
+            prev_end = unique_matches[idx-1][1]
+            between_text = text[prev_end : unique_matches[idx][0]]
+            m_split = re.search(r'(?:,|\band\b|;)', between_text)
+            if m_split:
+                start_idx = prev_end + m_split.end()
+            else:
+                start_idx = (prev_end + unique_matches[idx][0]) // 2
+                
+        if idx == num_matches - 1:
+            end_idx = len(text)
+        else:
+            this_end = unique_matches[idx][1]
+            between_text = text[this_end : unique_matches[idx+1][0]]
+            m_split = re.search(r'(?:,|\band\b|;)', between_text)
+            if m_split:
+                end_idx = this_end + m_split.start()
+            else:
+                end_idx = (this_end + unique_matches[idx+1][0]) // 2
+                
+        segment_text = text[start_idx:end_idx]
+        dist_name = unique_matches[idx][2]
+        segments.append((segment_text, dist_name))
+        
+    return segments
+
+def get_candidate_tier(url, title):
+    url_lower = url.lower()
+    title_lower = title.lower()
+    if "live" in url_lower or "live" in title_lower:
+        return 2
+    if "holiday" in url_lower or "closures" in url_lower or "അവധി" in title_lower:
+        return 1
+    return 3
+
 def main():
     print("=== AUTOMATIC HOLIDAY DATA UPDATE AGENT ===")
     
@@ -851,6 +929,10 @@ def main():
                 recent_candidates.append(c)
             elif target_path in c["href"] or yesterday_target_path in c["href"]:
                 recent_candidates.append(c)
+                
+        if recent_candidates:
+            global_min_tier = min(get_candidate_tier(c["url"], c["title"]) for c in recent_candidates)
+            recent_candidates = [c for c in recent_candidates if get_candidate_tier(c["url"], c["title"]) == global_min_tier]
             
             def candidate_score(c):
                 c_lower = (c["title"] + " " + c["url"]).lower()
@@ -936,33 +1018,67 @@ def main():
                         if is_heading:
                             continue
 
-                        # Check matching for each district
-                        for dist in DISTRICTS_LIST:
-                            is_mentioned = bool(re.search(r'\b' + re.escape(dist) + r'\b', p_clean, re.IGNORECASE))
-                            if not is_mentioned and dist in DISTRICT_TRANSLATIONS:
-                                for mal_name in DISTRICT_TRANSLATIONS[dist]:
-                                    if mal_name in p_clean:
-                                        is_mentioned = True
-                                        break
-                                        
-                            # Check if the paragraph is relevant to this district (either mentioned directly or under active heading)
-                            is_target = is_mentioned or (active_district == dist and not any(
-                                bool(re.search(r'\b' + re.escape(d) + r'\b', p_clean, re.IGNORECASE)) or
-                                any(mal in p_clean for mal in DISTRICT_TRANSLATIONS.get(d, []))
-                                for d in DISTRICTS_LIST if d != dist
-                            ))
-
-                            if not is_target:
+                        # Split paragraph into sentences
+                        sentences = re.split(r'(?<=[.!?])\s+', p_clean)
+                        for sentence in sentences:
+                            sentence = sentence.strip()
+                            if not sentence:
                                 continue
-
-                            # Read sentence by sentence. A single paragraph often
-                            # carries a full closure for one taluk and a relief-camp
-                            # clause for the rest of the district; judging the whole
-                            # paragraph at once flattens that into district-wide.
-                            for sentence in re.split(r'(?<=[.!?])\s+', p_clean):
-                                reading = derive_reading(sentence)
-                                if reading:
-                                    district_readings_map[dist].append(reading)
+                                
+                            # Find all districts mentioned in the sentence
+                            mentioned_dists = []
+                            for dist in DISTRICTS_LIST:
+                                names_to_check = [dist.lower()] + [n.lower() for n in DISTRICT_TRANSLATIONS.get(dist, [])]
+                                if any(name in sentence.lower() for name in names_to_check):
+                                    mentioned_dists.append(dist)
+                            
+                            target_dists = mentioned_dists if mentioned_dists else ([active_district] if active_district else [])
+                            if not target_dists:
+                                continue
+                                
+                            base_reading = derive_reading(sentence)
+                            if not base_reading:
+                                continue
+                                
+                            # Segment the sentence to isolate taluks per district
+                            segments = segment_text_by_districts(sentence)
+                            seg_dict = {dist: text for text, dist in segments if dist}
+                            
+                            for dist in target_dists:
+                                reading = dict(base_reading)
+                                
+                                # Override taluks if multiple districts mentioned in this sentence
+                                if len(target_dists) > 1 and dist in seg_dict:
+                                    seg_text = seg_dict[dist]
+                                    local_taluks = extract_taluks(seg_text)
+                                    if local_taluks:
+                                        label = ", ".join(local_taluks) + (" taluk" if len(local_taluks) == 1 else " taluks")
+                                        if reading["scope"].startswith("Relief camp schools in"):
+                                            reading["scope"] = f"Relief camp schools in {label} only"
+                                            reading["appliesTo"] = f"Schools functioning as relief camps in {label}."
+                                        else:
+                                            reading["scope"] = label + " only"
+                                            type_label = "Educational institutions except professional colleges" if "except professional colleges" in reading["appliesTo"] else "All educational institutions"
+                                            reading["appliesTo"] = type_label + " in " + label + "."
+                                            
+                                            mentions_relief_camp = ("relief camp" in sentence.lower() or "relief-camp" in sentence.lower() or
+                                                                    "ദുരിതാശ്വാസ" in sentence.lower() or "ക്യാമ്പ്" in sentence.lower())
+                                            relief_camp_only = mentions_relief_camp and (
+                                                "only" in sentence.lower() or "except" in sentence.lower() or "functioning as" in sentence.lower() or
+                                                "പ്രവർത്തിക്കുന്ന" in sentence.lower() or "മാത്രം" in sentence.lower())
+                                            
+                                            if relief_camp_only:
+                                                reading["appliesTo"] += " Elsewhere in the district, only schools functioning as relief camps are closed."
+                                                reading["excludes"] = "Institutions outside " + label + " that are not relief camps."
+                                    else:
+                                        # No local taluks, check for relief camp
+                                        if "relief camp" in sentence.lower() or "ദുരിതാശ്വാസ" in sentence.lower():
+                                            reading["scope"] = "Relief camp schools only"
+                                            reading["appliesTo"] = "All schools functioning as relief camps"
+                                            reading["excludes"] = "All other educational institutions"
+                                            reading["reason"] = "Schools serving as relief camps during floods"
+                                
+                                district_readings_map[dist].append(reading)
 
                     # Now, process district_readings_map to update evidence_map
                     for dist in DISTRICTS_LIST:
@@ -980,6 +1096,7 @@ def main():
                                 "excludes": best_reading["excludes"],
                                 "reason": best_reading["reason"],
                                 "qualified": best_reading.get("qualified", False),
+                                "tier": get_candidate_tier(candidate["url"], candidate["title"]),
                                 "source": {
                                     "name": candidate.get("source", "Onmanorama"),
                                     "title": candidate["title"],
@@ -1034,10 +1151,11 @@ def main():
                         confidence = 80
                         
                     confidence_note = f"Reported by {', '.join(r['source']['name'] for r in readings)}."
-                    if len(readings) == 1:
-                        confidence_note = f"Reported by {readings[0]['source']['name']}."
-                        
-                    best_reading = pick_best_reading(readings)
+                    # Filter readings to only keep those from the highest priority tier present (minimum tier value)
+                    min_tier = min(r.get("tier", 1) for r in readings)
+                    filtered_readings = [r for r in readings if r.get("tier", 1) == min_tier]
+                    
+                    best_reading = pick_best_reading(filtered_readings)
 
                     districts_data.append({
                         "name": dist,

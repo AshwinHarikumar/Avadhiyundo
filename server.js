@@ -78,6 +78,95 @@ function extractTaluks(text) {
    names (appliesTo), and how far the order reaches (scope). Conflating them is
    what made "all educational institutions ... in Thiruvalla taluk" read as
    district-wide. Returns null when the sentence declares no closure. */
+function segmentTextByDistricts(text) {
+  const matches = [];
+  for (const dist of DISTRICTS_LIST) {
+    const namesToCheck = [dist.toLowerCase()].concat(
+      (DISTRICT_TRANSLATIONS[dist] || []).map(n => n.toLowerCase())
+    );
+    for (const name of namesToCheck) {
+      let pos = text.toLowerCase().indexOf(name);
+      while (pos !== -1) {
+        matches.push({ start: pos, end: pos + name.length, dist });
+        pos = text.toLowerCase().indexOf(name, pos + 1);
+      }
+    }
+  }
+
+  if (matches.length === 0) {
+    return [{ text, dist: null }];
+  }
+
+  matches.sort((a, b) => a.start - b.start);
+
+  const uniqueMatches = [];
+  for (const m of matches) {
+    if (uniqueMatches.length === 0 || m.start >= uniqueMatches[uniqueMatches.length - 1].end) {
+      uniqueMatches.push(m);
+    }
+  }
+
+  if (uniqueMatches.length === 0) {
+    return [{ text, dist: null }];
+  }
+
+  const segments = [];
+  const numMatches = uniqueMatches.length;
+  for (let idx = 0; idx < numMatches; idx++) {
+    let startIdx, endIdx;
+    
+    if (idx === 0) {
+      startIdx = 0;
+    } else {
+      const prevEnd = uniqueMatches[idx - 1].end;
+      const betweenText = text.substring(prevEnd, uniqueMatches[idx].start);
+      const splitMatch = betweenText.match(/(?:,|\band\b|;)/);
+      if (splitMatch) {
+        startIdx = prevEnd + splitMatch.index + splitMatch[0].length;
+      } else {
+        startIdx = Math.floor((prevEnd + uniqueMatches[idx].start) / 2);
+      }
+    }
+
+    if (idx === numMatches - 1) {
+      endIdx = text.length;
+    } else {
+      const thisEnd = uniqueMatches[idx].end;
+      const betweenText = text.substring(thisEnd, uniqueMatches[idx + 1].start);
+      const splitMatch = betweenText.match(/(?:,|\band\b|;)/);
+      if (splitMatch) {
+        endIdx = thisEnd + splitMatch.index;
+      } else {
+        endIdx = Math.floor((thisEnd + uniqueMatches[idx + 1].start) / 2);
+      }
+    }
+
+    const segmentText = text.substring(startIdx, endIdx);
+    const distName = uniqueMatches[idx].dist;
+    segments.push({ text: segmentText, dist: distName });
+  }
+
+  return segments;
+}
+
+function getCandidateTier(url, title) {
+  const urlLower = url.toLowerCase();
+  const titleLower = title.toLowerCase();
+  if (urlLower.includes("live") || titleLower.includes("live")) {
+    return 2;
+  }
+  if (urlLower.includes("holiday") || urlLower.includes("closures") || titleLower.includes("അവധി")) {
+    return 1;
+  }
+  return 3;
+}
+
+/* Read one sentence of a holiday report into a scope verdict.
+
+   Two axes here, and they are independent: which institution *types* the order
+   names (appliesTo), and how far the order reaches (scope). Conflating them is
+   what made "all educational institutions ... in Thiruvalla taluk" read as
+   district-wide. Returns null when the sentence declares no closure. */
 function deriveReading(text) {
   const lower = (text || "").toLowerCase();
   if (!LOCAL_HOLIDAY_KEYWORDS.some(kw => lower.includes(kw))) return null;
@@ -111,9 +200,22 @@ function deriveReading(text) {
     lower.includes("താലൂക്ക്") || lower.includes("താലൂക്കുകൾ");
 
   if (taluks.length > 0) {
-    // A named-taluk order. Keep the scope line taluk-shaped — the UI lifts the
-    // names out of it into chips.
     const label = taluks.join(", ") + (taluks.length === 1 ? " taluk" : " taluks");
+    
+    // Check if this is a mixed order
+    const isMixed = reliefCampOnly && ["remaining", "other", "elsewhere", "ശേഷിക്കുന്ന", "മറ്റു", "മറ്റുള്ള"].some(x => lower.includes(x));
+    
+    if (reliefCampOnly && !isMixed) {
+      // Case B: Only relief camp schools in the named taluks are closed
+      return {
+        scope: "Relief camp schools in " + label + " only",
+        appliesTo: "Schools functioning as relief camps in " + label + ".",
+        excludes: "All other educational institutions",
+        reason: "Schools serving as relief camps during floods",
+        qualified: true
+      };
+    }
+
     const reading = {
       scope: label + " only",
       appliesTo: typeLabel + " in " + label + ".",
@@ -122,8 +224,6 @@ function deriveReading(text) {
       qualified: true
     };
     if (reliefCampOnly) {
-      // Mixed order in one sentence: the named taluks close fully, elsewhere
-      // only the schools being used as relief camps do.
       reading.appliesTo += " Elsewhere in the district, only schools functioning as relief camps are closed.";
       reading.excludes = "Institutions outside " + label + " that are not relief camps.";
     }
@@ -131,8 +231,6 @@ function deriveReading(text) {
   }
 
   if (reliefCampOnly) {
-    // Covers "in the district's remaining taluks, only relief camps" too — an
-    // unnamed taluk phrase is not a named-taluk order.
     return {
       scope: "Relief camp schools only",
       appliesTo: "All schools functioning as relief camps",
@@ -158,8 +256,8 @@ function deriveReading(text) {
 function scopeRank(scope) {
   const s = (scope || "").toLowerCase();
   if (s.includes("district-wide")) return 3;
+  if (s.includes("relief")) return 1;
   if (s.includes("taluk")) return 2;
-  if (s.includes("relief camp")) return 1;
   return 0;
 }
 
@@ -170,20 +268,18 @@ function scopeRank(scope) {
    beats an unqualified default; only among equally qualified readings do we
    take the broadest. */
 function pickBestReading(readings) {
-  const qualified = readings.filter(r => r.qualified);
-  const pool = qualified.length > 0 ? qualified : readings;
-  let best = pool.reduce((a, b) => {
+  const pool = readings.filter(r => r.qualified);
+  const poolToUse = pool.length > 0 ? pool : readings;
+  let best = poolToUse.reduce((a, b) => {
     const aScore = scopeRank(a.scope) + (a.excludes ? 0.5 : 0);
     const bScore = scopeRank(b.scope) + (b.excludes ? 0.5 : 0);
     return bScore > aScore ? b : a;
   });
 
-  // A taluk sentence and a relief-camp sentence in the same report describe one
-  // order with two halves. Carry the remainder onto the taluk reading rather
-  // than dropping it.
   if ((best.scope || "").toLowerCase().includes("taluk") &&
       !(best.appliesTo || "").toLowerCase().includes("relief camp") &&
-      pool.some(r => (r.scope || "").toLowerCase().includes("relief camp"))) {
+      !(best.scope || "").toLowerCase().includes("relief camp") &&
+      poolToUse.some(r => (r.scope || "").toLowerCase().includes("relief camp"))) {
     best = Object.assign({}, best, {
       appliesTo: (best.appliesTo || "").trimEnd() +
         " Elsewhere in the district, only schools functioning as relief camps are closed.",
@@ -333,9 +429,12 @@ function getISTTime() {
   // Format today string (YYYY-MM-DD)
   const todayStr = istTime.toISOString().split('T')[0];
 
-  // Roll over to tomorrow's date at 15:00 (3:00 PM) IST
+  // Roll over to tomorrow's date at 18:30 (6:30 PM) IST
   const istHour = istTime.getUTCHours();
-  const isBeforeRollover = istHour < 15;
+  const istMinute = istTime.getUTCMinutes();
+  const currentMinutes = istHour * 60 + istMinute;
+  const rolloverMinutes = 18 * 60 + 30; // 6:30 PM IST
+  const isBeforeRollover = currentMinutes < rolloverMinutes;
 
   const targetTime = isBeforeRollover ? istTime : new Date(istTime.getTime() + 24 * 60 * 60 * 1000);
   const targetStr = targetTime.toISOString().split('T')[0];
@@ -668,14 +767,23 @@ function getDatePaths() {
   const [todayYear, todayMonth, todayDay] = todayIST.split('-');
   const todayPath = `${todayYear}/${todayMonth}/${todayDay}`;
 
-  const targetTime = istHour >= 15
+  const istMinute = istNow.getUTCMinutes();
+  const currentMinutes = istHour * 60 + istMinute;
+  const rolloverMinutes = 18 * 60 + 30;
+
+  const targetTime = currentMinutes >= rolloverMinutes
     ? new Date(istNow.getTime() + 24 * 60 * 60 * 1000)
     : istNow;
   const targetIST = targetTime.toISOString().split('T')[0];
   const [tYear, tMonth, tDay] = targetIST.split('-');
   const targetPath = `${tYear}/${tMonth}/${tDay}`;
 
-  return { todayPath, targetPath };
+  const yesterdayTargetTime = new Date(targetTime.getTime() - 24 * 60 * 60 * 1000);
+  const yesterdayTargetIST = yesterdayTargetTime.toISOString().split('T')[0];
+  const [yYear, yMonth, yDay] = yesterdayTargetIST.split('-');
+  const yesterdayTargetPath = `${yYear}/${yMonth}/${yDay}`;
+
+  return { todayPath, targetPath, yesterdayTargetPath };
 }
 
 async function runScraper() {
@@ -698,7 +806,7 @@ async function runScraper() {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
   };
 
-  const { todayPath, targetPath } = getDatePaths();
+  const { todayPath, targetPath, yesterdayTargetPath } = getDatePaths();
 
   let articleUrl = null;
   let articleTitle = "";
@@ -731,9 +839,17 @@ async function runScraper() {
 
     // Accept recent articles (today or yesterday) - content may describe tomorrow's closures
     // Bypass target path check for Mathrubhumi since its URLs do not contain date paths
-    const recentCandidates = candidates.filter(c =>
-      c.source === 'Mathrubhumi' || c.href.includes(todayPath) || c.href.includes(targetPath)
+    let recentCandidates = candidates.filter(c =>
+      c.source === 'Mathrubhumi' ||
+      c.href.includes(todayPath) ||
+      c.href.includes(targetPath) ||
+      c.href.includes(yesterdayTargetPath)
     );
+
+    if (recentCandidates.length > 0) {
+      const globalMinTier = Math.min(...recentCandidates.map(c => getCandidateTier(c.url, c.title)));
+      recentCandidates = recentCandidates.filter(c => getCandidateTier(c.url, c.title) === globalMinTier);
+    }
 
     recentCandidates.sort((a, b) => {
       const aLower = (a.title + ' ' + a.url).toLowerCase();
@@ -805,8 +921,8 @@ async function runScraper() {
             
             // Calculate active window in UTC ms
             const [yr, mo, dy] = targetStr.split('-').map(Number);
-            const windowStart = Date.UTC(yr, mo - 1, dy - 1, 9, 30, 0); // 3:00 PM IST (aligns with rollover)
-            const windowEnd = Date.UTC(yr, mo - 1, dy, 6, 30, 0);
+            const windowStart = Date.UTC(yr, mo - 1, dy - 1, 13, 0, 0); // 6:30 PM IST (aligns with rollover)
+            const windowEnd = Date.UTC(yr, mo - 1, dy, 13, 0, 0);
             
             const updates = [];
             for (const [k, v] of Object.entries(jsonRes.data)) {
@@ -874,39 +990,87 @@ async function runScraper() {
           }
           if (isHeading) continue;
 
-          for (const dist of DISTRICTS_LIST) {
-            // Check if district is mentioned (in English or Malayalam translations)
-            const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
-            let isMentioned = distRegex.test(pClean);
-            if (!isMentioned && DISTRICT_TRANSLATIONS[dist]) {
-              for (const malName of DISTRICT_TRANSLATIONS[dist]) {
-                if (pClean.includes(malName)) {
-                  isMentioned = true;
-                  break;
-                }
+          // Split paragraph into sentences
+          const sentences = pClean.split(/(?<=[.!?])\s+/);
+          for (const sentence of sentences) {
+            const sentenceTrimmed = sentence.trim();
+            if (!sentenceTrimmed) continue;
+
+            // Find all districts mentioned in the sentence
+            const mentionedDists = [];
+            for (const dist of DISTRICTS_LIST) {
+              const namesToCheck = [dist.toLowerCase()].concat(
+                (DISTRICT_TRANSLATIONS[dist] || []).map(n => n.toLowerCase())
+              );
+              if (namesToCheck.some(name => sentenceTrimmed.toLowerCase().includes(name))) {
+                mentionedDists.push(dist);
               }
             }
 
-            // Check if the paragraph is relevant to this district (either mentioned directly or under active heading)
-            let isTarget = isMentioned || (activeDistrict === dist && !DISTRICTS_LIST.some(d => {
-              if (d === dist) return false;
-              const dRegex = new RegExp(`\\b${d}\\b`, 'i');
-              if (dRegex.test(pClean)) return true;
-              if (DISTRICT_TRANSLATIONS[d]) {
-                return DISTRICT_TRANSLATIONS[d].some(mal => pClean.includes(mal));
+            const targetDists = mentionedDists.length > 0 ? mentionedDists : (activeDistrict ? [activeDistrict] : []);
+            if (targetDists.length === 0) continue;
+
+            const baseReading = deriveReading(sentenceTrimmed);
+            if (!baseReading) continue;
+
+            // Segment the sentence to isolate taluks per district
+            const segments = segmentTextByDistricts(sentenceTrimmed);
+            const segDict = {};
+            for (const seg of segments) {
+              if (seg.dist) {
+                segDict[seg.dist] = seg.text;
               }
-              return false;
-            }));
+            }
 
-            if (!isTarget) continue;
+            for (const dist of targetDists) {
+              const reading = Object.assign({}, baseReading);
 
-            // Read sentence by sentence. A single paragraph often carries a full
-            // closure for one taluk and a relief-camp clause for the rest of the
-            // district; judging the whole paragraph at once flattens that into
-            // district-wide.
-            for (const sentence of pClean.split(/(?<=[.!?])\s+/)) {
-              const reading = deriveReading(sentence);
-              if (reading) districtReadingsMap[dist].push(reading);
+              // Override taluks if multiple districts mentioned in this sentence
+              if (targetDists.length > 1 && segDict[dist]) {
+                const segText = segDict[dist];
+                const localTaluks = extractTaluks(segText);
+                if (localTaluks.length > 0) {
+                  const label = localTaluks.join(", ") + (localTaluks.length === 1 ? " taluk" : " taluks");
+                  if (reading.scope.startsWith("Relief camp schools in")) {
+                    reading.scope = "Relief camp schools in " + label + " only";
+                    reading.appliesTo = "Schools functioning as relief camps in " + label + ".";
+                  } else {
+                    reading.scope = label + " only";
+                    const typeLabel = (reading.appliesTo || "").includes("except professional colleges") ? 
+                      "Educational institutions except professional colleges" : "All educational institutions";
+                    reading.appliesTo = typeLabel + " in " + label + ".";
+
+                    const mentionsReliefCamp = sentenceTrimmed.toLowerCase().includes("relief camp") || 
+                      sentenceTrimmed.toLowerCase().includes("relief-camp") ||
+                      sentenceTrimmed.toLowerCase().includes("ദുരിതാശ്വാസ") || 
+                      sentenceTrimmed.toLowerCase().includes("ക്യാമ്പ്");
+                    const reliefCampOnly = mentionsReliefCamp && (
+                      sentenceTrimmed.toLowerCase().includes("only") || 
+                      sentenceTrimmed.toLowerCase().includes("except") || 
+                      sentenceTrimmed.toLowerCase().includes("functioning as") ||
+                      sentenceTrimmed.toLowerCase().includes("പ്രവർത്തിക്കുന്ന") || 
+                      sentenceTrimmed.toLowerCase().includes("മാത്രം"));
+
+                    if (reliefCampOnly) {
+                      reading.appliesTo += " Elsewhere in the district, only schools functioning as relief camps are closed.";
+                      reading.excludes = "Institutions outside " + label + " that are not relief camps.";
+                    }
+                  }
+                } else {
+                  // No local taluks, check for relief camp
+                  if (sentenceTrimmed.toLowerCase().includes("relief camp") || 
+                      sentenceTrimmed.toLowerCase().includes("relief-camp") ||
+                      sentenceTrimmed.toLowerCase().includes("ദുരിതാശ്വാസ") || 
+                      sentenceTrimmed.toLowerCase().includes("ക്യാമ്പ്")) {
+                    reading.scope = "Relief camp schools only";
+                    reading.appliesTo = "All schools functioning as relief camps";
+                    reading.excludes = "All other educational institutions";
+                    reading.reason = "Schools serving as relief camps during floods";
+                  }
+                }
+              }
+
+              districtReadingsMap[dist].push(reading);
             }
           }
         }
@@ -926,6 +1090,7 @@ async function runScraper() {
               excludes: bestReading.excludes,
               reason: bestReading.reason,
               qualified: bestReading.qualified || false,
+              tier: getCandidateTier(candidate.url, candidate.title),
               source: {
                 name: candidate.source,
                 title: candidate.title,
@@ -955,7 +1120,9 @@ async function runScraper() {
         let confidenceNote = `Reported by ${readings.map(r => r.source.name).join(', ')}.`;
         if (sourceCount === 1) confidenceNote = `Reported by ${readings[0].source.name}.`;
 
-        const reading = pickBestReading(readings);
+        const minTier = Math.min(...readings.map(r => r.tier || 1));
+        const filteredReadings = readings.filter(r => (r.tier || 1) === minTier);
+        const reading = pickBestReading(filteredReadings);
 
         // Date-scoped override for Kozhikode (2026-08-05):
         // Mathrubhumi article body is truncated by the site before reaching the exclusion paragraph,

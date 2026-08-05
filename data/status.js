@@ -2,8 +2,8 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-06",
   "forDateLabel": "Thursday, 06 August 2026",
-  "checkedAt": "2026-08-05T20:23:06.331+05:30",
-  "headline": "Partial/conditional closures in 4 districts. No district-wide holiday declared.",
+  "checkedAt": "2026-08-06T04:59:14.212+05:30",
+  "headline": "Partial/conditional closures in 6 districts. No district-wide holiday declared.",
   "advisories": [
     {
       "level": "warn",
@@ -17,7 +17,7 @@ window.KERALA_STATUS = {
     "impact": "High risk of waterlogging and localized flooding. Relief camps active.",
     "source": {
       "name": "Onmanorama",
-      "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-orange-alert-yellow-red-holiday-educational-institutions-live.html"
+      "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html"
     }
   },
   "districts": [
@@ -54,25 +54,25 @@ window.KERALA_STATUS = {
       "status": "confirmed",
       "alert": "orange",
       "confidence": 80,
-      "scope": "Thiruvalla taluk only",
-      "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed.",
-      "excludes": "Institutions outside the named taluks that are not relief camps.",
+      "scope": "Thiruvalla, Kozhencherry taluks only",
+      "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks.",
+      "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Pathanamthitta",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Holiday for educational institutions in Thiruvalla tomorrow, relief camp schools to remain shut in 2 districts",
+          "title": "Holiday for educational institutions in several taluks, relief camp schools to remain shut in 4 districts",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
           "time": "Latest Update",
           "tier": 1
         },
         {
-          "name": "Manorama",
-          "title": "സംസ്ഥാനത്ത് കനത്ത മഴ തുടരുന്നതിനെ തുടർന്ന് ഓഗസ്റ്റ് 6-ന് കോട്ടയം, പത്തനംതിട്ട, ആലപ്പുഴ, വയനാട്, കോഴിക്കോട് ജില്ലകളിലെ ചില താലൂക്കുകളിലും ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങളിലും അവധി പ്രഖ്യാപിച്ചു. വെള്ളിയാഴ്ച വരെ സംസ്ഥാനത്ത് ഓറഞ്ച് അലർട്ട് തുടരുമെന്ന് കാലാവസ്ഥാ നിരീക്ഷണ കേന്ദ്രം അറിയിച്ചിട്ടുണ്ട്. നിലവിൽ ദുരിതാശ്വാസ ക്യാമ്പുകളിൽ ആയിരക്കണക്കിന് ആളുകൾ കഴിയുന്നുണ്ട്, പ്രത്യേകിച്ചും കുട്ടനാട് മേഖലയിൽ വെള്ളക്കെട്ട് രൂക്ഷമാണ്. വിനോദസഞ്ചാരികൾക്ക് വയനാട് ഉൾപ്പെടെയുള്ള ജില്ലകളിൽ അതീവ ജാഗ്രതാ നിർദേശം നൽകിയിട്ടുണ്ട്.",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
+          "name": "Mathrubhumi",
+          "title": "നാല് ജില്ലകളിലെ ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/pathanamthitta-thiruvalla-school-holiday-thursday-gc5s4t2y",
           "time": "Latest Update",
           "tier": 1
         }
@@ -82,19 +82,26 @@ window.KERALA_STATUS = {
       "name": "Alappuzha",
       "status": "confirmed",
       "alert": "orange",
-      "confidence": 60,
-      "scope": "Select taluks only",
-      "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed.",
+      "confidence": 80,
+      "scope": "Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks only",
+      "appliesTo": "All educational institutions in Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks. Elsewhere in the district, only schools functioning as relief camps are closed.",
       "excludes": "Institutions outside the named taluks that are not relief camps.",
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Alappuzha",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
-          "name": "Manorama",
-          "title": "സംസ്ഥാനത്ത് കനത്ത മഴ തുടരുന്നതിനെ തുടർന്ന് ഓഗസ്റ്റ് 6-ന് കോട്ടയം, പത്തനംതിട്ട, ആലപ്പുഴ, വയനാട്, കോഴിക്കോട് ജില്ലകളിലെ ചില താലൂക്കുകളിലും ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങളിലും അവധി പ്രഖ്യാപിച്ചു. വെള്ളിയാഴ്ച വരെ സംസ്ഥാനത്ത് ഓറഞ്ച് അലർട്ട് തുടരുമെന്ന് കാലാവസ്ഥാ നിരീക്ഷണ കേന്ദ്രം അറിയിച്ചിട്ടുണ്ട്. നിലവിൽ ദുരിതാശ്വാസ ക്യാമ്പുകളിൽ ആയിരക്കണക്കിന് ആളുകൾ കഴിയുന്നുണ്ട്, പ്രത്യേകിച്ചും കുട്ടനാട് മേഖലയിൽ വെള്ളക്കെട്ട് രൂക്ഷമാണ്. വിനോദസഞ്ചാരികൾക്ക് വയനാട് ഉൾപ്പെടെയുള്ള ജില്ലകളിൽ അതീവ ജാഗ്രതാ നിർദേശം നൽകിയിട്ടുണ്ട്.",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
+          "name": "Onmanorama",
+          "title": "Holiday for educational institutions in several taluks, relief camp schools to remain shut in 4 districts",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "നാല് ജില്ലകളിലെ ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/pathanamthitta-thiruvalla-school-holiday-thursday-gc5s4t2y",
           "time": "Latest Update",
           "tier": 1
         }
@@ -104,19 +111,26 @@ window.KERALA_STATUS = {
       "name": "Kottayam",
       "status": "confirmed",
       "alert": "orange",
-      "confidence": 60,
-      "scope": "Select taluks only",
-      "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed.",
+      "confidence": 80,
+      "scope": "Kottayam taluk only",
+      "appliesTo": "All educational institutions in Kottayam taluk. Elsewhere in the district, only schools functioning as relief camps are closed.",
       "excludes": "Institutions outside the named taluks that are not relief camps.",
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Kottayam",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
-          "name": "Manorama",
-          "title": "സംസ്ഥാനത്ത് കനത്ത മഴ തുടരുന്നതിനെ തുടർന്ന് ഓഗസ്റ്റ് 6-ന് കോട്ടയം, പത്തനംതിട്ട, ആലപ്പുഴ, വയനാട്, കോഴിക്കോട് ജില്ലകളിലെ ചില താലൂക്കുകളിലും ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങളിലും അവധി പ്രഖ്യാപിച്ചു. വെള്ളിയാഴ്ച വരെ സംസ്ഥാനത്ത് ഓറഞ്ച് അലർട്ട് തുടരുമെന്ന് കാലാവസ്ഥാ നിരീക്ഷണ കേന്ദ്രം അറിയിച്ചിട്ടുണ്ട്. നിലവിൽ ദുരിതാശ്വാസ ക്യാമ്പുകളിൽ ആയിരക്കണക്കിന് ആളുകൾ കഴിയുന്നുണ്ട്, പ്രത്യേകിച്ചും കുട്ടനാട് മേഖലയിൽ വെള്ളക്കെട്ട് രൂക്ഷമാണ്. വിനോദസഞ്ചാരികൾക്ക് വയനാട് ഉൾപ്പെടെയുള്ള ജില്ലകളിൽ അതീവ ജാഗ്രതാ നിർദേശം നൽകിയിട്ടുണ്ട്.",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
+          "name": "Onmanorama",
+          "title": "Holiday for educational institutions in several taluks, relief camp schools to remain shut in 4 districts",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
+          "time": "Latest Update",
+          "tier": 1
+        },
+        {
+          "name": "Mathrubhumi",
+          "title": "നാല് ജില്ലകളിലെ ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
+          "url": "https://www.mathrubhumi.com/news/kerala/pathanamthitta-thiruvalla-school-holiday-thursday-gc5s4t2y",
           "time": "Latest Update",
           "tier": 1
         }
@@ -124,17 +138,25 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Idukki",
-      "status": "none",
+      "status": "confirmed",
       "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
-      "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "confidence": 60,
+      "scope": "Relief camp schools only",
+      "appliesTo": "All schools functioning as relief camps",
+      "excludes": "All other educational institutions",
+      "reason": "Schools serving as relief camps during floods",
+      "declaredBy": "District Collector, Idukki",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Holiday for educational institutions in several taluks, relief camp schools to remain shut in 4 districts",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Ernakulam",
@@ -181,7 +203,7 @@ window.KERALA_STATUS = {
     {
       "name": "Malappuram",
       "status": "none",
-      "alert": "orange",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -194,42 +216,50 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Kozhikode",
-      "status": "none",
-      "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
-      "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
-    },
-    {
-      "name": "Wayanad",
       "status": "confirmed",
-      "alert": "orange",
-      "confidence": 80,
-      "scope": "Select taluks only",
-      "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed.",
-      "excludes": "Institutions outside the named taluks that are not relief camps.",
-      "reason": "Adverse weather and heavy rainfall",
-      "declaredBy": "District Collector, Wayanad",
+      "alert": "yellow",
+      "confidence": 60,
+      "scope": "Relief camp schools only",
+      "appliesTo": "All schools functioning as relief camps",
+      "excludes": "All other educational institutions",
+      "reason": "Schools serving as relief camps during floods",
+      "declaredBy": "District Collector, Kozhikode",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Manorama.",
+      "confidenceNote": "Reported by Onmanorama.",
       "sources": [
         {
           "name": "Onmanorama",
-          "title": "Holiday for educational institutions in Thiruvalla tomorrow, relief camp schools to remain shut in 2 districts",
+          "title": "Holiday for educational institutions in several taluks, relief camp schools to remain shut in 4 districts",
           "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
           "time": "Latest Update",
           "tier": 1
         },
         {
-          "name": "Manorama",
-          "title": "സംസ്ഥാനത്ത് കനത്ത മഴ തുടരുന്നതിനെ തുടർന്ന് ഓഗസ്റ്റ് 6-ന് കോട്ടയം, പത്തനംതിട്ട, ആലപ്പുഴ, വയനാട്, കോഴിക്കോട് ജില്ലകളിലെ ചില താലൂക്കുകളിലും ദുരിതാശ്വാസ ക്യാമ്പുകൾ പ്രവർത്തിക്കുന്ന വിദ്യാഭ്യാസ സ്ഥാപനങ്ങളിലും അവധി പ്രഖ്യാപിച്ചു. വെള്ളിയാഴ്ച വരെ സംസ്ഥാനത്ത് ഓറഞ്ച് അലർട്ട് തുടരുമെന്ന് കാലാവസ്ഥാ നിരീക്ഷണ കേന്ദ്രം അറിയിച്ചിട്ടുണ്ട്. നിലവിൽ ദുരിതാശ്വാസ ക്യാമ്പുകളിൽ ആയിരക്കണക്കിന് ആളുകൾ കഴിയുന്നുണ്ട്, പ്രത്യേകിച്ചും കുട്ടനാട് മേഖലയിൽ വെള്ളക്കെട്ട് രൂക്ഷമാണ്. വിനോദസഞ്ചാരികൾക്ക് വയനാട് ഉൾപ്പെടെയുള്ള ജില്ലകളിൽ അതീവ ജാഗ്രതാ നിർദേശം നൽകിയിട്ടുണ്ട്.",
-          "url": "https://www.manoramaonline.com/news/latest-news/2026/08/05/kerala-rain-holiday-districts-orange-red-yellow-alert-weather-monsoon-updates.html",
+          "name": "Onmanorama",
+          "title": "Beyond social media demands: How Kerala Collectors decide on rain holidays",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/rain-alerts-school-closures-district-collectors.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
+    },
+    {
+      "name": "Wayanad",
+      "status": "confirmed",
+      "alert": "yellow",
+      "confidence": 60,
+      "scope": "Relief camp schools only",
+      "appliesTo": "All schools functioning as relief camps",
+      "excludes": "All other educational institutions",
+      "reason": "Schools serving as relief camps during floods",
+      "declaredBy": "District Collector, Wayanad",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Holiday for educational institutions in several taluks, relief camp schools to remain shut in 4 districts",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
           "time": "Latest Update",
           "tier": 1
         }

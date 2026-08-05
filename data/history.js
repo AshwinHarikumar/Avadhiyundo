@@ -23,23 +23,23 @@ window.KERALA_HISTORY = {
       },
       "Pathanamthitta": {
         "status": "confirmed",
-        "scope": "Thiruvalla taluk only",
-        "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks."
       },
       "Alappuzha": {
         "status": "confirmed",
-        "scope": "Select taluks only",
-        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+        "scope": "Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks only",
+        "appliesTo": "All educational institutions in Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Kottayam": {
         "status": "confirmed",
-        "scope": "Select taluks only",
-        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+        "scope": "Kottayam taluk only",
+        "appliesTo": "All educational institutions in Kottayam taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Idukki": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
       },
       "Ernakulam": {
         "status": "none",
@@ -62,14 +62,14 @@ window.KERALA_HISTORY = {
         "appliesTo": null
       },
       "Kozhikode": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
       },
       "Wayanad": {
         "status": "confirmed",
-        "scope": "Select taluks only",
-        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
       },
       "Kannur": {
         "status": "none",
@@ -4040,6 +4040,876 @@ window.KERALA_HISTORY = {
         "status": "confirmed",
         "scope": "Select taluks only",
         "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Thiruvalla taluk only",
+        "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Idukki",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:42:28.277696+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Select taluks only",
+        "appliesTo": "Educational institutions in specific taluks Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks."
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks only",
+        "appliesTo": "All educational institutions in Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Kottayam taluk only",
+        "appliesTo": "All educational institutions in Kottayam taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Idukki",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Mavelikkara, Ambalappuzha taluks only",
+        "appliesTo": "All educational institutions in Mavelikkara, Ambalappuzha taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:46:17.225419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks."
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:48:36.432858+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks only",
+        "appliesTo": "All educational institutions in Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Kottayam taluk only",
+        "appliesTo": "All educational institutions in Kottayam taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Idukki",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:49:03.520+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:05.594+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:05.594+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:05.594+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla, Kozhencherry taluks only",
+        "appliesTo": "All educational institutions in Thiruvalla, Kozhencherry taluks."
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks only",
+        "appliesTo": "All educational institutions in Kuttanad, Chengannur, Karthikappally, Mavelikkara taluks. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Kottayam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Kottayam taluk only",
+        "appliesTo": "All educational institutions in Kottayam taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Idukki",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kozhikode",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:50:49.419+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Ernakulam",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:53:57.533+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kannur",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:53:57.533+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      }
+    },
+    {
+      "d": "Kasaragod",
+      "forDate": "2026-08-06",
+      "at": "2026-08-06T04:53:57.533+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
       }
     }
   ]
