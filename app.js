@@ -362,27 +362,33 @@
       }).join("") + "</span>";
     }
 
+    var iconShield = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+    var iconBook = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
+    var iconX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+    var iconInfo = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+
     if (d.excludes) {
-      meta += '<span class="meta-row m-exclude"><b>Excludes</b> ' + esc(d.excludes) + "</span>";
+      meta += '<span class="meta-row m-exclude"><b>' + iconX + 'Excludes</b> ' + esc(d.excludes) + "</span>";
     }
     if (d.exams) {
-      meta += '<span class="meta-row"><b>Exams</b> ' + esc(d.exams) + "</span>";
+      meta += '<span class="meta-row"><b>' + iconBook + 'Exams</b> ' + esc(d.exams) + "</span>";
     }
     if (d.declaredBy) {
-      meta += '<span class="meta-row"><b>Declared by</b> ' + esc(d.declaredBy) + "</span>";
+      meta += '<span class="meta-row"><b>' + iconShield + 'Declared by</b> ' + esc(d.declaredBy) + "</span>";
     }
     if (kind === "unconfirmed" && d.confidenceNote) {
-      meta += '<span class="meta-row"><b>Note</b> ' + esc(d.confidenceNote) + "</span>";
+      meta += '<span class="meta-row"><b>' + iconInfo + 'Note</b> ' + esc(d.confidenceNote) + "</span>";
     }
 
 
-    var sources = (d.sources || []).map(function (s) {
+    var sourcesHtml = (d.sources || []).map(function (s) {
       var href = safeUrl(s.url);
       if (!href) return "";
       return '<a class="src" href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' +
         ICON.src + "<span>" + esc(s.name || "Source") +
         '</span><span class="sr-only"> — opens in a new tab</span></a>';
     }).join("");
+    var sources = sourcesHtml ? '<div class="sources">' + sourcesHtml + '</div>' : "";
 
     var isPinned = pinned === d.name;
     var acts =
@@ -459,13 +465,23 @@
       ? '<button type="button" id="notifyBtn" class="pin-notify">Notify when declared</button>'
       : '';
 
+    var tgBtn = '<a href="https://t.me/avadhiyundo_bot" target="_blank" rel="noopener noreferrer" class="pin-telegram">' +
+      '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:6px; margin-top:-2px;">' +
+        '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>' +
+      '</svg>Subscribe on Telegram</a>';
+
+    var actionButtons = '<div class="pin-actions">' +
+      (notifyBtn ? notifyBtn : '') +
+      tgBtn +
+      '</div>';
+
     if (!pinned) {
       el.innerHTML =
         '<div class="pin-setup">' +
           '<select id="setupDistrict">' + districtOptions + '</select>' +
         '</div>' +
         '<p class="pin-hint">Select your district above to see your personal answer.</p>' +
-        notifyBtn;
+        actionButtons;
       return;
     }
 
@@ -504,7 +520,7 @@
       '<p class="pin-line">' + esc(baseLine) + '</p>' +
       caveatLine +
       talukHtml +
-      notifyBtn;
+      actionButtons;
   }
 
   function renderFilters() {

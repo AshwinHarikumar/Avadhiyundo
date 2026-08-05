@@ -5,6 +5,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const webpush = require('web-push');
+const { initTelegramBot, notifyTelegramSubscribers } = require('./telegram_bot');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -70,7 +71,7 @@ function initVapidKeys() {
       const vapidData = JSON.parse(fs.readFileSync(vapidPath, 'utf-8'));
       vapidPublicKey = vapidData.publicKey;
       vapidPrivateKey = vapidData.privateKey;
-      vapidSubject = vapidData.subject || 'mailto:admin@avdhiundo.com';
+      vapidSubject = vapidData.subject || 'mailto:admin@avadhiyundo.onrender.com';
       webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
       console.log("[Push] VAPID keys loaded from .vapid.json.");
       return true;
@@ -268,7 +269,8 @@ function parseAlerts(bodyText) {
 
   for (let sentence of sentences) {
     sentence = sentence.trim();
-    if (!sentence || !sentence.toLowerCase().includes("alert")) {
+    const sLower = sentence.toLowerCase();
+    if (!sLower || !(sLower.includes("alert") || sLower.includes("അലർട്ട്"))) {
       continue;
     }
 
@@ -277,11 +279,11 @@ function parseAlerts(bodyText) {
     for (const clause of clauses) {
       const clauseLower = clause.toLowerCase();
       let color = null;
-      if (clauseLower.includes("red alert") || (/\bred\b/.test(clauseLower) && clauseLower.includes("alert"))) {
+      if (clauseLower.includes("red alert") || (/\bred\b/.test(clauseLower) && clauseLower.includes("alert")) || clauseLower.includes("റെഡ്")) {
         color = "red";
-      } else if (clauseLower.includes("orange alert") || (/\borange\b/.test(clauseLower) && clauseLower.includes("alert"))) {
+      } else if (clauseLower.includes("orange alert") || (/\borange\b/.test(clauseLower) && clauseLower.includes("alert")) || clauseLower.includes("ഓറഞ്ച്")) {
         color = "orange";
-      } else if (clauseLower.includes("yellow alert") || (/\byellow\b/.test(clauseLower) && clauseLower.includes("alert"))) {
+      } else if (clauseLower.includes("yellow alert") || (/\byellow\b/.test(clauseLower) && clauseLower.includes("alert")) || clauseLower.includes("യെല്ലോ")) {
         color = "yellow";
       }
 
@@ -290,7 +292,11 @@ function parseAlerts(bodyText) {
       const clauseDistricts = [];
       for (const dist of DISTRICTS_LIST) {
         const distRegex = new RegExp(`\\b${dist}\\b`, 'i');
-        if (distRegex.test(clause)) {
+        let isMentioned = distRegex.test(clause);
+        if (!isMentioned && DISTRICT_TRANSLATIONS[dist]) {
+          isMentioned = DISTRICT_TRANSLATIONS[dist].some(mal => clause.includes(mal));
+        }
+        if (isMentioned) {
           clauseDistricts.push(dist);
         }
       }
@@ -970,6 +976,7 @@ async function runScraper() {
     fs.writeFileSync(path.join(outDir, 'status.js'), jsContent, 'utf-8');
 
     await notifySubscribers(finalJson);
+    await notifyTelegramSubscribers(finalJson);
 
     console.log(`[Scraper] Successfully updated data/status.js! (${nEvents} transitions retained)`);
     return true;
@@ -1155,6 +1162,9 @@ app.use(express.static(__dirname));
 app.listen(PORT, async () => {
   console.log(`[Server] Node.js backend listening on port ${PORT}`);
   
+  // Initialize Telegram Bot
+  initTelegramBot();
+
   // Trigger initial scrape on startup
   await runScraper();
   lastScrapeTime = Date.now();
