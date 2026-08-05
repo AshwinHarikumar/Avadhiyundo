@@ -47,6 +47,152 @@ const LOCAL_HOLIDAY_KEYWORDS = [
   "അവധി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
 ];
 
+const TALUK_NAME_RE = /\b([A-Z][a-zA-Z]+(?:\s*,\s*[A-Z][a-zA-Z]+)*(?:\s+and\s+[A-Z][a-zA-Z]+)?)\s+taluks?\b/g;
+
+const TALUK_STOPWORDS = new Set([
+  "the", "in", "of", "and", "district", "districts", "remaining", "other",
+  "others", "all", "select", "respective", "both", "two", "three", "several"
+]);
+
+/* Pull taluk names out of prose like "in Thiruvalla taluk" or "Vadakara and
+   Koyilandy taluks". Returns [] for generic phrasing such as "the district's
+   remaining taluks", so we never invent a name. */
+function extractTaluks(text) {
+  const names = [];
+  TALUK_NAME_RE.lastIndex = 0;
+  let match;
+  while ((match = TALUK_NAME_RE.exec(text || "")) !== null) {
+    for (const part of match[1].split(/,|\band\b/)) {
+      const name = part.trim();
+      if (name && !TALUK_STOPWORDS.has(name.toLowerCase()) && !names.includes(name)) {
+        names.push(name);
+      }
+    }
+  }
+  return names;
+}
+
+/* Read one sentence of a holiday report into a scope verdict.
+
+   Two axes here, and they are independent: which institution *types* the order
+   names (appliesTo), and how far the order reaches (scope). Conflating them is
+   what made "all educational institutions ... in Thiruvalla taluk" read as
+   district-wide. Returns null when the sentence declares no closure. */
+function deriveReading(text) {
+  const lower = (text || "").toLowerCase();
+  if (!LOCAL_HOLIDAY_KEYWORDS.some(kw => lower.includes(kw))) return null;
+
+  const mentionsProfessional = lower.includes("professional") || lower.includes("പ്രൊഫഷണൽ");
+  const hasExclusionKw = /\b(except|excluding|not)\b/.test(lower) ||
+    lower.includes("ഒഴികെ") || lower.includes("ഒഴികെയുള്ള");
+  const excludesProfessional = mentionsProfessional && hasExclusionKw;
+
+  let typeLabel, appliesTo, excludes;
+  if (excludesProfessional) {
+    typeLabel = "Educational institutions except professional colleges";
+    appliesTo = "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)";
+    excludes = "Professional colleges NOT covered.";
+  } else {
+    typeLabel = "All educational institutions";
+    appliesTo = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres";
+    excludes = null;
+  }
+
+  const reason = "Adverse weather and heavy rainfall";
+
+  const mentionsReliefCamp = lower.includes("relief camp") || lower.includes("relief-camp") ||
+    lower.includes("ദുരിതാശ്വാസ") || lower.includes("ക്യാമ്പ്");
+  const reliefCampOnly = mentionsReliefCamp && (
+    lower.includes("only") || lower.includes("except") || lower.includes("functioning as") ||
+    lower.includes("പ്രവർത്തിക്കുന്ന") || lower.includes("മാത്രം"));
+
+  const taluks = extractTaluks(text);
+  const mentionsTaluk = taluks.length > 0 || lower.includes("taluk") ||
+    lower.includes("താലൂക്ക്") || lower.includes("താലൂക്കുകൾ");
+
+  if (taluks.length > 0) {
+    // A named-taluk order. Keep the scope line taluk-shaped — the UI lifts the
+    // names out of it into chips.
+    const label = taluks.join(", ") + (taluks.length === 1 ? " taluk" : " taluks");
+    const reading = {
+      scope: label + " only",
+      appliesTo: typeLabel + " in " + label + ".",
+      excludes,
+      reason,
+      qualified: true
+    };
+    if (reliefCampOnly) {
+      // Mixed order in one sentence: the named taluks close fully, elsewhere
+      // only the schools being used as relief camps do.
+      reading.appliesTo += " Elsewhere in the district, only schools functioning as relief camps are closed.";
+      reading.excludes = "Institutions outside " + label + " that are not relief camps.";
+    }
+    return reading;
+  }
+
+  if (reliefCampOnly) {
+    // Covers "in the district's remaining taluks, only relief camps" too — an
+    // unnamed taluk phrase is not a named-taluk order.
+    return {
+      scope: "Relief camp schools only",
+      appliesTo: "All schools functioning as relief camps",
+      excludes: "All other educational institutions",
+      reason: "Schools serving as relief camps during floods",
+      qualified: true
+    };
+  }
+
+  if (mentionsTaluk) {
+    return {
+      scope: "Select taluks only",
+      appliesTo: "Educational institutions in specific taluks",
+      excludes,
+      reason,
+      qualified: true
+    };
+  }
+
+  return { scope: "District-wide", appliesTo, excludes, reason, qualified: excludesProfessional };
+}
+
+function scopeRank(scope) {
+  const s = (scope || "").toLowerCase();
+  if (s.includes("district-wide")) return 3;
+  if (s.includes("taluk")) return 2;
+  if (s.includes("relief camp")) return 1;
+  return 0;
+}
+
+/* Choose the reading to publish for a district.
+
+   "District-wide" is what we fall back to when a sentence names no limit — an
+   assumption, not an observation. So any reading that actually names a limit
+   beats an unqualified default; only among equally qualified readings do we
+   take the broadest. */
+function pickBestReading(readings) {
+  const qualified = readings.filter(r => r.qualified);
+  const pool = qualified.length > 0 ? qualified : readings;
+  let best = pool.reduce((a, b) => {
+    const aScore = scopeRank(a.scope) + (a.excludes ? 0.5 : 0);
+    const bScore = scopeRank(b.scope) + (b.excludes ? 0.5 : 0);
+    return bScore > aScore ? b : a;
+  });
+
+  // A taluk sentence and a relief-camp sentence in the same report describe one
+  // order with two halves. Carry the remainder onto the taluk reading rather
+  // than dropping it.
+  if ((best.scope || "").toLowerCase().includes("taluk") &&
+      !(best.appliesTo || "").toLowerCase().includes("relief camp") &&
+      pool.some(r => (r.scope || "").toLowerCase().includes("relief camp"))) {
+    best = Object.assign({}, best, {
+      appliesTo: (best.appliesTo || "").trimEnd() +
+        " Elsewhere in the district, only schools functioning as relief camps are closed.",
+      excludes: "Institutions outside the named taluks that are not relief camps."
+    });
+  }
+  return best;
+}
+
 // Push notification setup
 let vapidPublicKey = null;
 let vapidPrivateKey = null;
@@ -754,55 +900,14 @@ async function runScraper() {
 
             if (!isTarget) continue;
 
-            let hasKw = false;
-            for (const kw of LOCAL_HOLIDAY_KEYWORDS) {
-              if (pLower.includes(kw)) {
-                hasKw = true;
-                break;
-              }
+            // Read sentence by sentence. A single paragraph often carries a full
+            // closure for one taluk and a relief-camp clause for the rest of the
+            // district; judging the whole paragraph at once flattens that into
+            // district-wide.
+            for (const sentence of pClean.split(/(?<=[.!?])\s+/)) {
+              const reading = deriveReading(sentence);
+              if (reading) districtReadingsMap[dist].push(reading);
             }
-
-            if (!hasKw) continue;
-
-            let scope = "District-wide";
-            let appliesTo = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres";
-            let excludes = null;
-            let reason = "Adverse weather and heavy rainfall";
-
-            // Check if professional colleges are excluded
-            const mentionsProfessional = pLower.includes("professional") || pLower.includes("പ്രൊഫഷണൽ");
-            const hasExclusionKw = pLower.includes("except") || pLower.includes("not") || pLower.includes("excluding") || 
-                                   pLower.includes("ഒഴികെ") || pLower.includes("ഒഴികെയുള്ള");
-
-            const excludesProfessional = mentionsProfessional && hasExclusionKw;
-
-            const isAllInstitutions = (pLower.includes("including professional") || pLower.includes("all educational") ||
-                                      pLower.includes("എല്ലാ വിദ്യാഭ്യാസ")) && !excludesProfessional;
-
-            if (excludesProfessional) {
-              appliesTo = "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)";
-              excludes = "Professional colleges NOT covered.";
-            }
-
-            // Check for relief camp closures (only if explicitly limited to relief camps)
-            const isReliefCampOnly = !isAllInstitutions &&
-              (pLower.includes("relief camp") || pLower.includes("relief-camp") || pLower.includes("ദുരിതാശ്വാസ") || pLower.includes("ക്യാമ്പ്")) &&
-              (pLower.includes("only") || pLower.includes("except") || pLower.includes("functioning as") || pLower.includes("പ്രവർത്തിക്കുന്ന") || pLower.includes("മാത്രം"));
-
-            if (isReliefCampOnly) {
-              scope = "Relief camp schools only";
-              appliesTo = "All schools functioning as relief camps";
-              excludes = "All other educational institutions";
-              reason = "Schools serving as relief camps during floods";
-            } else if (!isAllInstitutions && (pLower.includes("taluk") || pLower.includes("taluks") || pLower.includes("താലൂക്ക്") || pLower.includes("താലൂക്കുകൾ"))) {
-              scope = "Select taluks only";
-              appliesTo = "Educational institutions in specific taluks";
-              if (excludesProfessional) {
-                excludes = "Professional colleges NOT covered.";
-              }
-            }
-
-            districtReadingsMap[dist].push({ scope, appliesTo, excludes, reason });
           }
         }
 
@@ -812,12 +917,7 @@ async function runScraper() {
           if (readings && readings.length > 0) {
             if (!evidenceMap.has(dist)) evidenceMap.set(dist, []);
 
-            const scopePriority = { "District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1 };
-            const bestReading = readings.reduce((best, current) => {
-              const bestScore = (scopePriority[best.scope] || 0) + (best.excludes ? 0.5 : 0);
-              const currentScore = (scopePriority[current.scope] || 0) + (current.excludes ? 0.5 : 0);
-              return currentScore > bestScore ? current : best;
-            });
+            const bestReading = pickBestReading(readings);
 
             evidenceMap.get(dist).push({
               status: "confirmed",
@@ -825,6 +925,7 @@ async function runScraper() {
               appliesTo: bestReading.appliesTo,
               excludes: bestReading.excludes,
               reason: bestReading.reason,
+              qualified: bestReading.qualified || false,
               source: {
                 name: candidate.source,
                 title: candidate.title,
@@ -854,21 +955,12 @@ async function runScraper() {
         let confidenceNote = `Reported by ${readings.map(r => r.source.name).join(', ')}.`;
         if (sourceCount === 1) confidenceNote = `Reported by ${readings[0].source.name}.`;
 
-        // Prefer broader scope: District-wide > Taluk > Relief camp
-        const scopePriority = {
-          "District-wide": 3,
-          "Relief camp schools only": 1,
-          "Select taluks only": 2
-        };
+        const reading = pickBestReading(readings);
+
         // Date-scoped override for Kozhikode (2026-08-05):
         // Mathrubhumi article body is truncated by the site before reaching the exclusion paragraph,
         // so the scraper cannot auto-detect it. This override applies the known DC announcement:
         // Professional colleges are NOT included in the holiday.
-        const reading = readings.reduce((best, current) => {
-          const bestScore = (scopePriority[best.scope] || 0) + (best.excludes ? 0.5 : 0);
-          const currentScore = (scopePriority[current.scope] || 0) + (current.excludes ? 0.5 : 0);
-          return currentScore > bestScore ? current : best;
-        });
         let finalExcludes = reading.excludes;
         let finalAppliesTo = reading.appliesTo;
         if (dist === 'Kozhikode' && targetStr === '2026-08-05' && reading.excludes === null) {
@@ -942,11 +1034,19 @@ async function runScraper() {
     // Generate Counts and Headline
     const confirmedCount = districtsData.filter(d => d.status === "confirmed" && d.scope === "District-wide").length;
     const partialCount = districtsData.filter(d => d.status === "confirmed" && d.scope !== "District-wide").length;
-    let headline = `Holidays declared in ${confirmedCount} districts`;
-    if (partialCount > 0) {
-      headline += ` and partial/conditional closures in ${partialCount} other districts.`;
+    const plural = n => (n === 1 ? "district" : "districts");
+    let headline;
+    // A day with only taluk or relief-camp orders is now the common case, so it
+    // gets its own sentence rather than "declared in 0 districts".
+    if (confirmedCount === 0 && partialCount > 0) {
+      headline = `Partial/conditional closures in ${partialCount} ${plural(partialCount)}. No district-wide holiday declared.`;
     } else {
-      headline += ".";
+      headline = `Holidays declared in ${confirmedCount} ${plural(confirmedCount)}`;
+      if (partialCount > 0) {
+        headline += ` and partial/conditional closures in ${partialCount} other ${plural(partialCount)}.`;
+      } else {
+        headline += ".";
+      }
     }
 
     const finalJson = {

@@ -146,8 +146,149 @@ def is_sentence_relevant_for_date(sentence, target_str):
         # Otherwise, old paragraphs from today's static article will bleed into tomorrow.
         if not has_future:
             return False
-                
+
     return True
+
+LOCAL_HOLIDAY_KEYWORDS = [
+    "holiday", "closed", "closure", "postponed", "cancel", "shut",
+    "അവധി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
+]
+
+TALUK_NAME_RE = re.compile(
+    r'\b([A-Z][a-zA-Z]+(?:\s*,\s*[A-Z][a-zA-Z]+)*(?:\s+and\s+[A-Z][a-zA-Z]+)?)\s+taluks?\b'
+)
+
+TALUK_STOPWORDS = {
+    "the", "in", "of", "and", "district", "districts", "remaining", "other",
+    "others", "all", "select", "respective", "both", "two", "three", "several"
+}
+
+def extract_taluks(text):
+    """Pull taluk names out of prose like "in Thiruvalla taluk" or
+    "Vadakara and Koyilandy taluks". Returns [] for generic phrasing such as
+    "the district's remaining taluks", so we never invent a name."""
+    names = []
+    for match in TALUK_NAME_RE.finditer(text or ""):
+        for part in re.split(r',|\band\b', match.group(1)):
+            name = part.strip()
+            if name and name.lower() not in TALUK_STOPWORDS and name not in names:
+                names.append(name)
+    return names
+
+def derive_reading(text):
+    """Read one sentence of a holiday report into a scope verdict.
+
+    Two axes here, and they are independent: which institution *types* the
+    order names (appliesTo), and how far the order reaches (scope). Conflating
+    them is what made "all educational institutions ... in Thiruvalla taluk"
+    read as district-wide. Returns None when the sentence declares no closure."""
+    lower = (text or "").lower()
+    if not any(kw in lower for kw in LOCAL_HOLIDAY_KEYWORDS):
+        return None
+
+    mentions_professional = "professional" in lower or "പ്രൊഫഷണൽ" in lower
+    has_exclusion_kw = bool(re.search(r'\b(except|excluding|not)\b', lower)) or \
+        "ഒഴികെ" in lower or "ഒഴികെയുള്ള" in lower
+    excludes_professional = mentions_professional and has_exclusion_kw
+
+    if excludes_professional:
+        type_label = "Educational institutions except professional colleges"
+        applies_to = "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
+        excludes = "Professional colleges NOT covered."
+    else:
+        type_label = "All educational institutions"
+        applies_to = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+        excludes = None
+
+    reason = "Adverse weather and heavy rainfall"
+
+    mentions_relief_camp = ("relief camp" in lower or "relief-camp" in lower or
+                            "ദുരിതാശ്വാസ" in lower or "ക്യാമ്പ്" in lower)
+    relief_camp_only = mentions_relief_camp and (
+        "only" in lower or "except" in lower or "functioning as" in lower or
+        "പ്രവർത്തിക്കുന്ന" in lower or "മാത്രം" in lower)
+
+    taluks = extract_taluks(text)
+    mentions_taluk = bool(taluks) or "taluk" in lower or "താലൂക്ക്" in lower or "താലൂക്കുകൾ" in lower
+
+    if taluks:
+        # A named-taluk order. Keep the scope line taluk-shaped — the UI lifts
+        # the names out of it into chips.
+        label = ", ".join(taluks) + (" taluk" if len(taluks) == 1 else " taluks")
+        reading = {
+            "scope": label + " only",
+            "appliesTo": type_label + " in " + label + ".",
+            "excludes": excludes,
+            "reason": reason,
+            "qualified": True,
+        }
+        if relief_camp_only:
+            # Mixed order in one sentence: the named taluks close fully,
+            # elsewhere only the schools being used as relief camps do.
+            reading["appliesTo"] += " Elsewhere in the district, only schools functioning as relief camps are closed."
+            reading["excludes"] = "Institutions outside " + label + " that are not relief camps."
+        return reading
+
+    if relief_camp_only:
+        # Covers "in the district's remaining taluks, only relief camps" too —
+        # an unnamed taluk phrase is not a named-taluk order.
+        return {
+            "scope": "Relief camp schools only",
+            "appliesTo": "All schools functioning as relief camps",
+            "excludes": "All other educational institutions",
+            "reason": "Schools serving as relief camps during floods",
+            "qualified": True,
+        }
+
+    if mentions_taluk:
+        return {
+            "scope": "Select taluks only",
+            "appliesTo": "Educational institutions in specific taluks",
+            "excludes": excludes,
+            "reason": reason,
+            "qualified": True,
+        }
+
+    return {
+        "scope": "District-wide",
+        "appliesTo": applies_to,
+        "excludes": excludes,
+        "reason": reason,
+        "qualified": excludes_professional,
+    }
+
+def _scope_rank(scope):
+    s = (scope or "").lower()
+    if "district-wide" in s:
+        return 3
+    if "taluk" in s:
+        return 2
+    if "relief camp" in s:
+        return 1
+    return 0
+
+def pick_best_reading(readings):
+    """Choose the reading to publish for a district.
+
+    "District-wide" is what we fall back to when a sentence names no limit — an
+    assumption, not an observation. So any reading that actually names a limit
+    beats an unqualified default; only among equally qualified readings do we
+    take the broadest."""
+    qualified = [r for r in readings if r.get("qualified")]
+    pool = qualified or readings
+    best = max(pool, key=lambda r: (_scope_rank(r["scope"]), 0.5 if r.get("excludes") else 0.0))
+
+    # A taluk sentence and a relief-camp sentence in the same report describe
+    # one order with two halves. Carry the remainder onto the taluk reading
+    # rather than dropping it.
+    if "taluk" in (best["scope"] or "").lower() and \
+            "relief camp" not in (best.get("appliesTo") or "").lower() and \
+            any("relief camp" in (r["scope"] or "").lower() for r in pool):
+        best = dict(best)
+        best["appliesTo"] = (best.get("appliesTo") or "").rstrip() + \
+            " Elsewhere in the district, only schools functioning as relief camps are closed."
+        best["excludes"] = "Institutions outside the named taluks that are not relief camps."
+    return best
 
 def find_latest_holiday_article():
     """Scrapes Onmanorama Kerala page to find the URL of the latest rain holiday article.
@@ -740,12 +881,7 @@ def main():
             chosen_body = ""
             chosen_url = ""
             chosen_title = ""
-            
-            LOCAL_HOLIDAY_KEYWORDS = [
-                "holiday", "closed", "closure", "postponed", "cancel", "shut",
-                "അവധി", "ക്ലാസുകൾ ഉണ്ടാകില്ല"
-            ]
-            
+
             for candidate in recent_candidates[:6]:
                 print(f"[*] Gathering evidence from: {candidate['title'][:50]}...")
                 try:
@@ -819,41 +955,14 @@ def main():
                             if not is_target:
                                 continue
 
-                            if any(kw in p_lower for kw in LOCAL_HOLIDAY_KEYWORDS):
-                                scope = "District-wide"
-                                applies_to = "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
-                                excludes = None
-                                reason = "Adverse weather and heavy rainfall"
-                                
-                                mentions_professional = "professional" in p_lower or "പ്രൊഫഷണൽ" in p_lower
-                                has_exclusion_kw = "except" in p_lower or "not" in p_lower or "excluding" in p_lower or \
-                                                   "ഒഴികെ" in p_lower or "ഒഴികെയുള്ള" in p_lower
-                                                   
-                                excludes_professional = mentions_professional and has_exclusion_kw
-                                
-                                is_all_institutions = ("including professional" in p_lower or "all educational" in p_lower or \
-                                                      "എല്ലാ വിദ്യാഭ്യാസ" in p_lower) and not excludes_professional
-                                                      
-                                if excludes_professional:
-                                    applies_to = "Educational institutions except professional colleges (schools, anganwadis, tuition centres, etc.)"
-                                    excludes = "Professional colleges NOT covered."
-                                    
-                                is_relief_camp_only = not is_all_institutions and \
-                                    ("relief camp" in p_lower or "relief-camp" in p_lower or "ദുരിതാശ്വാസ" in p_lower or "ക്യാമ്പ്" in p_lower) and \
-                                    ("only" in p_lower or "except" in p_lower or "functioning as" in p_lower or "പ്രവർത്തിക്കുന്ന" in p_lower or "മാത്രം" in p_lower)
-                                    
-                                if is_relief_camp_only:
-                                    scope = "Relief camp schools only"
-                                    applies_to = "All schools functioning as relief camps"
-                                    excludes = "All other educational institutions"
-                                    reason = "Schools serving as relief camps during floods"
-                                elif not is_all_institutions and ("taluk" in p_lower or "taluks" in p_lower or "താലൂക്ക്" in p_lower or "താലൂക്കുകൾ" in p_lower):
-                                    scope = "Select taluks only"
-                                    applies_to = "Educational institutions in specific taluks"
-                                    if excludes_professional:
-                                        excludes = "Professional colleges NOT covered."
-                                        
-                                district_readings_map[dist].append({"scope": scope, "appliesTo": applies_to, "excludes": excludes, "reason": reason})
+                            # Read sentence by sentence. A single paragraph often
+                            # carries a full closure for one taluk and a relief-camp
+                            # clause for the rest of the district; judging the whole
+                            # paragraph at once flattens that into district-wide.
+                            for sentence in re.split(r'(?<=[.!?])\s+', p_clean):
+                                reading = derive_reading(sentence)
+                                if reading:
+                                    district_readings_map[dist].append(reading)
 
                     # Now, process district_readings_map to update evidence_map
                     for dist in DISTRICTS_LIST:
@@ -862,15 +971,15 @@ def main():
                             if dist not in evidence_map:
                                 evidence_map[dist] = []
                             
-                            scope_priority = {"District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1}
-                            best_reading = max(readings, key=lambda x: scope_priority.get(x["scope"], 0) + (0.5 if x["excludes"] is not None else 0.0))
-                            
+                            best_reading = pick_best_reading(readings)
+
                             evidence_map[dist].append({
                                 "status": "confirmed",
                                 "scope": best_reading["scope"],
                                 "appliesTo": best_reading["appliesTo"],
                                 "excludes": best_reading["excludes"],
                                 "reason": best_reading["reason"],
+                                "qualified": best_reading.get("qualified", False),
                                 "source": {
                                     "name": candidate.get("source", "Onmanorama"),
                                     "title": candidate["title"],
@@ -928,9 +1037,8 @@ def main():
                     if len(readings) == 1:
                         confidence_note = f"Reported by {readings[0]['source']['name']}."
                         
-                    scope_priority = {"District-wide": 3, "Select taluks only": 2, "Relief camp schools only": 1}
-                    best_reading = max(readings, key=lambda x: scope_priority.get(x["scope"], 0) + (0.5 if x["excludes"] is not None else 0.0))
-                    
+                    best_reading = pick_best_reading(readings)
+
                     districts_data.append({
                         "name": dist,
                         "status": "confirmed",
@@ -971,12 +1079,20 @@ def main():
             confirmed_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] == "District-wide"])
             partial_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] != "District-wide"])
             
-            headline = f"Holidays declared in {confirmed_count} districts"
-            if partial_count > 0:
-                headline += f" and partial/conditional closures in {partial_count} other districts."
+            def _plural(n):
+                return "district" if n == 1 else "districts"
+
+            # A day with only taluk or relief-camp orders is now the common case,
+            # so it gets its own sentence rather than "declared in 0 districts".
+            if confirmed_count == 0 and partial_count > 0:
+                headline = f"Partial/conditional closures in {partial_count} {_plural(partial_count)}. No district-wide holiday declared."
             else:
-                headline += "."
-                
+                headline = f"Holidays declared in {confirmed_count} {_plural(confirmed_count)}"
+                if partial_count > 0:
+                    headline += f" and partial/conditional closures in {partial_count} other {_plural(partial_count)}."
+                else:
+                    headline += "."
+
             status_data = {
                 "forDate": target_str,
                 "forDateLabel": target_label,

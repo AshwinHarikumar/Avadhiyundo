@@ -22,9 +22,9 @@ window.KERALA_HISTORY = {
         "appliesTo": null
       },
       "Pathanamthitta": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "Thiruvalla taluk only",
+        "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
       },
       "Alappuzha": {
         "status": "none",
@@ -67,9 +67,9 @@ window.KERALA_HISTORY = {
         "appliesTo": null
       },
       "Wayanad": {
-        "status": "none",
-        "scope": null,
-        "appliesTo": null
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
       },
       "Kannur": {
         "status": "none",
@@ -3560,6 +3560,81 @@ window.KERALA_HISTORY = {
         "status": "none",
         "scope": null,
         "appliesTo": null
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T19:34:45.950+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Wayanad",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T19:39:40.286+05:30",
+      "from": {
+        "status": "none",
+        "scope": null,
+        "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T19:44:10.555781+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla taluk only",
+        "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T19:44:39.785+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Thiruvalla taluk only",
+        "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Pathanamthitta",
+      "forDate": "2026-08-06",
+      "at": "2026-08-05T19:48:15.381+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Thiruvalla taluk only",
+        "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed."
       }
     }
   ]

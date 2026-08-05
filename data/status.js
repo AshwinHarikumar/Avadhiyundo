@@ -1,9 +1,17 @@
-/* Kerala Rain Holiday Watch — findings data */
+/* Kerala Rain Holiday Watch — findings data
+ *
+ * This file is REWRITTEN by the research agent on each check.
+ * Nothing here is inferred by the app: every `confirmed` district must
+ * carry at least one source with a timestamp. See README.md for the schema.
+ *
+ * Loaded as a plain script (not fetched) so the app works from file://
+ * without a local server.
+ */
 window.KERALA_STATUS = {
   "forDate": "2026-08-06",
   "forDateLabel": "Thursday, 06 August 2026",
-  "checkedAt": "2026-08-05T15:18:52.985+05:30",
-  "headline": "Holidays declared in 0 districts.",
+  "checkedAt": "2026-08-05T19:51:18.960892+05:30",
+  "headline": "Partial/conditional closures in 2 districts. No district-wide holiday declared.",
   "advisories": [
     {
       "level": "warn",
@@ -24,7 +32,7 @@ window.KERALA_STATUS = {
     {
       "name": "Thiruvananthapuram",
       "status": "none",
-      "alert": "orange",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -51,17 +59,25 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Pathanamthitta",
-      "status": "none",
+      "status": "confirmed",
       "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
-      "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "confidence": 60,
+      "scope": "Thiruvalla taluk only",
+      "appliesTo": "All educational institutions in Thiruvalla taluk. Elsewhere in the district, only schools functioning as relief camps are closed.",
+      "excludes": "Institutions outside the named taluks that are not relief camps.",
+      "reason": "Adverse weather and heavy rainfall",
+      "declaredBy": "District Collector, Pathanamthitta",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Holiday for educational institutions in Thiruvalla tomorrow, relief camp schools to remain shut in 2 districts",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Alappuzha",
@@ -150,7 +166,7 @@ window.KERALA_STATUS = {
     {
       "name": "Malappuram",
       "status": "none",
-      "alert": "orange",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -177,17 +193,25 @@ window.KERALA_STATUS = {
     },
     {
       "name": "Wayanad",
-      "status": "none",
+      "status": "confirmed",
       "alert": "orange",
-      "confidence": null,
-      "scope": null,
-      "appliesTo": null,
-      "excludes": null,
-      "reason": null,
-      "declaredBy": null,
-      "exams": null,
-      "confidenceNote": null,
-      "sources": []
+      "confidence": 60,
+      "scope": "Relief camp schools only",
+      "appliesTo": "All schools functioning as relief camps",
+      "excludes": "All other educational institutions",
+      "reason": "Schools serving as relief camps during floods",
+      "declaredBy": "District Collector, Wayanad",
+      "exams": "Scheduled public and university examinations proceed unless specified.",
+      "confidenceNote": "Reported by Onmanorama.",
+      "sources": [
+        {
+          "name": "Onmanorama",
+          "title": "Holiday for educational institutions in Thiruvalla tomorrow, relief camp schools to remain shut in 2 districts",
+          "url": "https://www.onmanorama.com/news/kerala/2026/08/05/kerala-rain-schools-relief-camps-educational-institutions-holiday.html",
+          "time": "Latest Update",
+          "tier": 1
+        }
+      ]
     },
     {
       "name": "Kannur",
