@@ -24,7 +24,7 @@ import json
 import re
 import time
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 
 import requests
@@ -139,7 +139,7 @@ def log(msg):
 
 
 def get_ist_now():
-    return datetime.utcnow() + timedelta(hours=5, minutes=30)
+    return datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=5, minutes=30)
 
 
 def get_target_date():
