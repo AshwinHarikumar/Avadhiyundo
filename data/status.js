@@ -2,7 +2,7 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-07",
   "forDateLabel": "Friday, 07 August 2026",
-  "checkedAt": "2026-08-07T09:53:37.435+05:30",
+  "checkedAt": "2026-08-07T11:34:06.634+05:30",
   "headline": "Holidays declared in 8 districts.",
   "advisories": [
     {
@@ -38,7 +38,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kollam",
       "status": "none",
-      "alert": "red",
+      "alert": "yellow",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -52,15 +52,15 @@ window.KERALA_STATUS = {
     {
       "name": "Pathanamthitta",
       "status": "confirmed",
-      "alert": "red",
-      "confidence": 92,
+      "alert": "orange",
+      "confidence": 80,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Pathanamthitta",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Mathrubhumi, Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
@@ -73,20 +73,6 @@ window.KERALA_STATUS = {
           "name": "Mathrubhumi",
           "title": "കനത്ത മഴ; എറണാകുളം തൃശൂർ ജില്ലകളിലെ വിദ്യാഭ്യാസസ്ഥാപനങ്ങൾക്ക് ഇന്ന് അവധി",
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Manorama",
-          "title": "മഴ: 6 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് ഓഗസ്റ്റ് 7ന് അവധി",
-          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/06/kottayam-red-alert-heavy-rain.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -95,15 +81,15 @@ window.KERALA_STATUS = {
     {
       "name": "Alappuzha",
       "status": "confirmed",
-      "alert": "red",
-      "confidence": 92,
+      "alert": "yellow",
+      "confidence": 80,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Alappuzha",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Mathrubhumi, Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
@@ -116,20 +102,6 @@ window.KERALA_STATUS = {
           "name": "Mathrubhumi",
           "title": "കനത്ത മഴ; എറണാകുളം തൃശൂർ ജില്ലകളിലെ വിദ്യാഭ്യാസസ്ഥാപനങ്ങൾക്ക് ഇന്ന് അവധി",
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Manorama",
-          "title": "മഴ: 6 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് ഓഗസ്റ്റ് 7ന് അവധി",
-          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/06/kottayam-red-alert-heavy-rain.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -138,15 +110,15 @@ window.KERALA_STATUS = {
     {
       "name": "Kottayam",
       "status": "confirmed",
-      "alert": "red",
-      "confidence": 92,
+      "alert": "orange",
+      "confidence": 80,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Kottayam",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Mathrubhumi, Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
@@ -161,27 +133,13 @@ window.KERALA_STATUS = {
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
           "time": "Latest Update",
           "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Manorama",
-          "title": "മഴ: 6 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് ഓഗസ്റ്റ് 7ന് അവധി",
-          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/06/kottayam-red-alert-heavy-rain.html",
-          "time": "Latest Update",
-          "tier": 1
         }
       ]
     },
     {
       "name": "Idukki",
       "status": "none",
-      "alert": "red",
+      "alert": "orange",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -240,13 +198,6 @@ window.KERALA_STATUS = {
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
           "time": "Latest Update",
           "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
-          "time": "Latest Update",
-          "tier": 1
         }
       ]
     },
@@ -267,7 +218,7 @@ window.KERALA_STATUS = {
     {
       "name": "Malappuram",
       "status": "none",
-      "alert": "red",
+      "alert": "orange",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -281,7 +232,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kozhikode",
       "status": "none",
-      "alert": "red",
+      "alert": "orange",
       "confidence": null,
       "scope": null,
       "appliesTo": null,
@@ -295,15 +246,15 @@ window.KERALA_STATUS = {
     {
       "name": "Wayanad",
       "status": "confirmed",
-      "alert": "red",
-      "confidence": 92,
+      "alert": "orange",
+      "confidence": 80,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Wayanad",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Mathrubhumi, Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
@@ -316,20 +267,6 @@ window.KERALA_STATUS = {
           "name": "Mathrubhumi",
           "title": "കനത്ത മഴ; എറണാകുളം തൃശൂർ ജില്ലകളിലെ വിദ്യാഭ്യാസസ്ഥാപനങ്ങൾക്ക് ഇന്ന് അവധി",
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Manorama",
-          "title": "മഴ: 6 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് ഓഗസ്റ്റ് 7ന് അവധി",
-          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/06/kottayam-red-alert-heavy-rain.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -338,15 +275,15 @@ window.KERALA_STATUS = {
     {
       "name": "Kannur",
       "status": "confirmed",
-      "alert": "red",
-      "confidence": 92,
+      "alert": "orange",
+      "confidence": 80,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
       "excludes": null,
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Kannur",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Mathrubhumi, Manorama.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
@@ -359,20 +296,6 @@ window.KERALA_STATUS = {
           "name": "Mathrubhumi",
           "title": "കനത്ത മഴ; എറണാകുളം തൃശൂർ ജില്ലകളിലെ വിദ്യാഭ്യാസസ്ഥാപനങ്ങൾക്ക് ഇന്ന് അവധി",
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Manorama",
-          "title": "മഴ: 6 ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് ഓഗസ്റ്റ് 7ന് അവധി",
-          "url": "https://www.manoramaonline.com/district-news/kottayam/2026/08/06/kottayam-red-alert-heavy-rain.html",
           "time": "Latest Update",
           "tier": 1
         }
@@ -381,7 +304,7 @@ window.KERALA_STATUS = {
     {
       "name": "Kasaragod",
       "status": "confirmed",
-      "alert": "red",
+      "alert": "orange",
       "confidence": 80,
       "scope": "District-wide",
       "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
@@ -389,7 +312,7 @@ window.KERALA_STATUS = {
       "reason": "Adverse weather and heavy rainfall",
       "declaredBy": "District Collector, Kasaragod",
       "exams": "Scheduled public and university examinations proceed unless specified.",
-      "confidenceNote": "Reported by Onmanorama, Mathrubhumi, Mathrubhumi.",
+      "confidenceNote": "Reported by Onmanorama, Mathrubhumi.",
       "sources": [
         {
           "name": "Onmanorama",
@@ -402,13 +325,6 @@ window.KERALA_STATUS = {
           "name": "Mathrubhumi",
           "title": "കനത്ത മഴ; എറണാകുളം തൃശൂർ ജില്ലകളിലെ വിദ്യാഭ്യാസസ്ഥാപനങ്ങൾക്ക് ഇന്ന് അവധി",
           "url": "https://www.mathrubhumi.com/news/kerala/ernakulam-district-educational-holiday-heavy-rain-sdxhq3tx",
-          "time": "Latest Update",
-          "tier": 1
-        },
-        {
-          "name": "Mathrubhumi",
-          "title": "മഴ ശക്തമാകും: ആറ് ജില്ലകളിലെ വിദ്യാഭ്യാസ സ്ഥാപനങ്ങൾക്ക് നാളെ അവധി",
-          "url": "https://www.mathrubhumi.com/news/kerala/school-holiday-heavy-rain-2026-a7hix9uo",
           "time": "Latest Update",
           "tier": 1
         }
