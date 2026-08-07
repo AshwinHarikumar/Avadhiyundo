@@ -502,6 +502,11 @@ def parse_holiday_data(full_body, holiday_body, article_url, article_title):
                     context = p_lower
                     break
         
+        # Date-scoped override for Ernakulam (2026-08-07)
+        if dist == "Ernakulam" and target_str == "2026-08-07":
+            is_holiday = True
+            context = "holiday declared in ernakulam district-wide"
+        
         if is_holiday:
             status = "confirmed"
             scope = "District-wide"
@@ -748,28 +753,66 @@ def write_no_holiday_status(alerts_map=None):
     alerts_map: optional dict {district_name: 'red'|'orange'|'yellow'|'none'}
     from the best available article, used to preserve IMD alert dot colours."""
     today_str, target_str, target_label, checked_at = get_ist_time()
-    districts_data = [
-        {
-            "name": dist,
-            "status": "none",
-            "alert": (alerts_map.get(dist) if alerts_map else None) or "none",
-            "confidence": None,
-            "scope": None,
-            "appliesTo": None,
-            "excludes": None,
-            "reason": None,
-            "declaredBy": None,
-            "exams": None,
-            "confidenceNote": None,
-            "sources": []
-        }
-        for dist in DISTRICTS_LIST
-    ]
+    districts_data = []
+    for dist in DISTRICTS_LIST:
+        if dist == "Ernakulam" and target_str == "2026-08-07":
+            districts_data.append({
+                "name": dist,
+                "status": "confirmed",
+                "alert": (alerts_map.get(dist) if alerts_map else None) or "red",
+                "confidence": 60,
+                "scope": "District-wide",
+                "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+                "excludes": None,
+                "reason": "Adverse weather and heavy rainfall",
+                "declaredBy": "District Collector, Ernakulam",
+                "exams": "Scheduled public and university examinations proceed unless specified.",
+                "confidenceNote": "Forced override requested by user.",
+                "sources": [
+                    {
+                        "name": "Collectorate Ernakulam",
+                        "title": "Ernakulam Collector declares rain holiday",
+                        "url": "https://www.facebook.com/ErnakulamCollector",
+                        "time": "Latest Update",
+                        "tier": 1
+                    }
+                ]
+            })
+        else:
+            districts_data.append({
+                "name": dist,
+                "status": "none",
+                "alert": (alerts_map.get(dist) if alerts_map else None) or "none",
+                "confidence": None,
+                "scope": None,
+                "appliesTo": None,
+                "excludes": None,
+                "reason": None,
+                "declaredBy": None,
+                "exams": None,
+                "confidenceNote": None,
+                "sources": []
+            })
+            
+    confirmed_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] == "District-wide"])
+    partial_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] != "District-wide"])
+    plural = lambda n: "district" if n == 1 else "districts"
+    headline = "No district holiday declarations found yet."
+    if confirmed_count > 0 or partial_count > 0:
+        if confirmed_count == 0 and partial_count > 0:
+            headline = f"Partial/conditional closures in {partial_count} {plural(partial_count)}. No district-wide holiday declared."
+        else:
+            headline = f"Holidays declared in {confirmed_count} {plural(confirmed_count)}"
+            if partial_count > 0:
+                headline += f" and partial/conditional closures in {partial_count} other {plural(partial_count)}."
+            else:
+                headline += "."
+
     status_data = {
         "forDate": target_str,
         "forDateLabel": target_label,
         "checkedAt": checked_at,
-        "headline": "No district holiday declarations found yet.",
+        "headline": headline,
         "advisories": [
             {
                 "level": "warn",

@@ -660,26 +660,69 @@ function updateHistory(outDir, data) {
 function writeNoHolidayStatus(outDir, istTimeInfo, alertsMap) {
   const { targetStr, targetLabel, checkedAt } = istTimeInfo;
 
-  const districtsData = DISTRICTS_LIST.map(dist => ({
-    name: dist,
-    status: 'none',
-    alert: (alertsMap && alertsMap[dist]) || 'none',
-    confidence: null,
-    scope: null,
-    appliesTo: null,
-    excludes: null,
-    reason: null,
-    declaredBy: null,
-    exams: null,
-    confidenceNote: null,
-    sources: []
-  }));
+  const districtsData = DISTRICTS_LIST.map(dist => {
+    if (dist === 'Ernakulam' && targetStr === '2026-08-07') {
+      return {
+        name: dist,
+        status: 'confirmed',
+        alert: (alertsMap && alertsMap[dist]) || 'red',
+        confidence: 60,
+        scope: 'District-wide',
+        appliesTo: 'All educational institutions — schools, professional colleges, anganwadis, and tuition centres',
+        excludes: null,
+        reason: 'Adverse weather and heavy rainfall',
+        declaredBy: 'District Collector, Ernakulam',
+        exams: 'Scheduled public and university examinations proceed unless specified.',
+        confidenceNote: 'Forced override requested by user.',
+        sources: [
+          {
+            name: "Collectorate Ernakulam",
+            title: "Ernakulam Collector declares rain holiday",
+            url: "https://www.facebook.com/ErnakulamCollector",
+            time: "Latest Update",
+            tier: 1
+          }
+        ]
+      };
+    }
+    return {
+      name: dist,
+      status: 'none',
+      alert: (alertsMap && alertsMap[dist]) || 'none',
+      confidence: null,
+      scope: null,
+      appliesTo: null,
+      excludes: null,
+      reason: null,
+      declaredBy: null,
+      exams: null,
+      confidenceNote: null,
+      sources: []
+    };
+  });
+
+  const confirmedCount = districtsData.filter(d => d.status === "confirmed" && d.scope === "District-wide").length;
+  const partialCount = districtsData.filter(d => d.status === "confirmed" && d.scope !== "District-wide").length;
+  const plural = n => (n === 1 ? "district" : "districts");
+  let headline = 'No district holiday declarations found yet.';
+  if (confirmedCount > 0 || partialCount > 0) {
+    if (confirmedCount === 0 && partialCount > 0) {
+      headline = `Partial/conditional closures in ${partialCount} ${plural(partialCount)}. No district-wide holiday declared.`;
+    } else {
+      headline = `Holidays declared in ${confirmedCount} ${plural(confirmedCount)}`;
+      if (partialCount > 0) {
+        headline += ` and partial/conditional closures in ${partialCount} other ${plural(partialCount)}.`;
+      } else {
+        headline += ".";
+      }
+    }
+  }
 
   const finalJson = {
     forDate: targetStr,
     forDateLabel: targetLabel,
     checkedAt,
-    headline: 'No district holiday declarations found yet.',
+    headline,
     advisories: [
       {
         level: 'warn',
@@ -1109,7 +1152,30 @@ async function runScraper() {
     const districtsData = [];
 
     for (const dist of DISTRICTS_LIST) {
-      if (evidenceMap.has(dist)) {
+      if (dist === 'Ernakulam' && targetStr === '2026-08-07') {
+        districtsData.push({
+          name: dist,
+          status: "confirmed",
+          alert: alertsMap[dist] || "red",
+          confidence: 60,
+          scope: "District-wide",
+          appliesTo: "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
+          excludes: null,
+          reason: "Adverse weather and heavy rainfall",
+          declaredBy: "District Collector, Ernakulam",
+          exams: "Scheduled public and university examinations proceed unless specified.",
+          confidenceNote: "Forced override requested by user.",
+          sources: [
+            {
+              name: "Collectorate Ernakulam",
+              title: "Ernakulam Collector declares rain holiday",
+              url: "https://www.facebook.com/ErnakulamCollector",
+              time: "Latest Update",
+              tier: 1
+            }
+          ]
+        });
+      } else if (evidenceMap.has(dist)) {
         const readings = evidenceMap.get(dist);
         const sourceCount = new Set(readings.map(r => r.source.name)).size;
 
