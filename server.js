@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const { execFile } = require('child_process');
+const { execFile, spawn } = require('child_process');
 const { promisify } = require('util');
 const webpush = require('web-push');
 const { initTelegramBot, notifyTelegramSubscribers } = require('./telegram_bot');
@@ -955,53 +955,79 @@ async function scrapeFacebookCollectors() {
   }
 
   const started = Date.now();
-  try {
-    const { stdout, stderr } = await execFileAsync(
-      PYTHON_BIN,
-      [scriptPath, '--max-posts', '4'],
-      {
-        cwd: __dirname,
-        timeout: FB_SCRAPER_TIMEOUT_MS,
-        maxBuffer: 12 * 1024 * 1024,
-        encoding: 'utf-8',
-        windowsHide: true
+  return new Promise((resolve) => {
+    const child = spawn(PYTHON_BIN, [scriptPath, '--max-posts', '4'], {
+      cwd: __dirname,
+      windowsHide: true
+    });
+
+    let stdoutData = '';
+    let stderrData = '';
+
+    child.stdout.on('data', (data) => {
+      stdoutData += data.toString();
+    });
+
+    child.stderr.on('data', (data) => {
+      const chunk = data.toString();
+      stderrData += chunk;
+      // Log scraper progress lines in real time
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.trim()) {
+          console.log(`[FB] ${line.trim().replace(/^\[fb_scraper\]\s*/, '')}`);
+        }
       }
-    );
+    });
 
-    // The script logs progress on stderr and prints only JSON on stdout, so
-    // stderr here is information rather than failure.
-    if (stderr && stderr.trim()) {
-      for (const line of stderr.trim().split('\n')) {
-        console.log(`[FB] ${line.replace(/^\[fb_scraper\]\s*/, '')}`);
+    // Handle timeout
+    const timeout = setTimeout(() => {
+      console.warn(`[FB] Scraper process timed out after ${FB_SCRAPER_TIMEOUT_MS / 1000}s. Killing...`);
+      child.kill();
+    }, FB_SCRAPER_TIMEOUT_MS);
+
+    child.on('close', (code) => {
+      clearTimeout(timeout);
+      
+      const elapsed = ((Date.now() - started) / 1000).toFixed(1);
+      if (code !== 0) {
+        console.warn(`[FB] Collector scraper process exited with code ${code} after ${elapsed}s — falling back to news sources.`);
+        resolve({});
+        return;
       }
-    }
 
-    const jsonStart = stdout.indexOf('{');
-    if (jsonStart === -1) {
-      console.warn('[FB] No JSON on stdout — using news sources only.');
-      return {};
-    }
+      try {
+        const jsonStart = stdoutData.indexOf('{');
+        if (jsonStart === -1) {
+          console.warn('[FB] No JSON on stdout — using news sources only.');
+          resolve({});
+          return;
+        }
 
-    const parsed = JSON.parse(stdout.slice(jsonStart));
-    const findings = parsed.findings || {};
+        const parsed = JSON.parse(stdoutData.slice(jsonStart));
+        const findings = parsed.findings || {};
 
-    if (parsed.ocrAvailable === false) {
-      console.warn('[FB] OCR unavailable — image-only posters were skipped. See SETUP_TESSERACT.md');
-    }
+        if (parsed.ocrAvailable === false) {
+          console.warn('[FB] OCR unavailable — image-only posters were skipped. See SETUP_TESSERACT.md');
+        }
 
-    const elapsed = ((Date.now() - started) / 1000).toFixed(1);
-    const names = Object.keys(findings);
-    console.log(`[FB] ${names.length} district(s) with a Collector declaration in ${elapsed}s` +
-      (names.length ? `: ${names.join(', ')}` : '.'));
+        const names = Object.keys(findings);
+        console.log(`[FB] ${names.length} district(s) with a Collector declaration in ${elapsed}s` +
+          (names.length ? `: ${names.join(', ')}` : '.'));
 
-    return findings;
-  } catch (e) {
-    // ETIMEDOUT arrives with whatever the child had already written; there is
-    // no partial-result contract, so treat it as an empty run like any other.
-    const reason = e.killed ? `timed out after ${FB_SCRAPER_TIMEOUT_MS / 1000}s` : e.message;
-    console.warn(`[FB] Collector scrape unavailable (${reason}) — falling back to news sources.`);
-    return {};
-  }
+        resolve(findings);
+      } catch (e) {
+        console.warn(`[FB] Failed to parse scraper output (${e.message}) — using news sources.`);
+        resolve({});
+      }
+    });
+
+    child.on('error', (err) => {
+      clearTimeout(timeout);
+      console.warn(`[FB] Failed to start collector scraper process: ${err.message}`);
+      resolve({});
+    });
+  });
 }
 
 /* Shape a fb_scraper.py verdict like the readings the news pipeline builds, so
