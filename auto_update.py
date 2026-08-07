@@ -68,7 +68,7 @@ def parse_alerts(body_text):
     
     for sentence in sentences:
         sentence = sentence.strip()
-        if not sentence or "alert" not in sentence.lower():
+        if not sentence or not ("alert" in sentence.lower() or "അലർട്ട്" in sentence.lower()):
             continue
             
         # Split by while, but, whereas, semicolon
@@ -76,11 +76,11 @@ def parse_alerts(body_text):
         for clause in clauses:
             clause_lower = clause.lower()
             color = None
-            if "red alert" in clause_lower or (re.search(r'\bred\b', clause_lower) and "alert" in clause_lower):
+            if "red alert" in clause_lower or (re.search(r'\bred\b', clause_lower) and "alert" in clause_lower) or "റെഡ്" in clause_lower:
                 color = "red"
-            elif "orange alert" in clause_lower or (re.search(r'\borange\b', clause_lower) and "alert" in clause_lower):
+            elif "orange alert" in clause_lower or (re.search(r'\borange\b', clause_lower) and "alert" in clause_lower) or "ഓറഞ്ച്" in clause_lower:
                 color = "orange"
-            elif "yellow alert" in clause_lower or (re.search(r'\byellow\b', clause_lower) and "alert" in clause_lower):
+            elif "yellow alert" in clause_lower or (re.search(r'\byellow\b', clause_lower) and "alert" in clause_lower) or "യെല്ലോ" in clause_lower:
                 color = "yellow"
                 
             if not color:
@@ -88,7 +88,10 @@ def parse_alerts(body_text):
                 
             clause_districts = []
             for dist in DISTRICTS_LIST:
-                if re.search(r'\b' + re.escape(dist) + r'\b', clause, re.IGNORECASE):
+                is_mentioned = bool(re.search(r'\b' + re.escape(dist) + r'\b', clause, re.IGNORECASE))
+                if not is_mentioned and dist in DISTRICT_TRANSLATIONS:
+                    is_mentioned = any(mal in clause for mal in DISTRICT_TRANSLATIONS[dist])
+                if is_mentioned:
                     clause_districts.append(dist)
                     
             if clause_districts:
@@ -188,6 +191,12 @@ def derive_reading(text):
     if not any(kw in lower for kw in LOCAL_HOLIDAY_KEYWORDS):
         return None
 
+    is_negation = "അവധിയില്ല" in lower or \
+                  "പ്രഖ്യാപിച്ചിട്ടില്ല" in lower or \
+                  bool(re.search(r'\b(no holiday|not declared|no district holiday|no general holiday)\b', lower))
+    if is_negation:
+        return None
+
     mentions_professional = "professional" in lower or "പ്രൊഫഷണൽ" in lower
     has_exclusion_kw = bool(re.search(r'\b(except|excluding|not)\b', lower)) or \
         "ഒഴികെ" in lower or "ഒഴികെയുള്ള" in lower
@@ -265,12 +274,18 @@ def derive_reading(text):
             "qualified": True,
         }
 
+    is_explicit_declaration = (
+        "അവധി" in lower and any(x in lower for x in [
+            "പ്രഖ്യാപിച്ചു", "പ്രഖ്യാപിച്ചി", "അറിയിച്ചു", "ബാധക", "ആയിരിക്കും", "അവധിയാണ്", "നൽകി"
+        ])
+    ) or bool(re.search(r'\b(declared|declares|announced|announces|is a holiday|will be a holiday)\b', lower))
+
     return {
         "scope": "District-wide",
         "appliesTo": applies_to,
         "excludes": excludes,
         "reason": reason,
-        "qualified": excludes_professional,
+        "qualified": excludes_professional or is_explicit_declaration,
     }
 
 def _scope_rank(scope):
@@ -501,11 +516,6 @@ def parse_holiday_data(full_body, holiday_body, article_url, article_title):
                     is_holiday = True
                     context = p_lower
                     break
-        
-        # Date-scoped override for Ernakulam (2026-08-07)
-        if dist == "Ernakulam" and target_str == "2026-08-07":
-            is_holiday = True
-            context = "holiday declared in ernakulam district-wide"
         
         if is_holiday:
             status = "confirmed"
@@ -755,44 +765,20 @@ def write_no_holiday_status(alerts_map=None):
     today_str, target_str, target_label, checked_at = get_ist_time()
     districts_data = []
     for dist in DISTRICTS_LIST:
-        if dist == "Ernakulam" and target_str == "2026-08-07":
-            districts_data.append({
-                "name": dist,
-                "status": "confirmed",
-                "alert": (alerts_map.get(dist) if alerts_map else None) or "red",
-                "confidence": 60,
-                "scope": "District-wide",
-                "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
-                "excludes": None,
-                "reason": "Adverse weather and heavy rainfall",
-                "declaredBy": "District Collector, Ernakulam",
-                "exams": "Scheduled public and university examinations proceed unless specified.",
-                "confidenceNote": "Forced override requested by user.",
-                "sources": [
-                    {
-                        "name": "Collectorate Ernakulam",
-                        "title": "Ernakulam Collector declares rain holiday",
-                        "url": "https://www.facebook.com/ErnakulamCollector",
-                        "time": "Latest Update",
-                        "tier": 1
-                    }
-                ]
-            })
-        else:
-            districts_data.append({
-                "name": dist,
-                "status": "none",
-                "alert": (alerts_map.get(dist) if alerts_map else None) or "none",
-                "confidence": None,
-                "scope": None,
-                "appliesTo": None,
-                "excludes": None,
-                "reason": None,
-                "declaredBy": None,
-                "exams": None,
-                "confidenceNote": None,
-                "sources": []
-            })
+        districts_data.append({
+            "name": dist,
+            "status": "none",
+            "alert": (alerts_map.get(dist) if alerts_map else None) or "none",
+            "confidence": None,
+            "scope": None,
+            "appliesTo": None,
+            "excludes": None,
+            "reason": None,
+            "declaredBy": None,
+            "exams": None,
+            "confidenceNote": None,
+            "sources": []
+        })
             
     confirmed_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] == "District-wide"])
     partial_count = len([d for d in districts_data if d["status"] == "confirmed" and d["scope"] != "District-wide"])
@@ -1030,9 +1016,9 @@ def main():
                         full_body = "\n".join([p.text.strip() for p in c_soup.find_all("p") if p.text.strip()])
                         
                     if not chosen_body:
-                        chosen_body = full_body
                         chosen_url = candidate["url"]
                         chosen_title = candidate["title"]
+                    chosen_body += "\n\n" + full_body
                         
                     # Fetch holiday-specific paragraphs
                     holiday_body = fetch_holiday_body(candidate["url"], target_str)

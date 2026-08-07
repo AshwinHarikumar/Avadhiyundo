@@ -48,8 +48,8 @@ window.KERALA_HISTORY = {
       },
       "Thrissur": {
         "status": "confirmed",
-        "scope": "Relief camp schools only",
-        "appliesTo": "All schools functioning as relief camps"
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
       },
       "Palakkad": {
         "status": "none",
@@ -5025,6 +5025,81 @@ window.KERALA_HISTORY = {
         "status": "none",
         "scope": null,
         "appliesTo": null
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-07",
+      "at": "2026-08-07T08:38:20.221590+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Alappuzha",
+      "forDate": "2026-08-07",
+      "at": "2026-08-07T08:38:34.753+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-07",
+      "at": "2026-08-07T08:43:09.366197+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-07",
+      "at": "2026-08-07T08:43:24.236+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "District-wide",
+        "appliesTo": "All educational institutions — schools, professional colleges, anganwadis, and tuition centres"
+      },
+      "to": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
+      }
+    },
+    {
+      "d": "Thrissur",
+      "forDate": "2026-08-07",
+      "at": "2026-08-07T08:44:13.389+05:30",
+      "from": {
+        "status": "confirmed",
+        "scope": "Relief camp schools only",
+        "appliesTo": "All schools functioning as relief camps"
       },
       "to": {
         "status": "confirmed",

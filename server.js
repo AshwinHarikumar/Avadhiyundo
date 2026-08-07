@@ -171,6 +171,11 @@ function deriveReading(text) {
   const lower = (text || "").toLowerCase();
   if (!LOCAL_HOLIDAY_KEYWORDS.some(kw => lower.includes(kw))) return null;
 
+  const isNegation = lower.includes("അവധിയില്ല") || 
+                     lower.includes("പ്രഖ്യാപിച്ചിട്ടില്ല") || 
+                     /\b(no holiday|not declared|no district holiday|no general holiday)\b/.test(lower);
+  if (isNegation) return null;
+
   const mentionsProfessional = lower.includes("professional") || lower.includes("പ്രൊഫഷണൽ");
   const hasExclusionKw = /\b(except|excluding|not)\b/.test(lower) ||
     lower.includes("ഒഴികെ") || lower.includes("ഒഴികെയുള്ള");
@@ -250,7 +255,19 @@ function deriveReading(text) {
     };
   }
 
-  return { scope: "District-wide", appliesTo, excludes, reason, qualified: excludesProfessional };
+  const isExplicitDeclaration = 
+    (lower.includes("അവധി") && (
+      lower.includes("പ്രഖ്യാപിച്ചു") || 
+      lower.includes("പ്രഖ്യാപിച്ചി") || 
+      lower.includes("അറിയിച്ചു") || 
+      lower.includes("ബാധക") || 
+      lower.includes("ആയിരിക്കും") || 
+      lower.includes("അവധിയാണ്") || 
+      lower.includes("നൽകി")
+    )) ||
+    /\b(declared|declares|announced|announces|is a holiday|will be a holiday)\b/.test(lower);
+
+  return { scope: "District-wide", appliesTo, excludes, reason, qualified: excludesProfessional || isExplicitDeclaration };
 }
 
 function scopeRank(scope) {
@@ -661,30 +678,6 @@ function writeNoHolidayStatus(outDir, istTimeInfo, alertsMap) {
   const { targetStr, targetLabel, checkedAt } = istTimeInfo;
 
   const districtsData = DISTRICTS_LIST.map(dist => {
-    if (dist === 'Ernakulam' && targetStr === '2026-08-07') {
-      return {
-        name: dist,
-        status: 'confirmed',
-        alert: (alertsMap && alertsMap[dist]) || 'red',
-        confidence: 60,
-        scope: 'District-wide',
-        appliesTo: 'All educational institutions — schools, professional colleges, anganwadis, and tuition centres',
-        excludes: null,
-        reason: 'Adverse weather and heavy rainfall',
-        declaredBy: 'District Collector, Ernakulam',
-        exams: 'Scheduled public and university examinations proceed unless specified.',
-        confidenceNote: 'Forced override requested by user.',
-        sources: [
-          {
-            name: "Collectorate Ernakulam",
-            title: "Ernakulam Collector declares rain holiday",
-            url: "https://www.facebook.com/ErnakulamCollector",
-            time: "Latest Update",
-            tier: 1
-          }
-        ]
-      };
-    }
     return {
       name: dist,
       status: 'none',
@@ -1152,30 +1145,7 @@ async function runScraper() {
     const districtsData = [];
 
     for (const dist of DISTRICTS_LIST) {
-      if (dist === 'Ernakulam' && targetStr === '2026-08-07') {
-        districtsData.push({
-          name: dist,
-          status: "confirmed",
-          alert: alertsMap[dist] || "red",
-          confidence: 60,
-          scope: "District-wide",
-          appliesTo: "All educational institutions — schools, professional colleges, anganwadis, and tuition centres",
-          excludes: null,
-          reason: "Adverse weather and heavy rainfall",
-          declaredBy: "District Collector, Ernakulam",
-          exams: "Scheduled public and university examinations proceed unless specified.",
-          confidenceNote: "Forced override requested by user.",
-          sources: [
-            {
-              name: "Collectorate Ernakulam",
-              title: "Ernakulam Collector declares rain holiday",
-              url: "https://www.facebook.com/ErnakulamCollector",
-              time: "Latest Update",
-              tier: 1
-            }
-          ]
-        });
-      } else if (evidenceMap.has(dist)) {
+      if (evidenceMap.has(dist)) {
         const readings = evidenceMap.get(dist);
         const sourceCount = new Set(readings.map(r => r.source.name)).size;
 
