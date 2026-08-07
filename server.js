@@ -4,8 +4,12 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
 const webpush = require('web-push');
 const { initTelegramBot, notifyTelegramSubscribers } = require('./telegram_bot');
+
+const execFileAsync = promisify(execFile);
 
 
 const app = express();
@@ -173,6 +177,8 @@ function deriveReading(text) {
 
   const isNegation = lower.includes("അവധിയില്ല") || 
                      lower.includes("പ്രഖ്യാപിച്ചിട്ടില്ല") || 
+                     lower.includes("ഉണ്ടായിരിക്കില്ല") || 
+                     lower.includes("തീരുമാനിച്ചിട്ടില്ല") || 
                      /\b(no holiday|not declared|no district holiday|no general holiday)\b/.test(lower);
   if (isNegation) return null;
 
@@ -263,7 +269,9 @@ function deriveReading(text) {
       lower.includes("ബാധക") || 
       lower.includes("ആയിരിക്കും") || 
       lower.includes("അവധിയാണ്") || 
-      lower.includes("നൽകി")
+      lower.includes("നൽകി") ||
+      lower.includes("ഇന്ന്") ||
+      lower.includes("നാളെ")
     )) ||
     /\b(declared|declares|announced|announces|is a holiday|will be a holiday)\b/.test(lower);
 
@@ -822,6 +830,201 @@ function getDatePaths() {
   return { todayPath, targetPath, yesterdayTargetPath };
 }
 
+/* ── Facebook Collector pages: the primary source ──
+
+   District Collectors publish closure orders on their own Facebook pages,
+   usually before the news picks them up and often as an image poster with no
+   caption. fb_scraper.py drives a logged-in browser, OCRs any posters, and
+   prints one verdict per district; whatever it returns is treated as
+   authoritative here, because it is the office that issues the order talking
+   directly rather than a paper describing it.
+
+   Every failure mode is non-fatal by design. A missing Python, an expired
+   Facebook session, an unreadable poster, a timeout — each simply yields
+   fewer districts, and the news pipeline downstream covers the rest. The one
+   thing this must never do is take the whole scrape down with it. */
+
+/* Write status.js from an evidence map alone.
+
+   Used when the Collector pages produced findings but the news sweep came back
+   empty — the full path in runScraper() needs article bodies for IMD alerts and
+   exam advisories, neither of which exist here. Districts absent from the map
+   are written as `none`, exactly as the news path writes them. */
+async function publishStatus(outDir, evidenceMap, chosenUrl, chosenTitle, istTimeInfo) {
+  const { targetStr, targetLabel, checkedAt } = istTimeInfo;
+
+  const districtsData = DISTRICTS_LIST.map(dist => {
+    if (!evidenceMap.has(dist)) {
+      return {
+        name: dist, status: 'none', alert: 'none', confidence: null, scope: null,
+        appliesTo: null, excludes: null, reason: null, declaredBy: null,
+        exams: null, confidenceNote: null, sources: []
+      };
+    }
+
+    const readings = evidenceMap.get(dist);
+    const reading = pickBestReading(readings);
+    const usedOcr = readings.some(r => r.tier === 0 && r.isImagePost);
+
+    let confidenceNote = 'Announced by the District Collector on Facebook.';
+    if (usedOcr) {
+      confidenceNote += ' Read from an image poster by OCR — verify against the original post.';
+    }
+
+    return {
+      name: dist,
+      status: 'confirmed',
+      alert: 'none',
+      confidence: 95,
+      scope: reading.scope,
+      appliesTo: reading.appliesTo,
+      excludes: reading.excludes,
+      reason: reading.reason,
+      declaredBy: `District Collector, ${dist}`,
+      exams: 'Scheduled public and university examinations proceed unless specified.',
+      confidenceNote,
+      sources: readings.map(r => ({
+        name: r.source.name,
+        title: r.source.title,
+        url: r.source.url,
+        time: 'Latest Update',
+        tier: r.tier === 0 ? 0 : 1
+      }))
+    };
+  });
+
+  const confirmedCount = districtsData.filter(d => d.status === 'confirmed' && d.scope === 'District-wide').length;
+  const partialCount = districtsData.filter(d => d.status === 'confirmed' && d.scope !== 'District-wide').length;
+  const plural = n => (n === 1 ? 'district' : 'districts');
+  let headline;
+  if (confirmedCount === 0 && partialCount > 0) {
+    headline = `Partial/conditional closures in ${partialCount} ${plural(partialCount)}. No district-wide holiday declared.`;
+  } else {
+    headline = `Holidays declared in ${confirmedCount} ${plural(confirmedCount)}`;
+    headline += partialCount > 0
+      ? ` and partial/conditional closures in ${partialCount} other ${plural(partialCount)}.`
+      : '.';
+  }
+
+  const finalJson = {
+    forDate: targetStr,
+    forDateLabel: targetLabel,
+    checkedAt,
+    headline,
+    advisories: [{
+      level: 'warn',
+      title: 'Announcements may still be issued tonight',
+      body: 'Individual District Collectors continue to review local conditions. Remaining districts under rain warnings may still issue closure orders later tonight.'
+    }],
+    // No article was read this run, so there is no IMD summary to quote. Empty
+    // strings keep the shape the frontend expects while it hides the section.
+    weather: { summary: '', outlook: '', impact: '', source: { name: '', url: chosenUrl || '' } },
+    districts: districtsData,
+    debunked: [],
+    limitations: [
+      'Read from official District Collector Facebook pages. No news report was available this run to cross-check against.'
+    ]
+  };
+
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+  const nEvents = updateHistory(outDir, finalJson);
+  const jsContent = `/* Kerala Rain Holiday Watch — findings data */\nwindow.KERALA_STATUS = ${JSON.stringify(finalJson, null, 2)};\n`;
+  fs.writeFileSync(path.join(outDir, 'status.js'), jsContent, 'utf-8');
+
+  await notifySubscribers(finalJson);
+  await notifyTelegramSubscribers(finalJson);
+
+  console.log(`[Scraper] Wrote status from Collector pages alone. (${nEvents} transitions retained)`);
+  return true;
+}
+
+const FB_SCRAPER_TIMEOUT_MS = 5 * 60 * 1000;
+const PYTHON_BIN = process.env.PYTHON_BIN || (process.platform === 'win32' ? 'python' : 'python3');
+const FB_SCRAPER_ENABLED = process.env.FB_SCRAPER_DISABLED !== '1';
+
+async function scrapeFacebookCollectors() {
+  if (!FB_SCRAPER_ENABLED) {
+    console.log('[FB] Disabled via FB_SCRAPER_DISABLED — using news sources only.');
+    return {};
+  }
+
+  const scriptPath = path.join(__dirname, 'fb_scraper.py');
+  if (!fs.existsSync(scriptPath)) {
+    console.warn('[FB] fb_scraper.py not found — using news sources only.');
+    return {};
+  }
+
+  const started = Date.now();
+  try {
+    const { stdout, stderr } = await execFileAsync(
+      PYTHON_BIN,
+      [scriptPath, '--max-posts', '4'],
+      {
+        cwd: __dirname,
+        timeout: FB_SCRAPER_TIMEOUT_MS,
+        maxBuffer: 12 * 1024 * 1024,
+        encoding: 'utf-8',
+        windowsHide: true
+      }
+    );
+
+    // The script logs progress on stderr and prints only JSON on stdout, so
+    // stderr here is information rather than failure.
+    if (stderr && stderr.trim()) {
+      for (const line of stderr.trim().split('\n')) {
+        console.log(`[FB] ${line.replace(/^\[fb_scraper\]\s*/, '')}`);
+      }
+    }
+
+    const jsonStart = stdout.indexOf('{');
+    if (jsonStart === -1) {
+      console.warn('[FB] No JSON on stdout — using news sources only.');
+      return {};
+    }
+
+    const parsed = JSON.parse(stdout.slice(jsonStart));
+    const findings = parsed.findings || {};
+
+    if (parsed.ocrAvailable === false) {
+      console.warn('[FB] OCR unavailable — image-only posters were skipped. See SETUP_TESSERACT.md');
+    }
+
+    const elapsed = ((Date.now() - started) / 1000).toFixed(1);
+    const names = Object.keys(findings);
+    console.log(`[FB] ${names.length} district(s) with a Collector declaration in ${elapsed}s` +
+      (names.length ? `: ${names.join(', ')}` : '.'));
+
+    return findings;
+  } catch (e) {
+    // ETIMEDOUT arrives with whatever the child had already written; there is
+    // no partial-result contract, so treat it as an empty run like any other.
+    const reason = e.killed ? `timed out after ${FB_SCRAPER_TIMEOUT_MS / 1000}s` : e.message;
+    console.warn(`[FB] Collector scrape unavailable (${reason}) — falling back to news sources.`);
+    return {};
+  }
+}
+
+/* Shape a fb_scraper.py verdict like the readings the news pipeline builds, so
+   the merge step downstream does not need to know where it came from. Tier 0
+   sits above every news tier, which is what makes pickBestReading prefer it. */
+function fbFindingToReading(finding, district) {
+  return {
+    status: 'confirmed',
+    scope: finding.scope,
+    appliesTo: finding.appliesTo,
+    excludes: finding.excludes,
+    reason: finding.reason,
+    qualified: true,
+    tier: 0,
+    isImagePost: !!finding.isImagePost,
+    source: {
+      name: 'District Collector (Facebook)',
+      title: finding.sourceTitle || `District Collector, ${district}`,
+      url: finding.sourceUrl
+    }
+  };
+}
+
 async function runScraper() {
   console.log(`[Scraper] Starting scrape run: ${new Date().toISOString()}`);
   const outDir = path.join(__dirname, 'data');
@@ -830,6 +1033,24 @@ async function runScraper() {
   const now = new Date();
   const istOffset = 5.5 * 60 * 60 * 1000;
   const istNow = new Date(now.getTime() + istOffset);
+
+  // Phase 1 — the Collector pages themselves. Runs before the news sweep so
+  // that a district the Collector has already spoken about is settled by the
+  // time the papers are read.
+  const evidenceMap = new Map();
+  let fbFindings = {};
+  try {
+    fbFindings = await scrapeFacebookCollectors();
+  } catch (e) {
+    console.warn(`[FB] Unexpected failure (${e.message}) — falling back to news sources.`);
+    fbFindings = {};
+  }
+
+  for (const [dist, finding] of Object.entries(fbFindings)) {
+    if (!DISTRICTS_LIST.includes(dist) || !finding || !finding.scope) continue;
+    evidenceMap.set(dist, [fbFindingToReading(finding, dist)]);
+  }
+  const fbDistricts = new Set(evidenceMap.keys());
 
   // Multi-source news fetching
   const sources = [
@@ -864,8 +1085,14 @@ async function runScraper() {
     const candidates = Array.from(candidatesByUrl.values());
 
     if (candidates.length === 0) {
-      console.log("[-] No rain holiday news articles found on any source. Writing no-holiday status.");
-      return writeNoHolidayStatus(outDir, getISTTime(), null);
+      // No news today does not mean no holiday — the Collector may have posted
+      // one. Only write the empty status when neither source found anything.
+      if (fbDistricts.size === 0) {
+        console.log("[-] No rain holiday news articles found on any source. Writing no-holiday status.");
+        return writeNoHolidayStatus(outDir, getISTTime(), null);
+      }
+      console.log(`[-] No news articles found, but ${fbDistricts.size} Collector declaration(s) stand. Publishing those.`);
+      return publishStatus(outDir, evidenceMap, '', '', getISTTime());
     }
 
     console.log(`[Scraper] Found ${candidates.length} candidate article(s):`);
@@ -900,19 +1127,23 @@ async function runScraper() {
     });
 
     if (recentCandidates.length === 0) {
-      console.log(`[Scraper] No recent articles found. Writing no-holiday status.`);
-      return writeNoHolidayStatus(outDir, getISTTime(), null);
+      if (fbDistricts.size === 0) {
+        console.log(`[Scraper] No recent articles found. Writing no-holiday status.`);
+        return writeNoHolidayStatus(outDir, getISTTime(), null);
+      }
+      console.log(`[Scraper] No recent articles, but ${fbDistricts.size} Collector declaration(s) stand. Publishing those.`);
+      return publishStatus(outDir, evidenceMap, '', '', getISTTime());
     }
 
     console.log(`[Scraper] Using ${recentCandidates.length} recent article(s) for evidence gathering...`);
 
     const { targetStr, targetLabel, checkedAt } = getISTTime();
 
-    // 2. Gather evidence from recent articles
+    // 2. Gather evidence from recent articles. evidenceMap already carries the
+    // Collector findings from Phase 1; news readings append to it.
     let chosenBody = '';
     let chosenUrl = '';
     let chosenTitle = '';
-    const evidenceMap = new Map();
 
     const tryList = recentCandidates.slice(0, 6);
 
@@ -1149,12 +1380,40 @@ async function runScraper() {
         const readings = evidenceMap.get(dist);
         const sourceCount = new Set(readings.map(r => r.source.name)).size;
 
+        // Collector Facebook is tier 0, the most authoritative source. When it
+        // stands alone confidence is already 95; news corroboration lifts it
+        // further but does not replace it.
+        const hasFacebook = readings.some(r => r.tier === 0);
         let confidence = 60;
-        if (sourceCount >= 3) confidence = 92;
-        else if (sourceCount >= 2) confidence = 80;
+        if (hasFacebook && sourceCount >= 3) {
+          confidence = 99;
+        } else if (hasFacebook && sourceCount >= 2) {
+          confidence = 98;
+        } else if (hasFacebook) {
+          confidence = 95;
+        } else if (sourceCount >= 3) {
+          confidence = 92;
+        } else if (sourceCount >= 2) {
+          confidence = 80;
+        }
 
-        let confidenceNote = `Reported by ${readings.map(r => r.source.name).join(', ')}.`;
-        if (sourceCount === 1) confidenceNote = `Reported by ${readings[0].source.name}.`;
+        // "Reported by" understates a Collector order — that page issues the
+        // order rather than reporting one, so it gets its own phrasing.
+        let confidenceNote;
+        if (hasFacebook) {
+          const newsNames = [...new Set(readings.filter(r => r.tier !== 0).map(r => r.source.name))];
+          confidenceNote = 'Announced by the District Collector on Facebook';
+          confidenceNote += newsNames.length
+            ? `, corroborated by ${newsNames.join(', ')}.`
+            : '.';
+          if (readings.some(r => r.tier === 0 && r.isImagePost)) {
+            confidenceNote += ' Read from an image poster by OCR — verify against the original post.';
+          }
+        } else if (sourceCount === 1) {
+          confidenceNote = `Reported by ${readings[0].source.name}.`;
+        } else {
+          confidenceNote = `Reported by ${readings.map(r => r.source.name).join(', ')}.`;
+        }
 
         const minTier = Math.min(...readings.map(r => r.tier || 1));
         const filteredReadings = readings.filter(r => (r.tier || 1) === minTier);

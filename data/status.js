@@ -2,7 +2,7 @@
 window.KERALA_STATUS = {
   "forDate": "2026-08-07",
   "forDateLabel": "Friday, 07 August 2026",
-  "checkedAt": "2026-08-07T08:46:00.229+05:30",
+  "checkedAt": "2026-08-07T09:53:37.435+05:30",
   "headline": "Holidays declared in 8 districts.",
   "advisories": [
     {

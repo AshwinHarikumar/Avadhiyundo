@@ -1,3 +1,16 @@
+#!/usr/bin/env python3
+"""
+DEPRECATED — Superseded by fb_scraper.py
+
+This was the proof-of-concept Facebook scraper, covering only 3 districts and
+requiring manual login every run. fb_scraper.py is the production version:
+  - Covers all 14 districts
+  - Tries logged-out mbasic first, falls back to the logged-in profile
+  - OCRs image posters with Tesseract
+  - Outputs structured JSON for server.js
+
+Kept for reference only.
+"""
 import time
 import re
 import os
