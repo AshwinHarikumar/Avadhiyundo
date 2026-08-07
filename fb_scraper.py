@@ -805,65 +805,67 @@ def main():
     # Pass 2: browser for the pages mbasic would not serve.
     if needs_selenium and not args.no_selenium:
         log(f"Pass 2 — Selenium for {len(needs_selenium)} district(s): {', '.join(needs_selenium)}")
-        driver = None
-        try:
-            driver = setup_selenium_driver(args.profile, headless=not args.headful)
-            
-            # Inject cookies from environment variable if provided
-            cookies_json = os.environ.get("FB_COOKIES_JSON")
-            if cookies_json:
-                try:
-                    cookies_list = json.loads(cookies_json)
-                    driver.get("https://www.facebook.com/")
-                    time.sleep(2)
-                    for cookie in cookies_list:
-                        if "expiry" in cookie:
-                            del cookie["expiry"]
-                        driver.add_cookie(cookie)
-                    log("Injected Facebook cookies from FB_COOKIES_JSON environment variable.")
-                except Exception as ex:
-                    log(f"Failed to inject cookies from environment variable: {ex}")
+        
+        # Process in chunks of 3 districts to recycle Chrome and prevent OOM on Render
+        chunk_size = 3
+        for i in range(0, len(needs_selenium), chunk_size):
+            chunk = needs_selenium[i:i+chunk_size]
+            log(f"Processing Selenium chunk {i//chunk_size + 1}: {', '.join(chunk)}")
+            driver = None
+            try:
+                driver = setup_selenium_driver(args.profile, headless=not args.headful)
+                
+                # Inject cookies from environment variable if provided
+                cookies_json = os.environ.get("FB_COOKIES_JSON")
+                if cookies_json:
+                    try:
+                        cookies_list = json.loads(cookies_json)
+                        driver.get("https://www.facebook.com/")
+                        time.sleep(2)
+                        for cookie in cookies_list:
+                            if "expiry" in cookie:
+                                del cookie["expiry"]
+                            driver.add_cookie(cookie)
+                        log("Injected Facebook cookies from FB_COOKIES_JSON environment variable.")
+                    except Exception as ex:
+                        log(f"Failed to inject cookies: {ex}")
 
-            logged_in = selenium_logged_in(driver)
-            log(f"Login check result: {logged_in}")
-
-            if not logged_in and args.headful and sys.stdin.isatty():
-                # A one-time manual sign-in. Chrome writes the session into the
-                # profile directory, so later headless runs reuse it.
-                log("=" * 68)
-                log("NOT LOGGED IN. A Chrome window is open — sign in to Facebook there.")
-                log("Leave the window open. Once your feed loads, return here and press Enter.")
-                log("=" * 68)
-                try:
-                    input()
-                except EOFError:
-                    pass
                 logged_in = selenium_logged_in(driver)
-                log("Login verified — session saved to the profile."
-                    if logged_in else "Still not logged in; skipping the browser pass.")
-            elif not logged_in:
-                log("Facebook session is not logged in. Run with --headful to sign in once.")
+                log(f"Login check result: {logged_in}")
 
-            if logged_in:
-                for district in needs_selenium:
-                    posts = scrape_via_selenium(driver, district, COLLECTOR_PAGES[district], args.max_posts)
-                    if not posts:
-                        continue
-                    verdict = evaluate_posts(district, posts, session)
-                    if verdict:
-                        results[district] = verdict
-                        log(f"{district}: holiday found via Selenium — {verdict['scope']}")
-                    time.sleep(2)
-        except Exception as e:
-            # Selenium missing or Chrome unavailable is not fatal: whatever
-            # mbasic found still stands, and news covers the rest.
-            log(f"Selenium pass unavailable — {e}")
-        finally:
-            if driver:
-                try:
-                    driver.quit()
-                except Exception:
-                    pass
+                if not logged_in and args.headful and sys.stdin.isatty():
+                    log("=" * 68)
+                    log("NOT LOGGED IN. A Chrome window is open — sign in to Facebook there.")
+                    log("Leave the window open. Once your feed loads, return here and press Enter.")
+                    log("=" * 68)
+                    try:
+                        input()
+                    except EOFError:
+                        pass
+                    logged_in = selenium_logged_in(driver)
+                    log("Login verified — session saved to the profile."
+                        if logged_in else "Still not logged in; skipping this chunk.")
+                elif not logged_in:
+                    log("Facebook session is not logged in. Skipping this chunk.")
+
+                if logged_in:
+                    for district in chunk:
+                        posts = scrape_via_selenium(driver, district, COLLECTOR_PAGES[district], args.max_posts)
+                        if not posts:
+                            continue
+                        verdict = evaluate_posts(district, posts, session)
+                        if verdict:
+                            results[district] = verdict
+                            log(f"{district}: holiday found via Selenium — {verdict['scope']}")
+                        time.sleep(2)
+            except Exception as e:
+                log(f"Selenium chunk failed: {e}")
+            finally:
+                if driver:
+                    try:
+                        driver.quit()
+                    except Exception:
+                        pass
     elif needs_selenium:
         log(f"Skipping Selenium (--no-selenium); {len(needs_selenium)} district(s) unchecked")
 
