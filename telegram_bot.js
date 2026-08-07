@@ -366,9 +366,9 @@ async function handleTelegramUpdate(update) {
   }
 }
 
-// Telegram Polling Loop
 async function pollTelegramUpdates() {
   if (!isPolling) return;
+  let delay = 1000;
   try {
     const res = await axios.get(`${API_URL}/getUpdates`, {
       params: { offset: telegramOffset, timeout: 25 },
@@ -383,12 +383,17 @@ async function pollTelegramUpdates() {
   } catch (err) {
     // Avoid logging generic network timeouts to reduce log noise
     if (err.code !== 'ECONNABORTED' && (!err.response || err.response.status !== 502)) {
-      console.error("[Telegram Bot] Polling error:", err.message);
+      if (err.response && err.response.status === 409) {
+        console.warn("[Telegram Bot] Polling conflict (409): Another bot instance is active with this token. Retrying in 15 seconds...");
+        delay = 15000;
+      } else {
+        console.error("[Telegram Bot] Polling error:", err.message);
+      }
     }
   }
   // Schedule next poll immediately
   if (isPolling) {
-    setTimeout(pollTelegramUpdates, 1000);
+    setTimeout(pollTelegramUpdates, delay);
   }
 }
 
