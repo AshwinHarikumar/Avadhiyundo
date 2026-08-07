@@ -571,6 +571,10 @@ def setup_selenium_driver(profile_path="./fb_chrome_profile", headless=True):
     opts.add_experimental_option("useAutomationExtension", False)
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
+    opts.add_argument("--disable-extensions")
+    opts.add_argument("--no-zygote")
+    opts.add_argument("--single-process")
+    opts.add_argument("--disable-software-rasterizer")
     opts.add_argument(f"user-agent={HEADERS['User-Agent']}")
 
     if profile_path:
@@ -579,7 +583,7 @@ def setup_selenium_driver(profile_path="./fb_chrome_profile", headless=True):
         opts.add_argument("profile-directory=Default")
 
     if headless:
-        opts.add_argument("--headless=new")
+        opts.add_argument("--headless")
         opts.add_argument("--disable-gpu")
         opts.add_argument("--window-size=1280,2000")
     else:
