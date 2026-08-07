@@ -1597,7 +1597,47 @@ function readCurrentStatus() {
 }
 
 // REST endpoints
+app.post('/api/push-status', async (req, res) => {
+  const { token, statusData } = req.body;
+  const SECRET_TOKEN = process.env.SCRAPER_API_TOKEN;
+  
+  if (!SECRET_TOKEN || token !== SECRET_TOKEN) {
+    return res.status(403).json({ success: false, message: "Forbidden: Invalid or missing SCRAPER_API_TOKEN." });
+  }
+  
+  if (!statusData || !statusData.districts) {
+    return res.status(400).json({ success: false, message: "Bad Request: Missing valid statusData payload." });
+  }
+  
+  try {
+    const outDir = path.join(__dirname, 'data');
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+    
+    // Save to history and write status.js
+    const nEvents = updateHistory(outDir, statusData);
+    const jsContent = `/* Kerala Rain Holiday Watch — findings data */\nwindow.KERALA_STATUS = ${JSON.stringify(statusData, null, 2)};\n`;
+    fs.writeFileSync(path.join(outDir, 'status.js'), jsContent, 'utf-8');
+    
+    // Notify subscribers
+    await notifySubscribers(statusData);
+    await notifyTelegramSubscribers(statusData);
+    
+    console.log(`[Push API] Successfully updated status from pushed data. (${nEvents} transitions retained)`);
+    return res.status(200).json({ success: true, message: `Status updated successfully. ${nEvents} transitions retained.` });
+  } catch (e) {
+    console.error("[Push API] Error processing pushed status:", e.message);
+    return res.status(500).json({ success: false, message: `Failed to process status: ${e.message}` });
+  }
+});
+
 app.get('/api/scrape', async (req, res) => {
+  if (process.env.DISABLE_LOCAL_SCRAPER === '1') {
+    return res.status(403).json({
+      success: false,
+      message: "Local scraping is disabled on this instance."
+    });
+  }
+
   const now = Date.now();
   
   if (now - lastScrapeTime < SCRAPE_COOLDOWN) {
@@ -1753,25 +1793,33 @@ app.use('/data', (req, res, next) => {
 // Serve the rest of the workspace folder statically (fallback)
 app.use(express.static(__dirname));
 
-// Start server and trigger initial scrape
-app.listen(PORT, async () => {
-  console.log(`[Server] Node.js backend listening on port ${PORT}`);
-  
-  // Initialize Telegram Bot
-  initTelegramBot();
+// Start server and trigger initial scrape if run directly
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    console.log(`[Server] Node.js backend listening on port ${PORT}`);
+    
+    // Initialize Telegram Bot
+    initTelegramBot();
 
-
-  // Trigger initial scrape on startup
-  await runScraper();
-  lastScrapeTime = Date.now();
-
-  // Set interval to scrape every 15 minutes (900000 ms)
-  setInterval(async () => {
-    if (!isScraping) {
-      isScraping = true;
+    const DISABLE_LOCAL_SCRAPER = process.env.DISABLE_LOCAL_SCRAPER === '1';
+    if (!DISABLE_LOCAL_SCRAPER) {
+      // Trigger initial scrape on startup
       await runScraper();
       lastScrapeTime = Date.now();
-      isScraping = false;
+
+      // Set interval to scrape every 15 minutes (900000 ms)
+      setInterval(async () => {
+        if (!isScraping) {
+          isScraping = true;
+          await runScraper();
+          lastScrapeTime = Date.now();
+          isScraping = false;
+        }
+      }, 15 * 60 * 1000);
+    } else {
+      console.log("[Server] Local scraper execution is disabled (DISABLE_LOCAL_SCRAPER=1).");
     }
-  }, 15 * 60 * 1000);
-});
+  });
+} else {
+  module.exports = { runScraper };
+}
