@@ -762,7 +762,6 @@ def main():
             driver.get("https://www.facebook.com/")
             time.sleep(4)
             if selenium_logged_in(driver):
-                import json
                 print("\n=== COPY THE JSON BELOW FOR FB_COOKIES_JSON ===")
                 print(json.dumps(driver.get_cookies()))
                 print("================================================\n")
@@ -808,7 +807,6 @@ def main():
             cookies_json = os.environ.get("FB_COOKIES_JSON")
             if cookies_json:
                 try:
-                    import json
                     cookies_list = json.loads(cookies_json)
                     driver.get("https://www.facebook.com/")
                     time.sleep(2)
